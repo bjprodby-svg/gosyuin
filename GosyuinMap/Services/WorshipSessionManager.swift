@@ -4,26 +4,19 @@ import Observation
 
 @MainActor
 @Observable
-final class WorshipSessionManager {
+final class ProximityActivityManager {
     private(set) var currentActivity: Activity<GosyuinActivityAttributes>?
-    private(set) var currentStep: WorshipStep = .temizu
     private(set) var isActive: Bool = false
-    private(set) var shrineName: String = ""
-    private(set) var startDate: Date = .now
 
-    func startSession(shrine: String) {
+    func startActivity(shrine: String, distance: Int) {
         guard !isActive else { return }
-        shrineName = shrine
-        currentStep = .temizu
-        startDate = .now
         isActive = true
 
-        let attributes = GosyuinActivityAttributes(gosyuinName: shrine)
+        let attributes = GosyuinActivityAttributes(shrineName: shrine)
         let state = GosyuinActivityAttributes.ContentState(
-            templeName: shrine,
-            status: currentStep.label,
-            currentStep: currentStep,
-            startDate: startDate
+            shrineName: shrine,
+            distance: distance,
+            isCollected: false
         )
 
         do {
@@ -35,57 +28,15 @@ final class WorshipSessionManager {
             )
         } catch {
             print("Failed to start Live Activity: \(error)")
+            isActive = false
         }
     }
 
-    func advanceStep() {
-        guard isActive, let next = currentStep.next else { return }
-        currentStep = next
-        updateActivity()
-    }
-
-    func completeSession() {
-        guard isActive else { return }
-        let finalState = GosyuinActivityAttributes.ContentState(
-            templeName: shrineName,
-            status: "Complete",
-            currentStep: .gosyuin,
-            startDate: startDate
-        )
-
-        let activity = currentActivity
-        Task {
-            let content = ActivityContent(state: finalState, staleDate: nil)
-            await activity?.end(content, dismissalPolicy: .after(.now + 30))
-        }
-
-        resetState()
-    }
-
-    func cancelSession() {
-        guard isActive else { return }
+    func updateDistance(_ distance: Int, shrine: String) {
         let state = GosyuinActivityAttributes.ContentState(
-            templeName: shrineName,
-            status: "Cancelled",
-            currentStep: currentStep,
-            startDate: startDate
-        )
-
-        let activity = currentActivity
-        Task {
-            let content = ActivityContent(state: state, staleDate: nil)
-            await activity?.end(content, dismissalPolicy: .immediate)
-        }
-
-        resetState()
-    }
-
-    private func updateActivity() {
-        let state = GosyuinActivityAttributes.ContentState(
-            templeName: shrineName,
-            status: currentStep.label,
-            currentStep: currentStep,
-            startDate: startDate
+            shrineName: shrine,
+            distance: distance,
+            isCollected: false
         )
 
         let activity = currentActivity
@@ -95,10 +46,33 @@ final class WorshipSessionManager {
         }
     }
 
-    private func resetState() {
+    func markCollected(shrine: String) {
+        let state = GosyuinActivityAttributes.ContentState(
+            shrineName: shrine,
+            distance: 0,
+            isCollected: true
+        )
+
+        let activity = currentActivity
+        Task {
+            let content = ActivityContent(state: state, staleDate: nil)
+            await activity?.update(content)
+            try? await Task.sleep(for: .seconds(5))
+            await activity?.end(content, dismissalPolicy: .immediate)
+        }
+
         isActive = false
         currentActivity = nil
-        shrineName = ""
-        currentStep = .temizu
+    }
+
+    func endActivity() {
+        guard isActive else { return }
+        let activity = currentActivity
+        Task {
+            await activity?.end(nil, dismissalPolicy: .immediate)
+        }
+
+        isActive = false
+        currentActivity = nil
     }
 }
