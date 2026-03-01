@@ -24,12 +24,127 @@ struct LearnDetailView: View {
     @ViewBuilder
     private var content: some View {
         switch article.id {
+        case "types": typesContent
         case "sanpai": sanpaiContent
         case "temizu": temizuContent
         case "omikuji": omikujiContent
         case "gosyuin": gosyuinContent
         default: Text("Coming soon")
         }
+    }
+
+    // MARK: - Shrine & Temple Types
+
+    private var typesContent: some View {
+        VStack(spacing: DS.Spacing.xxl) {
+            noteCard(
+                icon: "info.circle.fill", color: article.color,
+                title: "Shinto vs Buddhism",
+                text: "Japan has two major religions: Shinto (shrines) and Buddhism (temples). Many sacred sites blend both traditions, but their naming tells you their origin."
+            )
+
+            typeCard(
+                emoji: "\u{26E9}\u{FE0F}",
+                name: "Jinja (Shrine)",
+                japanese: "神社",
+                description: "The most common Shinto sacred place. Dedicated to kami (gods/spirits) of nature, ancestors, or local guardians. Recognized by torii gates at the entrance.",
+                examples: "Meiji Jingu, Fushimi Inari Taisha",
+                delay: 0
+            )
+
+            typeCard(
+                emoji: "\u{1F3EF}",
+                name: "Tera / Ji (Temple)",
+                japanese: "寺",
+                description: "A Buddhist place of worship. Home to Buddha statues, monks, and cemeteries. You'll find incense burners and a main hall (hondo) instead of torii gates.",
+                examples: "Senso-ji, Kiyomizu-dera, Todai-ji",
+                delay: 0.08
+            )
+
+            typeCard(
+                emoji: "\u{1F451}",
+                name: "Jingu (Grand Shrine)",
+                japanese: "神宮",
+                description: "A prestigious shrine with direct ties to the Imperial family or enshrining major deities. The title 'Jingu' is reserved for the highest-ranking shrines.",
+                examples: "Ise Jingu, Meiji Jingu, Atsuta Jingu",
+                delay: 0.16
+            )
+
+            typeCard(
+                emoji: "\u{26F0}\u{FE0F}",
+                name: "Taisha (Grand Shrine)",
+                japanese: "大社",
+                description: "Originally referred only to Izumo Taisha, but now designates shrines that head a network of branch shrines across Japan.",
+                examples: "Izumo Taisha, Fushimi Inari Taisha, Kasuga Taisha",
+                delay: 0.24
+            )
+
+            typeCard(
+                emoji: "\u{1F393}",
+                name: "Tenmangu",
+                japanese: "天満宮",
+                description: "Shrines dedicated to Sugawara no Michizane, the deified patron of learning. Students flock here before exams to pray for academic success.",
+                examples: "Dazaifu Tenmangu, Kitano Tenmangu, Yushima Tenmangu",
+                delay: 0.32
+            )
+
+            typeCard(
+                emoji: "\u{1F525}",
+                name: "Inari Shrine",
+                japanese: "稲荷神社",
+                description: "Shrines dedicated to Inari, the god of rice, fertility, and business prosperity. Famous for tunnels of vermillion torii gates and fox (kitsune) guardian statues.",
+                examples: "Fushimi Inari Taisha, Toyokawa Inari",
+                delay: 0.40
+            )
+
+            noteCard(
+                icon: "lightbulb.fill", color: .orange,
+                title: "Quick Tip",
+                text: "Look at the name ending: -jinja/-jingu/-taisha = Shinto shrine. -ji/-dera/-in = Buddhist temple. Some places like Senso-ji have both a temple and a shrine on the same grounds!"
+            )
+        }
+    }
+
+    private func typeCard(
+        emoji: String, name: String, japanese: String,
+        description: String, examples: String, delay: Double
+    ) -> some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            HStack(spacing: DS.Spacing.sm) {
+                Text(emoji)
+                    .font(.system(size: 32))
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(name)
+                        .font(.headline)
+                    Text(japanese)
+                        .font(.caption)
+                        .foregroundStyle(article.color)
+                }
+                Spacer()
+            }
+
+            Text(description)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: DS.Spacing.xs) {
+                Image(systemName: "mappin.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(article.color)
+                Text(examples)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .cardStyle()
+        .opacity(appeared ? 1 : 0)
+        .offset(y: appeared ? 0 : 16)
+        .animation(
+            .spring(duration: 0.5, bounce: 0.2).delay(delay),
+            value: appeared
+        )
     }
 
     // MARK: - Worship Etiquette

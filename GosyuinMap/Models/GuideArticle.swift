@@ -17,6 +17,13 @@ struct GuideArticle: Identifiable, Hashable {
 
     static let allArticles: [GuideArticle] = [
         GuideArticle(
+            id: "types",
+            title: "Shrine & Temple Types",
+            subtitle: "Jinja, Tera, Jingu, Taisha and more",
+            icon: "rectangle.grid.2x2.fill",
+            color: Color(red: 0.55, green: 0.25, blue: 0.52)
+        ),
+        GuideArticle(
             id: "sanpai",
             title: "Worship Etiquette",
             subtitle: "From torii gate to bow-clap-bow ritual",

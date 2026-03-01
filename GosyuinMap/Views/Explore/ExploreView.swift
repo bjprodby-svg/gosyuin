@@ -17,121 +17,192 @@ struct ExploreView: View {
     @State private var selectedShrine: Shrine?
     @State private var selectedMapItem: MKMapItem?
     @State private var mapStyleOption: MapStyleOption = .standard
-    @State private var searchSheetDetent: PresentationDetent = .height(56)
+    @State private var searchSheetDetent: PresentationDetent = .height(140)
     @State private var showSearchSheet = true
     @State private var showCollectionPrompt = false
     @State private var promptShrine: Shrine?
     @State private var showSearchAreaButton = false
-    @Namespace private var mapNamespace
 
     @Query private var collectedStamps: [CollectedStamp]
     @Environment(\.modelContext) private var modelContext
 
+    private let defaultRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917),
+        span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+    )
+
     private var currentRegion: MKCoordinateRegion {
-        visibleRegion ?? MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917),
-            span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
-        )
+        visibleRegion ?? defaultRegion
     }
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                mapContent
-
-                VStack(spacing: 0) {
-                    if locationService.authorizationStatus == .denied {
-                        locationDeniedBanner
-                    }
-
-                    if showSearchAreaButton {
-                        searchAreaButton
-                            .padding(.top, DS.Spacing.sm)
-                    }
-
-                    Spacer()
-
-                    if let shrine = selectedShrine {
-                        shrineCard(shrine)
-                    } else if let mapItem = selectedMapItem {
-                        mapItemCard(mapItem)
-                    }
+            mapLayer
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: Shrine.self) { shrine in
+                    ShrineDetailView(shrine: shrine)
                 }
-            }
-            .navigationTitle("Map")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    mapStyleMenu
-                }
-            }
-            .navigationDestination(for: Shrine.self) { shrine in
-                ShrineDetailView(shrine: shrine)
-            }
-            .sensoryFeedback(.selection, trigger: selectedShrine?.id)
-            .sensoryFeedback(.selection, trigger: selectedMapItem)
-            .sheet(isPresented: $showSearchSheet) {
-                ExploreSearchSheet(
-                    searchService: searchService,
-                    region: currentRegion,
-                    onSelectMapItem: { item in
-                        handleSelectMapItem(item)
-                    },
-                    onSelectShrine: { shrine in
-                        handleSelectShrine(shrine)
-                    }
-                )
-                .presentationDetents(
-                    [.height(56), .medium, .large],
-                    selection: $searchSheetDetent
-                )
-                .presentationDragIndicator(.hidden)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-                .interactiveDismissDisabled()
-            }
-            .sheet(isPresented: $showCollectionPrompt) {
-                if let shrine = promptShrine {
-                    StampCollectionPrompt(
-                        shrine: shrine,
-                        onCollect: {
-                            collectStamp(for: shrine)
-                        },
-                        onDismiss: {
-                            showCollectionPrompt = false
-                            promptShrine = nil
-                        }
+                .sheet(isPresented: $showSearchSheet) {
+                    ExploreSearchSheet(
+                        searchService: searchService,
+                        region: currentRegion,
+                        onSelectMapItem: { handleSelectMapItem($0) },
+                        onSelectShrine: { handleSelectShrine($0) }
                     )
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.visible)
+                    .presentationDetents(
+                        [.height(140), .medium, .large],
+                        selection: $searchSheetDetent
+                    )
+                    .presentationDragIndicator(.hidden)
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                    .interactiveDismissDisabled()
+                }
+                .sheet(isPresented: $showCollectionPrompt) {
+                    if let shrine = promptShrine {
+                        StampCollectionPrompt(
+                            shrine: shrine,
+                            onCollect: { collectStamp(for: shrine) },
+                            onDismiss: {
+                                showCollectionPrompt = false
+                                promptShrine = nil
+                            }
+                        )
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.visible)
+                    }
+                }
+                .onAppear {
+                    syncCollectedIds()
+                    if locationService.authorizationStatus == .authorizedWhenInUse
+                        || locationService.authorizationStatus == .authorizedAlways {
+                        locationService.startUpdatingLocation()
+                    }
+                }
+                .onChange(of: locationService.nearbyShrine) { _, newShrine in
+                    if let shrine = newShrine {
+                        promptShrine = shrine
+                        showCollectionPrompt = true
+                    }
+                }
+                .onChange(of: collectedStamps.count) {
+                    syncCollectedIds()
+                }
+                .sensoryFeedback(.selection, trigger: selectedShrine?.id)
+                .sensoryFeedback(.selection, trigger: selectedMapItem)
+        }
+    }
+
+    // MARK: - Map Layer
+
+    private var mapLayer: some View {
+        ZStack {
+            Map(position: $position) {
+                UserAnnotation()
+
+                ForEach(Shrine.samples) { shrine in
+                    Annotation(shrine.name, coordinate: shrine.coordinate, anchor: .bottom) {
+                        shrinePin(for: shrine)
+                    }
+                }
+
+                ForEach(searchService.results, id: \.self) { item in
+                    if let coord = item.placemark.location?.coordinate,
+                       !isDuplicateOfSample(item) {
+                        Annotation(item.name ?? "", coordinate: coord, anchor: .bottom) {
+                            mapItemPin(for: item)
+                        }
+                    }
                 }
             }
-            .onAppear {
-                syncCollectedIds()
-                if locationService.authorizationStatus == .authorizedWhenInUse
-                    || locationService.authorizationStatus == .authorizedAlways {
-                    locationService.startUpdatingLocation()
+            .mapStyle(mapStyleOption.style)
+            .mapControls {
+                MapUserLocationButton()
+                MapCompass()
+                MapScaleView()
+            }
+            .onMapCameraChange(frequency: .onEnd) { context in
+                visibleRegion = context.region
+                searchService.updateRegion(context.region)
+                // Deselect when user pans the map
+                if selectedShrine != nil || selectedMapItem != nil {
+                    withAnimation(.spring(duration: 0.3)) {
+                        selectedShrine = nil
+                        selectedMapItem = nil
+                    }
+                } else {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showSearchAreaButton = true
+                    }
                 }
             }
-            .onChange(of: locationService.nearbyShrine) { _, newShrine in
-                if let shrine = newShrine {
-                    promptShrine = shrine
-                    showCollectionPrompt = true
-                }
-            }
-            .onChange(of: collectedStamps.count) {
-                syncCollectedIds()
+            .ignoresSafeArea()
+
+            // Floating overlays
+            VStack(spacing: 0) {
+                // Top bar: location denied banner + search area
+                topOverlays
+
+                Spacer()
+
+                // Bottom: selected item card + map style button
+                bottomOverlays
             }
         }
     }
 
-    private func syncCollectedIds() {
-        locationService.collectedSlotIds = Set(collectedStamps.map(\.slotId))
+    // MARK: - Top Overlays
+
+    private var topOverlays: some View {
+        VStack(spacing: DS.Spacing.sm) {
+            if locationService.authorizationStatus == .denied {
+                locationDeniedBanner
+            }
+
+            if showSearchAreaButton {
+                searchAreaButton
+            }
+        }
+        .padding(.top, 60)
     }
 
-    private func collectStamp(for shrine: Shrine) {
-        let stamp = CollectedStamp(slotId: shrine.stampSlotId)
-        modelContext.insert(stamp)
-        syncCollectedIds()
+    // MARK: - Bottom Overlays
+
+    private var bottomOverlays: some View {
+        VStack(spacing: DS.Spacing.md) {
+            HStack {
+                Spacer()
+                mapStyleButton
+            }
+            .padding(.horizontal, DS.Spacing.lg)
+
+            if let shrine = selectedShrine {
+                shrineCard(shrine)
+            } else if let mapItem = selectedMapItem {
+                mapItemCard(mapItem)
+            }
+        }
+        .padding(.bottom, 80)
+    }
+
+    // MARK: - Floating Map Style Button
+
+    private var mapStyleButton: some View {
+        Menu {
+            ForEach(MapStyleOption.allCases) { option in
+                Button {
+                    mapStyleOption = option
+                } label: {
+                    Label(option.label, systemImage: option.icon)
+                }
+            }
+        } label: {
+            Image(systemName: mapStyleOption.icon)
+                .font(.body.weight(.medium))
+                .foregroundStyle(.primary)
+                .frame(width: 44, height: 44)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.sm))
+                .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
+        }
     }
 
     // MARK: - Search Area Button
@@ -141,16 +212,16 @@ struct ExploreView: View {
             searchService.search(query: "神社 寺", in: currentRegion)
             withAnimation { showSearchAreaButton = false }
         } label: {
-            HStack(spacing: DS.Spacing.sm) {
+            HStack(spacing: 6) {
                 Image(systemName: "arrow.clockwise")
                     .font(.caption.bold())
                 Text("Search This Area")
                     .font(.subheadline.weight(.medium))
             }
             .padding(.horizontal, DS.Spacing.lg)
-            .padding(.vertical, DS.Spacing.sm)
+            .padding(.vertical, 10)
             .background(.ultraThinMaterial, in: Capsule())
-            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+            .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
         }
         .buttonStyle(.pressable)
         .transition(.scale.combined(with: .opacity))
@@ -171,57 +242,27 @@ struct ExploreView: View {
                 Text("Enable location to collect stamps")
                     .font(.caption.weight(.medium))
                 Spacer()
-                Image(systemName: "arrow.right")
+                Image(systemName: "chevron.right")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
             .padding(DS.Spacing.md)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
             .padding(.horizontal, DS.Spacing.lg)
-            .padding(.top, DS.Spacing.xs)
         }
         .transition(.move(edge: .top).combined(with: .opacity))
     }
 
-    // MARK: - Map
+    // MARK: - Helpers
 
-    private var mapContent: some View {
-        Map(position: $position) {
-            UserAnnotation()
+    private func syncCollectedIds() {
+        locationService.collectedSlotIds = Set(collectedStamps.map(\.slotId))
+    }
 
-            ForEach(Shrine.samples) { shrine in
-                Annotation(shrine.name, coordinate: shrine.coordinate, anchor: .bottom) {
-                    shrinePin(for: shrine)
-                }
-            }
-
-            ForEach(searchService.results, id: \.self) { item in
-                if let coord = item.placemark.location?.coordinate,
-                   !isDuplicateOfSample(item) {
-                    Annotation(item.name ?? "", coordinate: coord, anchor: .bottom) {
-                        mapItemPin(for: item)
-                    }
-                }
-            }
-        }
-        .mapStyle(mapStyleOption.style)
-        .mapControls {
-            MapUserLocationButton()
-            MapCompass()
-        }
-        .onMapCameraChange { context in
-            visibleRegion = context.region
-            searchService.updateRegion(context.region)
-            withAnimation(.easeInOut(duration: 0.2)) {
-                showSearchAreaButton = true
-            }
-        }
-        .onTapGesture {
-            withAnimation(.spring(duration: 0.3)) {
-                selectedShrine = nil
-                selectedMapItem = nil
-            }
-        }
+    private func collectStamp(for shrine: Shrine) {
+        let stamp = CollectedStamp(slotId: shrine.stampSlotId)
+        modelContext.insert(stamp)
+        syncCollectedIds()
     }
 
     private func isDuplicateOfSample(_ item: MKMapItem) -> Bool {
@@ -229,13 +270,49 @@ struct ExploreView: View {
         return Shrine.samples.contains { name.contains($0.name) }
     }
 
+    // MARK: - Selection Handlers
+
+    private func handleSelectMapItem(_ item: MKMapItem) {
+        selectedShrine = nil
+        selectedMapItem = item
+        searchSheetDetent = .height(140)
+
+        if let coord = item.placemark.location?.coordinate {
+            withAnimation(.spring(duration: 0.4)) {
+                position = .region(
+                    MKCoordinateRegion(
+                        center: coord,
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    )
+                )
+            }
+        }
+    }
+
+    private func handleSelectShrine(_ shrine: Shrine) {
+        selectedMapItem = nil
+        selectedShrine = shrine
+        searchSheetDetent = .height(140)
+
+        withAnimation(.spring(duration: 0.4)) {
+            position = .region(
+                MKCoordinateRegion(
+                    center: shrine.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+            )
+        }
+    }
+
+    // MARK: - Shrine Pin
+
     private func shrinePin(for shrine: Shrine) -> some View {
         let isSelected = selectedShrine?.id == shrine.id
         return Button {
             withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
                 selectedMapItem = nil
                 selectedShrine = shrine
-                searchSheetDetent = .height(56)
+                searchSheetDetent = .height(140)
                 position = .region(
                     MKCoordinateRegion(
                         center: shrine.coordinate,
@@ -245,7 +322,6 @@ struct ExploreView: View {
             }
         } label: {
             ZStack {
-                // 選択時の pulse ring
                 if isSelected {
                     Circle()
                         .stroke(Color.vermillion.opacity(0.3), lineWidth: 2)
@@ -272,13 +348,15 @@ struct ExploreView: View {
         .buttonStyle(.plain)
     }
 
+    // MARK: - Map Item Pin
+
     private func mapItemPin(for item: MKMapItem) -> some View {
         let isSelected = selectedMapItem == item
         return Button {
             withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
                 selectedShrine = nil
                 selectedMapItem = item
-                searchSheetDetent = .height(56)
+                searchSheetDetent = .height(140)
             }
         } label: {
             ZStack {
@@ -295,40 +373,6 @@ struct ExploreView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Selection Handlers
-
-    private func handleSelectMapItem(_ item: MKMapItem) {
-        selectedShrine = nil
-        selectedMapItem = item
-        searchSheetDetent = .height(56)
-
-        if let coord = item.placemark.location?.coordinate {
-            withAnimation(.spring(duration: 0.4)) {
-                position = .region(
-                    MKCoordinateRegion(
-                        center: coord,
-                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                    )
-                )
-            }
-        }
-    }
-
-    private func handleSelectShrine(_ shrine: Shrine) {
-        selectedMapItem = nil
-        selectedShrine = shrine
-        searchSheetDetent = .height(56)
-
-        withAnimation(.spring(duration: 0.4)) {
-            position = .region(
-                MKCoordinateRegion(
-                    center: shrine.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                )
-            )
-        }
-    }
-
     // MARK: - Shrine Card
 
     private func shrineCard(_ shrine: Shrine) -> some View {
@@ -337,19 +381,19 @@ struct ExploreView: View {
                 ZStack {
                     Circle()
                         .fill(Color(.label))
-                        .frame(width: 48, height: 48)
+                        .frame(width: 44, height: 44)
                     Text("\u{26E9}")
-                        .font(.title2)
+                        .font(.title3)
                         .foregroundStyle(Color(.systemBackground))
                 }
-                .shadow(color: .black.opacity(0.1), radius: 3, y: 1)
 
-                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(shrine.name)
-                        .font(.headline)
+                        .font(.subheadline.weight(.semibold))
                     Text(shrine.address)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
 
                 Spacer()
@@ -358,11 +402,12 @@ struct ExploreView: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
             }
-            .cardStyle()
+            .padding(DS.Spacing.md)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+            .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
         }
         .buttonStyle(.pressable)
         .padding(.horizontal, DS.Spacing.lg)
-        .padding(.bottom, 72)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
@@ -373,16 +418,15 @@ struct ExploreView: View {
             ZStack {
                 Circle()
                     .fill(Color.vermillion)
-                    .frame(width: 48, height: 48)
+                    .frame(width: 44, height: 44)
                 Image(systemName: "mappin")
-                    .font(.title3)
+                    .font(.body)
                     .foregroundStyle(.white)
             }
-            .shadow(color: Color.vermillion.opacity(0.3), radius: 4, y: 2)
 
-            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(item.name ?? "Unknown")
-                    .font(.headline)
+                    .font(.subheadline.weight(.semibold))
                 if let address = item.placemark.title {
                     Text(address)
                         .font(.caption)
@@ -405,26 +449,11 @@ struct ExploreView: View {
                     .foregroundStyle(Color.vermillion)
             }
         }
-        .cardStyle()
+        .padding(DS.Spacing.md)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
         .padding(.horizontal, DS.Spacing.lg)
-        .padding(.bottom, 72)
         .transition(.move(edge: .bottom).combined(with: .opacity))
-    }
-
-    // MARK: - Map Style Menu
-
-    private var mapStyleMenu: some View {
-        Menu {
-            ForEach(MapStyleOption.allCases) { option in
-                Button {
-                    mapStyleOption = option
-                } label: {
-                    Label(option.label, systemImage: option.icon)
-                }
-            }
-        } label: {
-            Image(systemName: mapStyleOption.icon)
-        }
     }
 }
 
