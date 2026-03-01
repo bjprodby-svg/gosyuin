@@ -17,8 +17,7 @@ struct ExploreView: View {
     @State private var selectedShrine: Shrine?
     @State private var selectedMapItem: MKMapItem?
     @State private var mapStyleOption: MapStyleOption = .standard
-    @State private var searchSheetDetent: PresentationDetent = .height(140)
-    @State private var showSearchSheet = true
+    @State private var showSearchSheet = false
     @State private var showCollectionPrompt = false
     @State private var promptShrine: Shrine?
     @State private var showSearchAreaButton = false
@@ -46,16 +45,17 @@ struct ExploreView: View {
                     ExploreSearchSheet(
                         searchService: searchService,
                         region: currentRegion,
-                        onSelectMapItem: { handleSelectMapItem($0) },
-                        onSelectShrine: { handleSelectShrine($0) }
+                        onSelectMapItem: {
+                            handleSelectMapItem($0)
+                            showSearchSheet = false
+                        },
+                        onSelectShrine: {
+                            handleSelectShrine($0)
+                            showSearchSheet = false
+                        }
                     )
-                    .presentationDetents(
-                        [.height(140), .medium, .large],
-                        selection: $searchSheetDetent
-                    )
-                    .presentationDragIndicator(.hidden)
-                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-                    .interactiveDismissDisabled()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
                 }
                 .sheet(isPresented: $showCollectionPrompt) {
                     if let shrine = promptShrine {
@@ -123,7 +123,6 @@ struct ExploreView: View {
             .onMapCameraChange(frequency: .onEnd) { context in
                 visibleRegion = context.region
                 searchService.updateRegion(context.region)
-                // Deselect when user pans the map
                 if selectedShrine != nil || selectedMapItem != nil {
                     withAnimation(.spring(duration: 0.3)) {
                         selectedShrine = nil
@@ -139,12 +138,8 @@ struct ExploreView: View {
 
             // Floating overlays
             VStack(spacing: 0) {
-                // Top bar: location denied banner + search area
                 topOverlays
-
                 Spacer()
-
-                // Bottom: selected item card + map style button
                 bottomOverlays
             }
         }
@@ -158,11 +153,38 @@ struct ExploreView: View {
                 locationDeniedBanner
             }
 
+            floatingSearchBar
+
             if showSearchAreaButton {
                 searchAreaButton
             }
         }
         .padding(.top, 60)
+    }
+
+    // MARK: - Floating Search Bar
+
+    private var floatingSearchBar: some View {
+        Button {
+            showSearchSheet = true
+        } label: {
+            HStack(spacing: DS.Spacing.md) {
+                Image(systemName: "magnifyingglass")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(.secondary)
+
+                Text("Search shrines & temples")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+            }
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.md)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+            .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
+        }
+        .padding(.horizontal, DS.Spacing.lg)
     }
 
     // MARK: - Bottom Overlays
@@ -181,7 +203,7 @@ struct ExploreView: View {
                 mapItemCard(mapItem)
             }
         }
-        .padding(.bottom, 80)
+        .padding(.bottom, 100)
     }
 
     // MARK: - Floating Map Style Button
@@ -275,7 +297,6 @@ struct ExploreView: View {
     private func handleSelectMapItem(_ item: MKMapItem) {
         selectedShrine = nil
         selectedMapItem = item
-        searchSheetDetent = .height(140)
 
         if let coord = item.placemark.location?.coordinate {
             withAnimation(.spring(duration: 0.4)) {
@@ -292,7 +313,6 @@ struct ExploreView: View {
     private func handleSelectShrine(_ shrine: Shrine) {
         selectedMapItem = nil
         selectedShrine = shrine
-        searchSheetDetent = .height(140)
 
         withAnimation(.spring(duration: 0.4)) {
             position = .region(
@@ -312,7 +332,6 @@ struct ExploreView: View {
             withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
                 selectedMapItem = nil
                 selectedShrine = shrine
-                searchSheetDetent = .height(140)
                 position = .region(
                     MKCoordinateRegion(
                         center: shrine.coordinate,
@@ -356,7 +375,6 @@ struct ExploreView: View {
             withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
                 selectedShrine = nil
                 selectedMapItem = item
-                searchSheetDetent = .height(140)
             }
         } label: {
             ZStack {
