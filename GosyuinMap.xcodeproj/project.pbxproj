@@ -34,6 +34,7 @@
 		089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */; };
 		089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */; };
 		089C16F2293AF1B0007B3F21 /* ExploreSearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */; };
+		089C17A0293AF1B0007B3F21 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C17A1293AF1B0007B3F21 /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineSearchService.swift; sourceTree = "<group>"; };
 		089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSearchSheet.swift; sourceTree = "<group>"; };
+		089C17A1293AF1B0007B3F21 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				089C168B293AF1B0007B3F21 /* Collect */,
 				089C168C293AF1B0007B3F21 /* Learn */,
 				089C16B1293AF1B0007B3F21 /* SplashView.swift */,
+			089C17A1293AF1B0007B3F21 /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -357,6 +360,7 @@
 				089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */,
 				089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */,
 				089C16F2293AF1B0007B3F21 /* ExploreSearchSheet.swift in Sources */,
+				089C17A0293AF1B0007B3F21 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

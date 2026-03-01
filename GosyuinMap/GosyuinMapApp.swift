@@ -3,23 +3,28 @@ import SwiftData
 
 @main
 struct GosyuinMapApp: App {
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @State private var showSplash = true
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                ContentView()
+            if !hasCompletedOnboarding {
+                OnboardingView()
+            } else {
+                ZStack {
+                    ContentView()
 
-                if showSplash {
-                    SplashView()
-                        .transition(.opacity)
-                        .zIndex(1)
+                    if showSplash {
+                        SplashView()
+                            .transition(.opacity)
+                            .zIndex(1)
+                    }
                 }
-            }
-            .task {
-                try? await Task.sleep(for: .seconds(1.5))
-                withAnimation(.easeOut(duration: 0.4)) {
-                    showSplash = false
+                .task {
+                    try? await Task.sleep(for: .seconds(1.5))
+                    withAnimation(.easeOut(duration: 0.4)) {
+                        showSplash = false
+                    }
                 }
             }
         }

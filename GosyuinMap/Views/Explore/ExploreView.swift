@@ -2,7 +2,6 @@ import SwiftUI
 import MapKit
 
 struct ExploreView: View {
-    @State private var locationService = LocationService()
     @State private var searchService = ShrineSearchService()
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(
@@ -48,9 +47,6 @@ struct ExploreView: View {
             }
             .navigationDestination(for: Shrine.self) { shrine in
                 ShrineDetailView(shrine: shrine)
-            }
-            .onAppear {
-                locationService.requestPermission()
             }
             .sensoryFeedback(.selection, trigger: selectedShrine?.id)
             .sensoryFeedback(.selection, trigger: selectedMapItem)
