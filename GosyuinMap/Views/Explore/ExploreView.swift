@@ -1,12 +1,16 @@
 import SwiftUI
+import SwiftData
 import MapKit
 
 struct ExploreView: View {
+    @State private var locationService = LocationService()
     @State private var searchService = ShrineSearchService()
-    @State private var position: MapCameraPosition = .region(
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917),
-            span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+    @State private var position: MapCameraPosition = .userLocation(
+        fallback: .region(
+            MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917),
+                span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+            )
         )
     )
     @State private var visibleRegion: MKCoordinateRegion?
@@ -15,7 +19,12 @@ struct ExploreView: View {
     @State private var mapStyleOption: MapStyleOption = .standard
     @State private var searchSheetDetent: PresentationDetent = .height(56)
     @State private var showSearchSheet = true
+    @State private var showCollectionPrompt = false
+    @State private var promptShrine: Shrine?
     @Namespace private var mapNamespace
+
+    @Query private var collectedStamps: [CollectedStamp]
+    @Environment(\.modelContext) private var modelContext
 
     private var currentRegion: MKCoordinateRegion {
         visibleRegion ?? MKCoordinateRegion(
@@ -69,7 +78,49 @@ struct ExploreView: View {
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                 .interactiveDismissDisabled()
             }
+            .sheet(isPresented: $showCollectionPrompt) {
+                if let shrine = promptShrine {
+                    StampCollectionPrompt(
+                        shrine: shrine,
+                        onCollect: {
+                            collectStamp(for: shrine)
+                        },
+                        onDismiss: {
+                            showCollectionPrompt = false
+                            promptShrine = nil
+                        }
+                    )
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+                }
+            }
+            .onAppear {
+                syncCollectedIds()
+                if locationService.authorizationStatus == .authorizedWhenInUse
+                    || locationService.authorizationStatus == .authorizedAlways {
+                    locationService.startUpdatingLocation()
+                }
+            }
+            .onChange(of: locationService.nearbyShrine) { _, newShrine in
+                if let shrine = newShrine {
+                    promptShrine = shrine
+                    showCollectionPrompt = true
+                }
+            }
+            .onChange(of: collectedStamps.count) {
+                syncCollectedIds()
+            }
         }
+    }
+
+    private func syncCollectedIds() {
+        locationService.collectedSlotIds = Set(collectedStamps.map(\.slotId))
+    }
+
+    private func collectStamp(for shrine: Shrine) {
+        let stamp = CollectedStamp(slotId: shrine.stampSlotId)
+        modelContext.insert(stamp)
+        syncCollectedIds()
     }
 
     // MARK: - Map
