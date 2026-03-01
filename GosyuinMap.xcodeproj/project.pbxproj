@@ -1,0 +1,669 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		089C1677293AF1B0007B3F21 /* GosyuinMapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1676293AF1B0007B3F21 /* GosyuinMapApp.swift */; };
+		089C1679293AF1B0007B3F21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1678293AF1B0007B3F21 /* ContentView.swift */; };
+		089C167B293AF1B0007B3F21 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167A293AF1B0007B3F21 /* ExploreView.swift */; };
+		089C167D293AF1B0007B3F21 /* CollectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167C293AF1B0007B3F21 /* CollectView.swift */; };
+		089C167F293AF1B0007B3F21 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167E293AF1B0007B3F21 /* LearnView.swift */; };
+		089C1681293AF1B0007B3F21 /* Gosyuin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1680293AF1B0007B3F21 /* Gosyuin.swift */; };
+		089C1692293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */; };
+		089C1693293AF1B0007B3F21 /* GlassEffect+Adaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */; };
+		089C1695293AF1B0007B3F21 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1694293AF1B0007B3F21 /* LocationService.swift */; };
+		089C1697293AF1B0007B3F21 /* Shrine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1696293AF1B0007B3F21 /* Shrine.swift */; };
+		089C169B293AF1B0007B3F21 /* CollectedStamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C169A293AF1B0007B3F21 /* CollectedStamp.swift */; };
+		089C169D293AF1B0007B3F21 /* StampDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C169C293AF1B0007B3F21 /* StampDefinition.swift */; };
+		089C16A1293AF1B0007B3F21 /* ShrineDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A0293AF1B0007B3F21 /* ShrineDetailView.swift */; };
+		089C16A3293AF1B0007B3F21 /* StampDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A2293AF1B0007B3F21 /* StampDetailView.swift */; };
+		089C16A5293AF1B0007B3F21 /* LearnListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A4293AF1B0007B3F21 /* LearnListView.swift */; };
+		089C16A7293AF1B0007B3F21 /* LearnDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A6293AF1B0007B3F21 /* LearnDetailView.swift */; };
+		089C16A9293AF1B0007B3F21 /* GuideArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A8293AF1B0007B3F21 /* GuideArticle.swift */; };
+		089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089C1682293AF1B0007B3F21 /* Assets.xcassets */; };
+		089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */; };
+		089C16C0293AF1B0007B3F21 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B0293AF1B0007B3F21 /* Color+Theme.swift */; };
+		089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B1293AF1B0007B3F21 /* SplashView.swift */; };
+		089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B2293AF1B0007B3F21 /* WorshipSessionManager.swift */; };
+		089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */; };
+		089C16F2293AF1B0007B3F21 /* SearchSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F3293AF1B0007B3F21 /* SearchSheetView.swift */; };
+		089C16F4293AF1B0007B3F21 /* GosyuinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */; };
+		089C16F6293AF1B0007B3F21 /* GosyuinFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */; };
+		089C16F8293AF1B0007B3F21 /* GosyuinRecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */; };
+		089C16C3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift */; };
+		089C16C4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift */; };
+		089C16C5293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */; };
+		089C16C6293AF1B0007B3F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089C16B6293AF1B0007B3F21 /* Assets.xcassets */; };
+		089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		089C16D8293AF1B0007B3F21 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1665293AF1AF007B3F21 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 089C16D3293AF1B0007B3F21;
+			remoteInfo = GosyuinMapWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		089C16D7293AF1B0007B3F21 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		089C1671293AF1B0007B3F21 /* GosyuinMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GosyuinMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		089C1676293AF1B0007B3F21 /* GosyuinMapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinMapApp.swift; sourceTree = "<group>"; };
+		089C1678293AF1B0007B3F21 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		089C167A293AF1B0007B3F21 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
+		089C167C293AF1B0007B3F21 /* CollectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectView.swift; sourceTree = "<group>"; };
+		089C167E293AF1B0007B3F21 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
+		089C1680293AF1B0007B3F21 /* Gosyuin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gosyuin.swift; sourceTree = "<group>"; };
+		089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinActivityAttributes.swift; sourceTree = "<group>"; };
+		089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlassEffect+Adaptive.swift"; sourceTree = "<group>"; };
+		089C1682293AF1B0007B3F21 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		089C1684293AF1B0007B3F21 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		089C1686293AF1B0007B3F21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		089C1694293AF1B0007B3F21 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		089C1696293AF1B0007B3F21 /* Shrine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shrine.swift; sourceTree = "<group>"; };
+		089C169A293AF1B0007B3F21 /* CollectedStamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedStamp.swift; sourceTree = "<group>"; };
+		089C169C293AF1B0007B3F21 /* StampDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StampDefinition.swift; sourceTree = "<group>"; };
+		089C16A0293AF1B0007B3F21 /* ShrineDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineDetailView.swift; sourceTree = "<group>"; };
+		089C16A2293AF1B0007B3F21 /* StampDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StampDetailView.swift; sourceTree = "<group>"; };
+		089C16A4293AF1B0007B3F21 /* LearnListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnListView.swift; sourceTree = "<group>"; };
+		089C16A6293AF1B0007B3F21 /* LearnDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnDetailView.swift; sourceTree = "<group>"; };
+		089C16A8293AF1B0007B3F21 /* GuideArticle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideArticle.swift; sourceTree = "<group>"; };
+		089C16B0293AF1B0007B3F21 /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
+		089C16B1293AF1B0007B3F21 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		089C16B2293AF1B0007B3F21 /* WorshipSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorshipSessionManager.swift; sourceTree = "<group>"; };
+		089C16B3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinMapWidgetBundle.swift; sourceTree = "<group>"; };
+		089C16B4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinMapWidgetLiveActivity.swift; sourceTree = "<group>"; };
+		089C16B6293AF1B0007B3F21 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		089C16B7293AF1B0007B3F21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GosyuinMapWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineSearchService.swift; sourceTree = "<group>"; };
+		089C16F3293AF1B0007B3F21 /* SearchSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheetView.swift; sourceTree = "<group>"; };
+		089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinListView.swift; sourceTree = "<group>"; };
+		089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinFormView.swift; sourceTree = "<group>"; };
+		089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinRecordDetailView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		089C166D293AF1B0007B3F21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		089C16D1293AF1B0007B3F21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C1666293AF1AF007B3F21 = {
+			isa = PBXGroup;
+			children = (
+				089C1687293AF1B0007B3F21 /* GosyuinMap */,
+				089C16B5293AF1B0007B3F21 /* GosyuinMapWidget */,
+				089C1670293AF1B0007B3F21 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		089C1670293AF1B0007B3F21 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				089C1671293AF1B0007B3F21 /* GosyuinMap.app */,
+				089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		089C1687293AF1B0007B3F21 /* GosyuinMap */ = {
+			isa = PBXGroup;
+			children = (
+				089C1676293AF1B0007B3F21 /* GosyuinMapApp.swift */,
+				089C1678293AF1B0007B3F21 /* ContentView.swift */,
+				089C1689293AF1B0007B3F21 /* Views */,
+				089C168D293AF1B0007B3F21 /* Models */,
+				089C1698293AF1B0007B3F21 /* Services */,
+				089C168F293AF1B0007B3F21 /* Extensions */,
+				089C1682293AF1B0007B3F21 /* Assets.xcassets */,
+				089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */,
+				089C168E293AF1B0007B3F21 /* Preview Content */,
+				089C1686293AF1B0007B3F21 /* Info.plist */,
+			);
+			path = GosyuinMap;
+			sourceTree = "<group>";
+		};
+		089C1689293AF1B0007B3F21 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				089C168A293AF1B0007B3F21 /* Explore */,
+				089C168B293AF1B0007B3F21 /* Collect */,
+				089C168C293AF1B0007B3F21 /* Learn */,
+				089C16B1293AF1B0007B3F21 /* SplashView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		089C168A293AF1B0007B3F21 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				089C167A293AF1B0007B3F21 /* ExploreView.swift */,
+				089C16A0293AF1B0007B3F21 /* ShrineDetailView.swift */,
+				089C16F3293AF1B0007B3F21 /* SearchSheetView.swift */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		089C168B293AF1B0007B3F21 /* Collect */ = {
+			isa = PBXGroup;
+			children = (
+				089C167C293AF1B0007B3F21 /* CollectView.swift */,
+				089C16A2293AF1B0007B3F21 /* StampDetailView.swift */,
+				089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */,
+				089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */,
+				089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */,
+			);
+			path = Collect;
+			sourceTree = "<group>";
+		};
+		089C168C293AF1B0007B3F21 /* Learn */ = {
+			isa = PBXGroup;
+			children = (
+				089C167E293AF1B0007B3F21 /* LearnView.swift */,
+				089C16A4293AF1B0007B3F21 /* LearnListView.swift */,
+				089C16A6293AF1B0007B3F21 /* LearnDetailView.swift */,
+			);
+			path = Learn;
+			sourceTree = "<group>";
+		};
+		089C168D293AF1B0007B3F21 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				089C1680293AF1B0007B3F21 /* Gosyuin.swift */,
+				089C1696293AF1B0007B3F21 /* Shrine.swift */,
+				089C169A293AF1B0007B3F21 /* CollectedStamp.swift */,
+				089C169C293AF1B0007B3F21 /* StampDefinition.swift */,
+				089C16A8293AF1B0007B3F21 /* GuideArticle.swift */,
+				089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		089C168E293AF1B0007B3F21 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				089C1684293AF1B0007B3F21 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		089C1698293AF1B0007B3F21 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				089C1694293AF1B0007B3F21 /* LocationService.swift */,
+				089C16B2293AF1B0007B3F21 /* WorshipSessionManager.swift */,
+				089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		089C168F293AF1B0007B3F21 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */,
+				089C16B0293AF1B0007B3F21 /* Color+Theme.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		089C16B5293AF1B0007B3F21 /* GosyuinMapWidget */ = {
+			isa = PBXGroup;
+			children = (
+				089C16B3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift */,
+				089C16B4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift */,
+				089C16B6293AF1B0007B3F21 /* Assets.xcassets */,
+				089C16B7293AF1B0007B3F21 /* Info.plist */,
+			);
+			path = GosyuinMapWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		089C166F293AF1B0007B3F21 /* GosyuinMap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 089C1672293AF1B0007B3F21 /* Build configuration list for PBXNativeTarget "GosyuinMap" */;
+			buildPhases = (
+				089C166C293AF1B0007B3F21 /* Sources */,
+				089C166D293AF1B0007B3F21 /* Frameworks */,
+				089C166E293AF1B0007B3F21 /* Resources */,
+				089C16D7293AF1B0007B3F21 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				089C16D9293AF1B0007B3F21 /* PBXTargetDependency */,
+			);
+			name = GosyuinMap;
+			productName = GosyuinMap;
+			productReference = 089C1671293AF1B0007B3F21 /* GosyuinMap.app */;
+			productType = "com.apple.product-type.application";
+		};
+		089C16D3293AF1B0007B3F21 /* GosyuinMapWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 089C16D6293AF1B0007B3F21 /* Build configuration list for PBXNativeTarget "GosyuinMapWidgetExtension" */;
+			buildPhases = (
+				089C16D0293AF1B0007B3F21 /* Sources */,
+				089C16D1293AF1B0007B3F21 /* Frameworks */,
+				089C16D2293AF1B0007B3F21 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GosyuinMapWidgetExtension;
+			productName = GosyuinMapWidgetExtension;
+			productReference = 089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1665293AF1AF007B3F21 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					089C166F293AF1B0007B3F21 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					089C16D3293AF1B0007B3F21 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 089C1668293AF1AF007B3F21 /* Build configuration list for PBXProject "GosyuinMap" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ja,
+			);
+			mainGroup = 089C1666293AF1AF007B3F21;
+			productRefGroup = 089C1670293AF1B0007B3F21 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				089C166F293AF1B0007B3F21 /* GosyuinMap */,
+				089C16D3293AF1B0007B3F21 /* GosyuinMapWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		089C166E293AF1B0007B3F21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */,
+				089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		089C16D2293AF1B0007B3F21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				089C16C6293AF1B0007B3F21 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		089C166C293AF1B0007B3F21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				089C1677293AF1B0007B3F21 /* GosyuinMapApp.swift in Sources */,
+				089C1679293AF1B0007B3F21 /* ContentView.swift in Sources */,
+				089C167B293AF1B0007B3F21 /* ExploreView.swift in Sources */,
+				089C167D293AF1B0007B3F21 /* CollectView.swift in Sources */,
+				089C167F293AF1B0007B3F21 /* LearnView.swift in Sources */,
+				089C1681293AF1B0007B3F21 /* Gosyuin.swift in Sources */,
+				089C1692293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */,
+				089C1693293AF1B0007B3F21 /* GlassEffect+Adaptive.swift in Sources */,
+				089C1695293AF1B0007B3F21 /* LocationService.swift in Sources */,
+				089C1697293AF1B0007B3F21 /* Shrine.swift in Sources */,
+				089C169B293AF1B0007B3F21 /* CollectedStamp.swift in Sources */,
+				089C169D293AF1B0007B3F21 /* StampDefinition.swift in Sources */,
+				089C16A1293AF1B0007B3F21 /* ShrineDetailView.swift in Sources */,
+				089C16A3293AF1B0007B3F21 /* StampDetailView.swift in Sources */,
+				089C16A5293AF1B0007B3F21 /* LearnListView.swift in Sources */,
+				089C16A7293AF1B0007B3F21 /* LearnDetailView.swift in Sources */,
+				089C16A9293AF1B0007B3F21 /* GuideArticle.swift in Sources */,
+				089C16C0293AF1B0007B3F21 /* Color+Theme.swift in Sources */,
+				089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */,
+				089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */,
+				089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */,
+				089C16F2293AF1B0007B3F21 /* SearchSheetView.swift in Sources */,
+				089C16F4293AF1B0007B3F21 /* GosyuinListView.swift in Sources */,
+				089C16F6293AF1B0007B3F21 /* GosyuinFormView.swift in Sources */,
+				089C16F8293AF1B0007B3F21 /* GosyuinRecordDetailView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		089C16D0293AF1B0007B3F21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				089C16C3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift in Sources */,
+				089C16C4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift in Sources */,
+				089C16C5293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		089C16D9293AF1B0007B3F21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 089C16D3293AF1B0007B3F21 /* GosyuinMapWidgetExtension */;
+			targetProxy = 089C16D8293AF1B0007B3F21 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		089C1669293AF1AF007B3F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ACCESSIBILITY_VALUES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		089C166A293AF1AF007B3F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ACCESSIBILITY_VALUES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		089C1673293AF1B0007B3F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GosyuinMap/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GosyuinMap/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "御朱印マップで現在地周辺の神社仏閣を表示するために位置情報を使用します。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bjprodby.gosyuinmap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		089C1674293AF1B0007B3F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GosyuinMap/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GosyuinMap/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "御朱印マップで現在地周辺の神社仏閣を表示するために位置情報を使用します。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bjprodby.gosyuinmap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		089C16D4293AF1B0007B3F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GosyuinMapWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GosyuinMapWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bjprodby.gosyuinmap.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		089C16D5293AF1B0007B3F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GosyuinMapWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GosyuinMapWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bjprodby.gosyuinmap.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		089C1668293AF1AF007B3F21 /* Build configuration list for PBXProject "GosyuinMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				089C1669293AF1AF007B3F21 /* Debug */,
+				089C166A293AF1AF007B3F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		089C1672293AF1B0007B3F21 /* Build configuration list for PBXNativeTarget "GosyuinMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				089C1673293AF1B0007B3F21 /* Debug */,
+				089C1674293AF1B0007B3F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		089C16D6293AF1B0007B3F21 /* Build configuration list for PBXNativeTarget "GosyuinMapWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				089C16D4293AF1B0007B3F21 /* Debug */,
+				089C16D5293AF1B0007B3F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 089C1665293AF1AF007B3F21 /* Project object */;
+}
