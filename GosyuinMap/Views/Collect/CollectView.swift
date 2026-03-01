@@ -53,7 +53,7 @@ struct CollectView: View {
             .onAppear(perform: seedSampleDataIfNeeded)
             #endif
         }
-        .sensoryFeedback(.impact(.medium), trigger: collectedStamps.count)
+        .sensoryFeedback(.impact(weight: .medium), trigger: collectedStamps.count)
     }
 
     // MARK: - Header
@@ -83,7 +83,7 @@ struct CollectView: View {
                 if collectedStamps.count == StampDefinition.all.count {
                     Label("Complete!", systemImage: "star.fill")
                         .font(.caption.weight(.bold))
-                        .foregroundStyle(.vermillion)
+                        .foregroundStyle(Color.vermillion)
                 }
             }
         }

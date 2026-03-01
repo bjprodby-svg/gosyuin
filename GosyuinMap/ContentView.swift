@@ -41,7 +41,7 @@ struct ContentView: View {
                 }
             }
         }
-        .tint(.vermillion)
+        .tint(Color.vermillion)
     }
 }
 

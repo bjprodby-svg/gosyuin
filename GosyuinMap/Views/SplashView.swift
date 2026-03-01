@@ -28,10 +28,10 @@ struct SplashView: View {
                 VStack(spacing: DS.Spacing.xs) {
                     Text("GosyuinMap")
                         .font(.title.bold())
-                        .foregroundStyle(.vermillion)
+                        .foregroundStyle(Color.vermillion)
                     Text("御朱印マップ")
                         .font(.subheadline)
-                        .foregroundStyle(.bodyText)
+                        .foregroundStyle(Color.bodyText)
                 }
                 .opacity(opacity)
             }

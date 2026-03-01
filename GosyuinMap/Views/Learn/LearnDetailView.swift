@@ -175,7 +175,7 @@ struct LearnDetailView: View {
             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.bodyText)
+                    .foregroundStyle(Color.bodyText)
                 Text(text)
                     .font(.caption)
                     .foregroundStyle(.secondary)

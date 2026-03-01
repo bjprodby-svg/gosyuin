@@ -117,7 +117,7 @@ struct ExploreSearchSheet: View {
                         HStack(spacing: 6) {
                             Image(systemName: icon)
                                 .font(.caption)
-                                .foregroundStyle(.vermillion)
+                                .foregroundStyle(Color.vermillion)
                             Text(name)
                                 .font(.subheadline.weight(.medium))
                         }
@@ -194,7 +194,7 @@ struct ExploreSearchSheet: View {
             if collectedIds.contains(shrine.stampSlotId) {
                 Image(systemName: "checkmark.seal.fill")
                     .font(.caption)
-                    .foregroundStyle(.vermillion)
+                    .foregroundStyle(Color.vermillion)
             }
 
             Image(systemName: "chevron.right")
@@ -216,7 +216,7 @@ struct ExploreSearchSheet: View {
                 HStack(spacing: DS.Spacing.md) {
                     Image(systemName: "magnifyingglass")
                         .font(.caption)
-                        .foregroundStyle(.vermillion.opacity(0.6))
+                        .foregroundStyle(Color.vermillion.opacity(0.6))
                         .frame(width: 24)
 
                     VStack(alignment: .leading, spacing: 2) {
@@ -250,7 +250,7 @@ struct ExploreSearchSheet: View {
                             .frame(width: 40, height: 40)
                         Image(systemName: "mappin.circle.fill")
                             .font(.body)
-                            .foregroundStyle(.vermillion)
+                            .foregroundStyle(Color.vermillion)
                     }
 
                     VStack(alignment: .leading, spacing: 2) {
@@ -271,7 +271,7 @@ struct ExploreSearchSheet: View {
                        collectedIds.contains(shrine.stampSlotId) {
                         Image(systemName: "checkmark.seal.fill")
                             .font(.caption)
-                            .foregroundStyle(.vermillion)
+                            .foregroundStyle(Color.vermillion)
                     }
                 }
             }
@@ -292,7 +292,7 @@ struct ExploreSearchSheet: View {
             Spacer()
             ProgressView()
                 .controlSize(.regular)
-                .tint(.vermillion)
+                .tint(Color.vermillion)
             Text("Searching...")
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -306,7 +306,7 @@ struct ExploreSearchSheet: View {
             Spacer()
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 40))
-                .foregroundStyle(.placeholderIcon)
+                .foregroundStyle(Color.placeholderIcon)
             Text("No Results")
                 .font(.headline)
                 .foregroundStyle(.secondary)

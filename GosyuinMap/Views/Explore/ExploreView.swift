@@ -292,7 +292,7 @@ struct ExploreView: View {
             } label: {
                 Image(systemName: "arrow.triangle.turn.up.right.circle.fill")
                     .font(.title2)
-                    .foregroundStyle(.vermillion)
+                    .foregroundStyle(Color.vermillion)
             }
         }
         .cardStyle()

@@ -91,7 +91,7 @@ struct ShrineDetailView: View {
 
             Text(shrine.description)
                 .font(.body)
-                .foregroundStyle(.bodyText)
+                .foregroundStyle(Color.bodyText)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -160,7 +160,7 @@ struct ShrineDetailView: View {
 
             Text(step.labelEn)
                 .font(.caption2.weight(isCurrent ? .bold : .regular))
-                .foregroundStyle(isCurrent ? .vermillion : .secondary)
+                .foregroundStyle(isCurrent ? Color.vermillion : .secondary)
         }
     }
 
@@ -183,7 +183,7 @@ struct ShrineDetailView: View {
                     .vermillionButtonStyle()
             }
             .buttonStyle(.pressable)
-            .sensoryFeedback(.impact(.medium), trigger: worshipManager.isActive)
+            .sensoryFeedback(.impact(weight: .medium), trigger: worshipManager.isActive)
         }
     }
 
@@ -195,7 +195,7 @@ struct ShrineDetailView: View {
         } label: {
             HStack {
                 Image(systemName: "book.fill")
-                    .foregroundStyle(.vermillion)
+                    .foregroundStyle(Color.vermillion)
                 Text("Shrine Etiquette Guide")
                     .foregroundStyle(.primary)
                 Spacer()

@@ -1,7 +1,8 @@
-import MapKit
+@preconcurrency import MapKit
 
+@MainActor
 @Observable
-final class ShrineSearchService: NSObject, MKLocalSearchCompleterDelegate {
+final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCompleterDelegate {
 
     // MARK: - Published State
 
@@ -37,14 +38,19 @@ final class ShrineSearchService: NSObject, MKLocalSearchCompleterDelegate {
 
     // MARK: - Completer Delegate
 
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        completions = completer.results
-        isCompleting = false
+    nonisolated func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        let newResults = completer.results
+        Task { @MainActor [weak self] in
+            self?.completions = newResults
+            self?.isCompleting = false
+        }
     }
 
-    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        completions = []
-        isCompleting = false
+    nonisolated func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        Task { @MainActor [weak self] in
+            self?.completions = []
+            self?.isCompleting = false
+        }
     }
 
     // MARK: - Region
@@ -61,22 +67,21 @@ final class ShrineSearchService: NSObject, MKLocalSearchCompleterDelegate {
         isSearching = true
 
         searchTask = Task {
-            defer { isSearching = false }
-
-            let request = MKLocalSearch.Request(completion)
+            let request = MKLocalSearch.Request(completion: completion)
             request.resultTypes = .pointOfInterest
 
             do {
                 let search = MKLocalSearch(request: request)
                 let response = try await search.start()
                 if !Task.isCancelled {
-                    results = response.mapItems
+                    self.results = response.mapItems
                 }
             } catch {
                 if !Task.isCancelled {
-                    results = []
+                    self.results = []
                 }
             }
+            self.isSearching = false
         }
     }
 
@@ -92,8 +97,6 @@ final class ShrineSearchService: NSObject, MKLocalSearchCompleterDelegate {
         isSearching = true
 
         searchTask = Task {
-            defer { isSearching = false }
-
             let request = MKLocalSearch.Request()
             request.naturalLanguageQuery = query
             request.region = region
@@ -103,13 +106,14 @@ final class ShrineSearchService: NSObject, MKLocalSearchCompleterDelegate {
                 let search = MKLocalSearch(request: request)
                 let response = try await search.start()
                 if !Task.isCancelled {
-                    results = response.mapItems
+                    self.results = response.mapItems
                 }
             } catch {
                 if !Task.isCancelled {
-                    results = []
+                    self.results = []
                 }
             }
+            self.isSearching = false
         }
     }
 

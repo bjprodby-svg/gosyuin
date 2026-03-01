@@ -34,7 +34,7 @@ struct GosyuinListView: View {
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.title3)
-                            .foregroundStyle(.vermillion)
+                            .foregroundStyle(Color.vermillion)
                     }
                 }
             }
@@ -61,13 +61,13 @@ struct GosyuinListView: View {
 
                 Image(systemName: "seal")
                     .font(.system(size: 40))
-                    .foregroundStyle(.vermillion.opacity(0.4))
+                    .foregroundStyle(Color.vermillion.opacity(0.4))
             }
 
             VStack(spacing: DS.Spacing.sm) {
                 Text("No Records Yet")
                     .font(.title3.weight(.semibold))
-                    .foregroundStyle(.bodyText)
+                    .foregroundStyle(Color.bodyText)
 
                 Text("Tap + to record your first gosyuin")
                     .font(.subheadline)
@@ -119,7 +119,7 @@ struct GosyuinListView: View {
             .onDelete(perform: deleteGosyuins)
         }
         .listStyle(.plain)
-        .sensoryFeedback(.impact(.medium), trigger: filteredGosyuins.count)
+        .sensoryFeedback(.impact(weight: .medium), trigger: filteredGosyuins.count)
     }
 
     private func deleteGosyuins(at offsets: IndexSet) {
@@ -142,7 +142,7 @@ private struct GosyuinRow: View {
                     .frame(width: 48, height: 48)
                 Image(systemName: "seal.fill")
                     .font(.title3)
-                    .foregroundStyle(.vermillion)
+                    .foregroundStyle(Color.vermillion)
             }
 
             VStack(alignment: .leading, spacing: DS.Spacing.xs) {

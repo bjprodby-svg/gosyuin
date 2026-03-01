@@ -35,7 +35,7 @@ struct GosyuinRecordDetailView: View {
                 Button("Edit") {
                     showingEditSheet = true
                 }
-                .foregroundStyle(.vermillion)
+                .foregroundStyle(Color.vermillion)
             }
         }
         .sheet(isPresented: $showingEditSheet) {
@@ -74,7 +74,7 @@ struct GosyuinRecordDetailView: View {
 
                 Image(systemName: "seal.fill")
                     .font(.system(size: 36))
-                    .foregroundStyle(.vermillion)
+                    .foregroundStyle(Color.vermillion)
             }
 
             Text(gosyuin.name)
@@ -109,7 +109,7 @@ struct GosyuinRecordDetailView: View {
         HStack(spacing: DS.Spacing.md) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundStyle(.vermillion)
+                .foregroundStyle(Color.vermillion)
                 .frame(width: 28)
             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text(label)

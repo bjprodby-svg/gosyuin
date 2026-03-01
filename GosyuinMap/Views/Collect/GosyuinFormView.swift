@@ -36,14 +36,14 @@ struct GosyuinFormView: View {
                 Section {
                     HStack(spacing: DS.Spacing.md) {
                         Image(systemName: "seal.fill")
-                            .foregroundStyle(.vermillion)
+                            .foregroundStyle(Color.vermillion)
                             .frame(width: 20)
                         TextField("Gosyuin Name", text: $name)
                             .focused($focusedField, equals: .name)
                     }
                     HStack(spacing: DS.Spacing.md) {
                         Image(systemName: "building.columns")
-                            .foregroundStyle(.vermillion)
+                            .foregroundStyle(Color.vermillion)
                             .frame(width: 20)
                         TextField("Temple / Shrine Name", text: $templeName)
                             .focused($focusedField, equals: .temple)
@@ -72,7 +72,7 @@ struct GosyuinFormView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") { save() }
                         .fontWeight(.bold)
-                        .foregroundStyle(isValid ? .vermillion : .secondary)
+                        .foregroundStyle(isValid ? Color.vermillion : .secondary)
                         .disabled(!isValid)
                 }
             }

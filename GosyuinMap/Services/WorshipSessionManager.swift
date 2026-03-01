@@ -2,6 +2,7 @@ import ActivityKit
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class WorshipSessionManager {
     private(set) var currentActivity: Activity<GosyuinActivityAttributes>?
@@ -52,9 +53,10 @@ final class WorshipSessionManager {
             startDate: startDate
         )
 
+        let activity = currentActivity
         Task {
             let content = ActivityContent(state: finalState, staleDate: nil)
-            await currentActivity?.end(content, dismissalPolicy: .after(.now + 30))
+            await activity?.end(content, dismissalPolicy: .after(.now + 30))
         }
 
         resetState()
@@ -69,9 +71,10 @@ final class WorshipSessionManager {
             startDate: startDate
         )
 
+        let activity = currentActivity
         Task {
             let content = ActivityContent(state: state, staleDate: nil)
-            await currentActivity?.end(content, dismissalPolicy: .immediate)
+            await activity?.end(content, dismissalPolicy: .immediate)
         }
 
         resetState()
@@ -85,9 +88,10 @@ final class WorshipSessionManager {
             startDate: startDate
         )
 
+        let activity = currentActivity
         Task {
             let content = ActivityContent(state: state, staleDate: nil)
-            await currentActivity?.update(content)
+            await activity?.update(content)
         }
     }
 

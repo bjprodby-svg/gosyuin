@@ -143,7 +143,7 @@ struct LearnView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Customs may vary by shrine")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.bodyText)
+                    .foregroundStyle(Color.bodyText)
                 Text("Izumo Taisha uses two bows and four claps. Ise Jingu has its own unique ritual. Check each shrine's customs before visiting.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -198,7 +198,7 @@ struct GuideSection: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.headline)
-                    .foregroundStyle(.bodyText)
+                    .foregroundStyle(Color.bodyText)
                 if let subtitle {
                     Text(subtitle)
                         .font(.caption)
@@ -243,7 +243,7 @@ struct StepRow: View {
                         .background(accentColor, in: Circle())
                     Text(step.title)
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.bodyText)
+                        .foregroundStyle(Color.bodyText)
                 }
                 Text(step.description)
                     .font(.caption)
