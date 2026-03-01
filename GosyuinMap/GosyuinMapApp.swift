@@ -4,13 +4,11 @@ import SwiftData
 @main
 struct GosyuinMapApp: App {
     @State private var showSplash = true
-    @State private var worshipManager = WorshipSessionManager()
 
     var body: some Scene {
         WindowGroup {
             ZStack {
                 ContentView()
-                    .environment(worshipManager)
 
                 if showSplash {
                     SplashView()
@@ -25,6 +23,6 @@ struct GosyuinMapApp: App {
                 }
             }
         }
-        .modelContainer(for: [Gosyuin.self, CollectedStamp.self])
+        .modelContainer(for: [CollectedStamp.self])
     }
 }

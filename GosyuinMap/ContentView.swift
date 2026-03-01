@@ -23,15 +23,6 @@ struct ContentView: View {
                 }
             }
             Tab {
-                GosyuinListView()
-            } label: {
-                Label {
-                    Text("Records")
-                } icon: {
-                    Image(systemName: "book.closed.fill")
-                }
-            }
-            Tab {
                 LearnListView()
             } label: {
                 Label {
@@ -47,5 +38,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [Gosyuin.self, CollectedStamp.self], inMemory: true)
+        .modelContainer(for: [CollectedStamp.self], inMemory: true)
 }

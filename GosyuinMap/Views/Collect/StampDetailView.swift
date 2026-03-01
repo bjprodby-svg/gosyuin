@@ -169,5 +169,5 @@ struct StampDetailView: View {
     NavigationStack {
         StampDetailView(stamp: StampDefinition.all[0])
     }
-    .modelContainer(for: [Gosyuin.self, CollectedStamp.self], inMemory: true)
+    .modelContainer(for: [CollectedStamp.self], inMemory: true)
 }

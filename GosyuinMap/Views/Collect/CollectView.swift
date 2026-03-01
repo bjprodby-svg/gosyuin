@@ -169,5 +169,5 @@ private struct UncollectedStampCard: View {
 
 #Preview {
     CollectView()
-        .modelContainer(for: [Gosyuin.self, CollectedStamp.self], inMemory: true)
+        .modelContainer(for: [CollectedStamp.self], inMemory: true)
 }

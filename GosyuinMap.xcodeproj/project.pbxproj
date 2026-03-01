@@ -11,8 +11,7 @@
 		089C1679293AF1B0007B3F21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1678293AF1B0007B3F21 /* ContentView.swift */; };
 		089C167B293AF1B0007B3F21 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167A293AF1B0007B3F21 /* ExploreView.swift */; };
 		089C167D293AF1B0007B3F21 /* CollectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167C293AF1B0007B3F21 /* CollectView.swift */; };
-		089C167F293AF1B0007B3F21 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167E293AF1B0007B3F21 /* LearnView.swift */; };
-		089C1681293AF1B0007B3F21 /* Gosyuin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1680293AF1B0007B3F21 /* Gosyuin.swift */; };
+		089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089C1682293AF1B0007B3F21 /* Assets.xcassets */; };
 		089C1692293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */; };
 		089C1693293AF1B0007B3F21 /* GlassEffect+Adaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */; };
 		089C1695293AF1B0007B3F21 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1694293AF1B0007B3F21 /* LocationService.swift */; };
@@ -24,21 +23,17 @@
 		089C16A5293AF1B0007B3F21 /* LearnListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A4293AF1B0007B3F21 /* LearnListView.swift */; };
 		089C16A7293AF1B0007B3F21 /* LearnDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A6293AF1B0007B3F21 /* LearnDetailView.swift */; };
 		089C16A9293AF1B0007B3F21 /* GuideArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16A8293AF1B0007B3F21 /* GuideArticle.swift */; };
-		089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089C1682293AF1B0007B3F21 /* Assets.xcassets */; };
-		089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */; };
 		089C16C0293AF1B0007B3F21 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B0293AF1B0007B3F21 /* Color+Theme.swift */; };
 		089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B1293AF1B0007B3F21 /* SplashView.swift */; };
 		089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B2293AF1B0007B3F21 /* WorshipSessionManager.swift */; };
-		089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */; };
-		089C16F2293AF1B0007B3F21 /* ExploreSearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */; };
-		089C16F4293AF1B0007B3F21 /* GosyuinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */; };
-		089C16F6293AF1B0007B3F21 /* GosyuinFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */; };
-		089C16F8293AF1B0007B3F21 /* GosyuinRecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */; };
 		089C16C3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B3293AF1B0007B3F21 /* GosyuinMapWidgetBundle.swift */; };
 		089C16C4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B4293AF1B0007B3F21 /* GosyuinMapWidgetLiveActivity.swift */; };
 		089C16C5293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */; };
 		089C16C6293AF1B0007B3F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089C16B6293AF1B0007B3F21 /* Assets.xcassets */; };
-		089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */; };
+		089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */; };
+		089C16F2293AF1B0007B3F21 /* ExploreSearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,15 +47,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		089C16D7293AF1B0007B3F21 /* Embed App Extensions */ = {
+		089C16D7293AF1B0007B3F21 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed App Extensions */,
+				089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -71,13 +66,11 @@
 		089C1678293AF1B0007B3F21 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		089C167A293AF1B0007B3F21 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		089C167C293AF1B0007B3F21 /* CollectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectView.swift; sourceTree = "<group>"; };
-		089C167E293AF1B0007B3F21 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
-		089C1680293AF1B0007B3F21 /* Gosyuin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gosyuin.swift; sourceTree = "<group>"; };
-		089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinActivityAttributes.swift; sourceTree = "<group>"; };
-		089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlassEffect+Adaptive.swift"; sourceTree = "<group>"; };
 		089C1682293AF1B0007B3F21 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		089C1684293AF1B0007B3F21 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		089C1686293AF1B0007B3F21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinActivityAttributes.swift; sourceTree = "<group>"; };
+		089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlassEffect+Adaptive.swift"; sourceTree = "<group>"; };
 		089C1694293AF1B0007B3F21 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		089C1696293AF1B0007B3F21 /* Shrine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shrine.swift; sourceTree = "<group>"; };
 		089C169A293AF1B0007B3F21 /* CollectedStamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedStamp.swift; sourceTree = "<group>"; };
@@ -98,9 +91,6 @@
 		089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineSearchService.swift; sourceTree = "<group>"; };
 		089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSearchSheet.swift; sourceTree = "<group>"; };
-		089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinListView.swift; sourceTree = "<group>"; };
-		089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinFormView.swift; sourceTree = "<group>"; };
-		089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinRecordDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,9 +172,6 @@
 			children = (
 				089C167C293AF1B0007B3F21 /* CollectView.swift */,
 				089C16A2293AF1B0007B3F21 /* StampDetailView.swift */,
-				089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */,
-				089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */,
-				089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */,
 			);
 			path = Collect;
 			sourceTree = "<group>";
@@ -192,7 +179,6 @@
 		089C168C293AF1B0007B3F21 /* Learn */ = {
 			isa = PBXGroup;
 			children = (
-				089C167E293AF1B0007B3F21 /* LearnView.swift */,
 				089C16A4293AF1B0007B3F21 /* LearnListView.swift */,
 				089C16A6293AF1B0007B3F21 /* LearnDetailView.swift */,
 			);
@@ -202,7 +188,6 @@
 		089C168D293AF1B0007B3F21 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				089C1680293AF1B0007B3F21 /* Gosyuin.swift */,
 				089C1696293AF1B0007B3F21 /* Shrine.swift */,
 				089C169A293AF1B0007B3F21 /* CollectedStamp.swift */,
 				089C169C293AF1B0007B3F21 /* StampDefinition.swift */,
@@ -220,6 +205,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		089C168F293AF1B0007B3F21 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */,
+				089C16B0293AF1B0007B3F21 /* Color+Theme.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		089C1698293AF1B0007B3F21 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -228,15 +222,6 @@
 				089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		089C168F293AF1B0007B3F21 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */,
-				089C16B0293AF1B0007B3F21 /* Color+Theme.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		089C16B5293AF1B0007B3F21 /* GosyuinMapWidget */ = {
@@ -260,7 +245,7 @@
 				089C166C293AF1B0007B3F21 /* Sources */,
 				089C166D293AF1B0007B3F21 /* Frameworks */,
 				089C166E293AF1B0007B3F21 /* Resources */,
-				089C16D7293AF1B0007B3F21 /* Embed App Extensions */,
+				089C16D7293AF1B0007B3F21 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -297,7 +282,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					089C166F293AF1B0007B3F21 = {
 						CreatedOnToolsVersion = 16.0;
@@ -356,8 +341,6 @@
 				089C1679293AF1B0007B3F21 /* ContentView.swift in Sources */,
 				089C167B293AF1B0007B3F21 /* ExploreView.swift in Sources */,
 				089C167D293AF1B0007B3F21 /* CollectView.swift in Sources */,
-				089C167F293AF1B0007B3F21 /* LearnView.swift in Sources */,
-				089C1681293AF1B0007B3F21 /* Gosyuin.swift in Sources */,
 				089C1692293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */,
 				089C1693293AF1B0007B3F21 /* GlassEffect+Adaptive.swift in Sources */,
 				089C1695293AF1B0007B3F21 /* LocationService.swift in Sources */,
@@ -373,10 +356,7 @@
 				089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */,
 				089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */,
 				089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */,
-				089C16F2293AF1B0007B3F21 /* SearchSheetView.swift in Sources */,
-				089C16F4293AF1B0007B3F21 /* GosyuinListView.swift in Sources */,
-				089C16F6293AF1B0007B3F21 /* GosyuinFormView.swift in Sources */,
-				089C16F8293AF1B0007B3F21 /* GosyuinRecordDetailView.swift in Sources */,
+				089C16F2293AF1B0007B3F21 /* ExploreSearchSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +386,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ACCESSIBILITY_VALUES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -459,6 +440,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -469,6 +451,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ACCESSIBILITY_VALUES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -515,6 +498,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -531,7 +515,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GosyuinMap/Info.plist;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "御朱印マップで現在地周辺の神社仏閣を表示するために位置情報を使用します。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GosyuinMap uses your location to show nearby shrines and automatically collect stamps when you visit.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -562,7 +546,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GosyuinMap/Info.plist;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "御朱印マップで現在地周辺の神社仏閣を表示するために位置情報を使用します。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GosyuinMap uses your location to show nearby shrines and automatically collect stamps when you visit.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -663,7 +647,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = 089C1665293AF1AF007B3F21 /* Project object */;
 }

@@ -4,8 +4,6 @@ import MapKit
 
 struct ShrineDetailView: View {
     let shrine: Shrine
-    @Environment(\.modelContext) private var modelContext
-    @Environment(WorshipSessionManager.self) private var worshipManager
     @Query private var collectedStamps: [CollectedStamp]
     @State private var showingGuide = false
     @State private var appeared = false
@@ -14,22 +12,12 @@ struct ShrineDetailView: View {
         collectedStamps.contains { $0.slotId == shrine.stampSlotId }
     }
 
-    private var isWorshippingThisShrine: Bool {
-        worshipManager.isActive && worshipManager.shrineName == shrine.name
-    }
-
     var body: some View {
         ScrollView {
             VStack(spacing: DS.Spacing.xl) {
                 heroMap
                 shrineInfo
-
-                if isWorshippingThisShrine {
-                    worshipSessionSection
-                } else {
-                    collectButton
-                }
-
+                collectedBadge
                 guideLink
             }
             .padding(DS.Spacing.lg)
@@ -49,7 +37,6 @@ struct ShrineDetailView: View {
                     }
             }
         }
-        .sensoryFeedback(.selection, trigger: worshipManager.currentStep)
         .onAppear {
             withAnimation(.easeOut(duration: 0.4)) {
                 appeared = true
@@ -97,93 +84,24 @@ struct ShrineDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: - Worship Session
-
-    private var worshipSessionSection: some View {
-        VStack(spacing: DS.Spacing.lg) {
-            // ステップインジケータ
-            HStack(spacing: 0) {
-                ForEach(WorshipStep.allCases, id: \.self) { step in
-                    stepIndicator(step)
-                    if step.rawValue < WorshipStep.allCases.count - 1 {
-                        Rectangle()
-                            .fill(step.rawValue < worshipManager.currentStep.rawValue
-                                  ? Color.vermillion : Color.progressEmpty)
-                            .frame(height: 2)
-                            .animation(.spring(duration: 0.4), value: worshipManager.currentStep)
-                    }
-                }
-            }
-            .cardStyle()
-
-            if let next = worshipManager.currentStep.next {
-                Button {
-                    worshipManager.advanceStep()
-                } label: {
-                    Label("Next: \(next.labelEn)", systemImage: "arrow.right.circle.fill")
-                        .vermillionButtonStyle()
-                }
-                .buttonStyle(.pressable)
-            } else {
-                Button(action: collectAndComplete) {
-                    Label("Collect Stamp", systemImage: "seal.fill")
-                        .vermillionButtonStyle()
-                }
-                .buttonStyle(.stamp)
-            }
-
-            Button(role: .destructive) {
-                worshipManager.cancelSession()
-            } label: {
-                Text("Cancel Worship")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    private func stepIndicator(_ step: WorshipStep) -> some View {
-        let isCurrent = step == worshipManager.currentStep
-        let isDone = step.rawValue < worshipManager.currentStep.rawValue
-
-        return VStack(spacing: DS.Spacing.xs) {
-            ZStack {
-                Circle()
-                    .fill(isDone || isCurrent ? Color.vermillion : Color.progressEmpty)
-                    .frame(width: 36, height: 36)
-                Image(systemName: step.icon)
-                    .font(.system(size: 14))
-                    .foregroundStyle(isDone || isCurrent ? .white : Color.placeholderIcon)
-            }
-            .animation(.spring(duration: 0.3, bounce: 0.4), value: isCurrent)
-            .scaleEffect(isCurrent ? 1.1 : 1.0)
-
-            Text(step.labelEn)
-                .font(.caption2.weight(isCurrent ? .bold : .regular))
-                .foregroundStyle(isCurrent ? Color.vermillion : .secondary)
-        }
-    }
-
-    // MARK: - Collect Button
+    // MARK: - Collected Badge
 
     @ViewBuilder
-    private var collectButton: some View {
+    private var collectedBadge: some View {
         if isCollected {
             Label("Collected", systemImage: "checkmark.seal.fill")
                 .font(.headline)
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.systemGray3), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                .background(Color.vermillion, in: RoundedRectangle(cornerRadius: DS.Radius.md))
         } else {
-            Button {
-                worshipManager.startSession(shrine: shrine.name)
-            } label: {
-                Label("Start Worship", systemImage: "figure.walk")
-                    .vermillionButtonStyle()
-            }
-            .buttonStyle(.pressable)
-            .sensoryFeedback(.impact(weight: .medium), trigger: worshipManager.isActive)
+            Label("Visit this shrine to collect", systemImage: "mappin.and.ellipse")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
         }
     }
 
@@ -207,18 +125,11 @@ struct ShrineDetailView: View {
         }
         .buttonStyle(.pressable)
     }
-
-    private func collectAndComplete() {
-        let stamp = CollectedStamp(slotId: shrine.stampSlotId)
-        modelContext.insert(stamp)
-        worshipManager.completeSession()
-    }
 }
 
 #Preview {
     NavigationStack {
         ShrineDetailView(shrine: Shrine.samples[0])
     }
-    .modelContainer(for: [Gosyuin.self, CollectedStamp.self], inMemory: true)
-    .environment(WorshipSessionManager())
+    .modelContainer(for: [CollectedStamp.self], inMemory: true)
 }
