@@ -1,97 +1,104 @@
 # GosyuinMap
 
-御朱印（神社仏閣の参拝記念印）を記録・管理するiOSアプリ。
+A location-based shrine stamp collecting app for iOS.
 
-## プロジェクト概要
+## Project Overview
 
 - **Bundle ID**: `com.bjprodby.gosyuinmap`
 - **Deployment Target**: iOS 18.0
-- **フレームワーク**: SwiftUI + SwiftData + MapKit + ActivityKit
+- **Frameworks**: SwiftUI + SwiftData + MapKit + ActivityKit
 - **Swift Version**: 6.0
-- **Xcode**: 16.0+（Liquid Glass 機能には Xcode 26 + iOS 26 SDK が必要）
+- **Xcode**: 16.0+ (Liquid Glass requires Xcode 26 + iOS 26 SDK)
 
-## ディレクトリ構成
+## Directory Structure
 
 ```
-GosyuinMap.xcodeproj/        # Xcode プロジェクト
+GosyuinMap.xcodeproj/
 GosyuinMap/
-├── GosyuinMapApp.swift      # @main エントリポイント
-├── ContentView.swift        # TabView（4タブ）
+├── GosyuinMapApp.swift         # @main entry point (onboarding gate + splash)
+├── ContentView.swift           # TabView (3 tabs)
 ├── Views/
-│   ├── Explore/             # 地図タブ（MapKit + MKLocalSearch）
+│   ├── OnboardingView.swift    # First-launch onboarding (3 pages)
+│   ├── SplashView.swift        # Returning user splash screen
+│   ├── Explore/                # Map tab
 │   │   ├── ExploreView.swift
 │   │   ├── ShrineDetailView.swift
-│   │   └── ExploreSearchSheet.swift # Apple Maps風 統合検索シート
-│   ├── Collect/             # スタンプ帳 + 御朱印記録タブ
+│   │   ├── ExploreSearchSheet.swift    # Apple Maps-style search sheet
+│   │   └── StampCollectionPrompt.swift # Proximity-triggered collection UI
+│   ├── Collect/                # Stamp Book tab
 │   │   ├── CollectView.swift
-│   │   ├── StampDetailView.swift
-│   │   ├── GosyuinListView.swift          # 御朱印記録一覧
-│   │   ├── GosyuinFormView.swift          # 御朱印追加/編集フォーム
-│   │   └── GosyuinRecordDetailView.swift  # 御朱印記録詳細
-│   └── Learn/               # 参拝マナータブ
+│   │   └── StampDetailView.swift
+│   └── Learn/                  # Learn tab
+│       ├── LearnListView.swift
+│       └── LearnDetailView.swift
 ├── Models/
-│   ├── Gosyuin.swift                    # SwiftData モデル（御朱印記録）
-│   ├── CollectedStamp.swift             # SwiftData モデル（スタンプ収集）
-│   ├── Shrine.swift                     # 神社データ（サンプル）
-│   ├── StampDefinition.swift            # スタンプ定義
-│   ├── GuideArticle.swift               # ガイド記事定義
-│   └── GosyuinActivityAttributes.swift  # Live Activities 属性
+│   ├── CollectedStamp.swift            # SwiftData model (stamp collection)
+│   ├── Shrine.swift                    # Shrine data (8 samples, stable UUIDs)
+│   ├── StampDefinition.swift           # Stamp definitions
+│   ├── GuideArticle.swift              # Guide article definitions
+│   └── GosyuinActivityAttributes.swift # Live Activity attributes (proximity)
 ├── Services/
-│   ├── LocationService.swift            # 位置情報サービス
-│   ├── WorshipSessionManager.swift      # 参拝セッション管理
-│   └── ShrineSearchService.swift        # MKLocalSearch 神社検索
+│   ├── LocationService.swift           # Location + proximity detection (~100m)
+│   ├── WorshipSessionManager.swift     # ProximityActivityManager (Live Activity)
+│   └── ShrineSearchService.swift       # MKLocalSearch shrine search
 ├── Extensions/
-│   ├── GlassEffect+Adaptive.swift       # Liquid Glass ヘルパー
-│   └── Color+Theme.swift                # テーマカラー定義
+│   ├── GlassEffect+Adaptive.swift      # Liquid Glass helper
+│   └── Color+Theme.swift               # Theme colors + DS constants
 ├── Assets.xcassets/
 ├── Preview Content/
 └── Info.plist
 ```
 
-## アーキテクチャ
+## Architecture
 
-### 4タブ構成
+### 3-Tab Structure
 
-| タブ | View | 機能 |
-|------|------|------|
-| Explore | `ExploreView` | MapKit 地図 + Apple Maps 風検索シート（MKLocalSearchCompleter 補完 + MKLocalSearch 確定検索） |
-| Collect | `CollectView` | スタンプ帳グリッドでコレクション管理 |
-| Records | `GosyuinListView` | SwiftData で御朱印記録の CRUD |
-| Learn | `LearnListView` | 参拝作法・御朱印マナーの解説 |
+| Tab | View | Function |
+|-----|------|----------|
+| Explore | `ExploreView` | MapKit map + search sheet + proximity stamp collection |
+| Collect | `CollectView` | Stamp book grid showing collection progress |
+| Learn | `LearnListView` | Shrine visit etiquette guides |
 
-### データモデル（SwiftData）
+### App Flow
 
-`Gosyuin`: 御朱印の記録
-- `name`, `templeName`, `date`, `latitude`, `longitude`, `memo`, `imageData`
+1. **First launch** → `OnboardingView` (3 pages: welcome, location permission, ready)
+2. **Returning users** → `SplashView` (1.5s) → `ContentView`
+3. **Stamp collection** → Proximity-based: when user is within ~100m of a shrine, `StampCollectionPrompt` sheet appears automatically
 
-`CollectedStamp`: スタンプ収集状況
+### Data Model (SwiftData)
+
+`CollectedStamp`: Stamp collection status
 - `slotId`, `collectedDate`
 
-### iOS 26 対応
+### Location-Based Collection
 
-- Liquid Glass は `#available(iOS 26, *)` で条件適用
-- iOS 18〜25 では `.ultraThinMaterial` にフォールバック
-- ヘルパー: `View.adaptiveGlassBackground(cornerRadius:)`
+- `LocationService` tracks user location with 20m distance filter
+- Checks proximity to all unvisited shrines on each update
+- Triggers `StampCollectionPrompt` when within 100m
+- Collected stamps are excluded from future proximity alerts
 
 ### Live Activities
 
-- `GosyuinActivityAttributes` モデル定義済み
-- Widget Extension（`GosyuinMapWidget/`）で Dynamic Island + ロック画面 UI 実装済み
+- `GosyuinActivityAttributes`: proximity-based (shrineName, distance, isCollected)
+- `ProximityActivityManager`: start/update/collect/end activity lifecycle
+- Widget shows shrine name + distance or collected checkmark
 
-## 開発ルール
+## Development Rules
 
-- SwiftUI のプレビューは `#Preview` マクロを使用
-- SwiftData のプレビューには `.modelContainer(for:inMemory:)` を付与
-- iOS 18 の `Tab` イニシャライザを使用（`.tabItem` は非推奨）
-- ファイル追加時は `.xcodeproj/project.pbxproj` の Sources/Resources ビルドフェーズにも追加
-- 日本語の UI 文字列はコード内に直接記述（現時点ではローカライズ未対応）
-- `seedSampleDataIfNeeded` は `#if DEBUG` で囲まれたデバッグ専用
+- All UI strings are in English
+- SwiftUI previews use `#Preview` macro
+- SwiftData previews use `.modelContainer(for:inMemory:)`
+- Use iOS 18 `Tab` initializer (`.tabItem` is deprecated)
+- When adding files, update `.xcodeproj/project.pbxproj` Sources/Resources build phases
+- Custom colors require explicit `Color.` prefix in `.foregroundStyle()` and `.tint()` (iOS 26 SDK)
+- `seedSampleDataIfNeeded` is `#if DEBUG` only
+- Search categories: English display names, Japanese queries for MKLocalSearch
 
-## ビルド・実行
+## Build & Run
 
 ```sh
 open GosyuinMap.xcodeproj
-# Xcode で Cmd+R で実行
+# Cmd+R in Xcode (use iPhone 17 Pro simulator)
 ```
 
-位置情報を使用するため、シミュレータではカスタムロケーション設定を推奨。
+Simulator: set custom location near a sample shrine to test proximity collection.
