@@ -86,7 +86,6 @@ struct ExploreSearchSheet: View {
         }
         .padding(.horizontal, DS.Spacing.lg)
         .padding(.vertical, DS.Spacing.md)
-        .onAppear { isFocused = true }
     }
 
     // MARK: - Idle Content

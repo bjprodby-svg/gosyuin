@@ -5,6 +5,7 @@ struct CollectView: View {
     @Query private var collectedStamps: [CollectedStamp]
     @Environment(\.modelContext) private var modelContext
     @State private var appeared = false
+    @State private var locationService = LocationService()
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: DS.Spacing.md), count: 3)
 
@@ -43,6 +44,30 @@ struct CollectView: View {
             .background(Color.pageBackground)
             .navigationTitle("Stamp Book")
             .navigationBarTitleDisplayMode(.large)
+            .safeAreaInset(edge: .top) {
+                if locationService.authorizationStatus == .denied {
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        HStack(spacing: DS.Spacing.sm) {
+                            Image(systemName: "location.slash.fill")
+                                .font(.caption)
+                                .foregroundStyle(Color.vermillion)
+                            Text("Enable location to auto-collect stamps")
+                                .font(.caption.weight(.medium))
+                            Spacer()
+                            Image(systemName: "arrow.right")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(DS.Spacing.md)
+                        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                        .padding(.horizontal, DS.Spacing.lg)
+                    }
+                }
+            }
             .navigationDestination(for: StampDefinition.self) { stamp in
                 StampDetailView(stamp: stamp)
             }

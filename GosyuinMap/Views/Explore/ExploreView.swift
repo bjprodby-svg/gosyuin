@@ -21,6 +21,7 @@ struct ExploreView: View {
     @State private var showSearchSheet = true
     @State private var showCollectionPrompt = false
     @State private var promptShrine: Shrine?
+    @State private var showSearchAreaButton = false
     @Namespace private var mapNamespace
 
     @Query private var collectedStamps: [CollectedStamp]
@@ -38,8 +39,18 @@ struct ExploreView: View {
             ZStack {
                 mapContent
 
-                VStack {
+                VStack(spacing: 0) {
+                    if locationService.authorizationStatus == .denied {
+                        locationDeniedBanner
+                    }
+
+                    if showSearchAreaButton {
+                        searchAreaButton
+                            .padding(.top, DS.Spacing.sm)
+                    }
+
                     Spacer()
+
                     if let shrine = selectedShrine {
                         shrineCard(shrine)
                     } else if let mapItem = selectedMapItem {
@@ -123,6 +134,55 @@ struct ExploreView: View {
         syncCollectedIds()
     }
 
+    // MARK: - Search Area Button
+
+    private var searchAreaButton: some View {
+        Button {
+            searchService.search(query: "神社 寺", in: currentRegion)
+            withAnimation { showSearchAreaButton = false }
+        } label: {
+            HStack(spacing: DS.Spacing.sm) {
+                Image(systemName: "arrow.clockwise")
+                    .font(.caption.bold())
+                Text("Search This Area")
+                    .font(.subheadline.weight(.medium))
+            }
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.sm)
+            .background(.ultraThinMaterial, in: Capsule())
+            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+        }
+        .buttonStyle(.pressable)
+        .transition(.scale.combined(with: .opacity))
+    }
+
+    // MARK: - Location Denied Banner
+
+    private var locationDeniedBanner: some View {
+        Button {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        } label: {
+            HStack(spacing: DS.Spacing.sm) {
+                Image(systemName: "location.slash.fill")
+                    .font(.caption)
+                    .foregroundStyle(Color.vermillion)
+                Text("Enable location to collect stamps")
+                    .font(.caption.weight(.medium))
+                Spacer()
+                Image(systemName: "arrow.right")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(DS.Spacing.md)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.top, DS.Spacing.xs)
+        }
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+
     // MARK: - Map
 
     private var mapContent: some View {
@@ -152,6 +212,9 @@ struct ExploreView: View {
         .onMapCameraChange { context in
             visibleRegion = context.region
             searchService.updateRegion(context.region)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                showSearchAreaButton = true
+            }
         }
         .onTapGesture {
             withAnimation(.spring(duration: 0.3)) {
