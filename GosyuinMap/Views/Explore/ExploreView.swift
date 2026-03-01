@@ -16,6 +16,7 @@ struct ExploreView: View {
     @State private var mapStyleOption: MapStyleOption = .standard
     @State private var searchSheetDetent: PresentationDetent = .height(56)
     @State private var showSearchSheet = true
+    @Namespace private var mapNamespace
 
     private var currentRegion: MKCoordinateRegion {
         visibleRegion ?? MKCoordinateRegion(
@@ -29,7 +30,6 @@ struct ExploreView: View {
             ZStack {
                 mapContent
 
-                // 下部カード（選択中の神社 / MapItem）
                 VStack {
                     Spacer()
                     if let shrine = selectedShrine {
@@ -52,6 +52,8 @@ struct ExploreView: View {
             .onAppear {
                 locationService.requestPermission()
             }
+            .sensoryFeedback(.selection, trigger: selectedShrine?.id)
+            .sensoryFeedback(.selection, trigger: selectedMapItem)
             .sheet(isPresented: $showSearchSheet) {
                 ExploreSearchSheet(
                     searchService: searchService,
@@ -80,14 +82,12 @@ struct ExploreView: View {
         Map(position: $position) {
             UserAnnotation()
 
-            // 固定の神社サンプル
             ForEach(Shrine.samples) { shrine in
                 Annotation(shrine.name, coordinate: shrine.coordinate, anchor: .bottom) {
                     shrinePin(for: shrine)
                 }
             }
 
-            // 検索結果のピン
             ForEach(searchService.results, id: \.self) { item in
                 if let coord = item.placemark.location?.coordinate,
                    !isDuplicateOfSample(item) {
@@ -107,22 +107,22 @@ struct ExploreView: View {
             searchService.updateRegion(context.region)
         }
         .onTapGesture {
-            withAnimation {
+            withAnimation(.spring(duration: 0.3)) {
                 selectedShrine = nil
                 selectedMapItem = nil
             }
         }
     }
 
-    /// 検索結果が Shrine.samples と重複するかチェック
     private func isDuplicateOfSample(_ item: MKMapItem) -> Bool {
         guard let name = item.name else { return false }
         return Shrine.samples.contains { name.contains($0.name) }
     }
 
     private func shrinePin(for shrine: Shrine) -> some View {
-        Button {
-            withAnimation(.spring(duration: 0.3)) {
+        let isSelected = selectedShrine?.id == shrine.id
+        return Button {
+            withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
                 selectedMapItem = nil
                 selectedShrine = shrine
                 searchSheetDetent = .height(56)
@@ -134,14 +134,38 @@ struct ExploreView: View {
                 )
             }
         } label: {
-            ShrineAnnotationView(isSelected: selectedShrine?.id == shrine.id)
+            ZStack {
+                // 選択時の pulse ring
+                if isSelected {
+                    Circle()
+                        .stroke(Color.vermillion.opacity(0.3), lineWidth: 2)
+                        .frame(width: 52, height: 52)
+                        .scaleEffect(isSelected ? 1.2 : 0.8)
+                        .opacity(isSelected ? 0 : 1)
+                        .animation(
+                            .easeOut(duration: 1.2).repeatForever(autoreverses: false),
+                            value: isSelected
+                        )
+                }
+
+                Circle()
+                    .fill(Color(.label))
+                    .frame(width: isSelected ? 44 : 34, height: isSelected ? 44 : 34)
+                    .shadow(color: .black.opacity(0.2), radius: isSelected ? 6 : 4, y: 2)
+
+                Text("\u{26E9}")
+                    .font(.system(size: isSelected ? 20 : 14))
+                    .foregroundStyle(Color(.systemBackground))
+            }
+            .animation(.spring(duration: 0.3, bounce: 0.4), value: isSelected)
         }
         .buttonStyle(.plain)
     }
 
     private func mapItemPin(for item: MKMapItem) -> some View {
-        Button {
-            withAnimation(.spring(duration: 0.3)) {
+        let isSelected = selectedMapItem == item
+        return Button {
+            withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
                 selectedShrine = nil
                 selectedMapItem = item
                 searchSheetDetent = .height(56)
@@ -149,15 +173,14 @@ struct ExploreView: View {
         } label: {
             ZStack {
                 Circle()
-                    .fill(Color.vermillion.opacity(0.85))
-                    .frame(width: selectedMapItem == item ? 40 : 30,
-                           height: selectedMapItem == item ? 40 : 30)
-                    .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+                    .fill(Color.vermillionMuted)
+                    .frame(width: isSelected ? 40 : 30, height: isSelected ? 40 : 30)
+                    .shadow(color: .black.opacity(0.2), radius: isSelected ? 6 : 4, y: 2)
                 Image(systemName: "mappin")
-                    .font(.system(size: selectedMapItem == item ? 16 : 12))
+                    .font(.system(size: isSelected ? 16 : 12))
                     .foregroundStyle(.white)
             }
-            .animation(.spring(duration: 0.2), value: selectedMapItem == item)
+            .animation(.spring(duration: 0.3, bounce: 0.4), value: isSelected)
         }
         .buttonStyle(.plain)
     }
@@ -170,7 +193,7 @@ struct ExploreView: View {
         searchSheetDetent = .height(56)
 
         if let coord = item.placemark.location?.coordinate {
-            withAnimation {
+            withAnimation(.spring(duration: 0.4)) {
                 position = .region(
                     MKCoordinateRegion(
                         center: coord,
@@ -186,7 +209,7 @@ struct ExploreView: View {
         selectedShrine = shrine
         searchSheetDetent = .height(56)
 
-        withAnimation {
+        withAnimation(.spring(duration: 0.4)) {
             position = .region(
                 MKCoordinateRegion(
                     center: shrine.coordinate,
@@ -196,22 +219,22 @@ struct ExploreView: View {
         }
     }
 
-    // MARK: - Selected Shrine Card
+    // MARK: - Shrine Card
 
     private func shrineCard(_ shrine: Shrine) -> some View {
         NavigationLink(value: shrine) {
-            HStack(spacing: 12) {
+            HStack(spacing: DS.Spacing.md) {
                 ZStack {
                     Circle()
                         .fill(Color(.label))
-                        .frame(width: 44, height: 44)
-                        .shadow(color: .black.opacity(0.1), radius: 2)
+                        .frame(width: 48, height: 48)
                     Text("\u{26E9}")
                         .font(.title2)
                         .foregroundStyle(Color(.systemBackground))
                 }
+                .shadow(color: .black.opacity(0.1), radius: 3, y: 1)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                     Text(shrine.name)
                         .font(.headline)
                     Text(shrine.address)
@@ -222,14 +245,13 @@ struct ExploreView: View {
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.caption)
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
             }
-            .padding()
-            .adaptiveGlassBackground(cornerRadius: 16)
+            .cardStyle()
         }
-        .buttonStyle(.plain)
-        .padding(.horizontal)
+        .buttonStyle(.pressable)
+        .padding(.horizontal, DS.Spacing.lg)
         .padding(.bottom, 72)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
@@ -237,18 +259,18 @@ struct ExploreView: View {
     // MARK: - Map Item Card
 
     private func mapItemCard(_ item: MKMapItem) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DS.Spacing.md) {
             ZStack {
                 Circle()
                     .fill(Color.vermillion)
-                    .frame(width: 44, height: 44)
-                    .shadow(color: .black.opacity(0.1), radius: 2)
+                    .frame(width: 48, height: 48)
                 Image(systemName: "mappin")
                     .font(.title3)
                     .foregroundStyle(.white)
             }
+            .shadow(color: Color.vermillion.opacity(0.3), radius: 4, y: 2)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text(item.name ?? "Unknown")
                     .font(.headline)
                 if let address = item.placemark.title {
@@ -273,9 +295,8 @@ struct ExploreView: View {
                     .foregroundStyle(.vermillion)
             }
         }
-        .padding()
-        .adaptiveGlassBackground(cornerRadius: 16)
-        .padding(.horizontal)
+        .cardStyle()
+        .padding(.horizontal, DS.Spacing.lg)
         .padding(.bottom, 72)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
@@ -294,25 +315,6 @@ struct ExploreView: View {
         } label: {
             Image(systemName: mapStyleOption.icon)
         }
-    }
-}
-
-// MARK: - Shrine Annotation View
-
-private struct ShrineAnnotationView: View {
-    var isSelected: Bool = false
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color(.label))
-                .frame(width: isSelected ? 44 : 34, height: isSelected ? 44 : 34)
-                .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
-            Text("\u{26E9}")
-                .font(.system(size: isSelected ? 20 : 14))
-                .foregroundStyle(Color(.systemBackground))
-        }
-        .animation(.spring(duration: 0.2), value: isSelected)
     }
 }
 

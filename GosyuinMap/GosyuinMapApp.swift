@@ -18,11 +18,10 @@ struct GosyuinMapApp: App {
                         .zIndex(1)
                 }
             }
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    withAnimation(.easeOut(duration: 0.4)) {
-                        showSplash = false
-                    }
+            .task {
+                try? await Task.sleep(for: .seconds(1.5))
+                withAnimation(.easeOut(duration: 0.4)) {
+                    showSplash = false
                 }
             }
         }

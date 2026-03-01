@@ -10,8 +10,16 @@ struct ExploreSearchSheet: View {
 
     @Query private var collectedStamps: [CollectedStamp]
     @FocusState private var isFocused: Bool
+    @State private var searchSubmitted = false
 
-    private let categories = ["神社", "寺", "神宮", "大社", "天満宮", "稲荷"]
+    private let categories: [(String, String)] = [
+        ("神社", "building.columns"),
+        ("寺", "house.lodge"),
+        ("神宮", "crown"),
+        ("大社", "mountain.2"),
+        ("天満宮", "graduationcap"),
+        ("稲荷", "flame"),
+    ]
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
@@ -40,14 +48,16 @@ struct ExploreSearchSheet: View {
                 emptyState
             }
         }
+        .sensoryFeedback(.success, trigger: searchSubmitted)
     }
 
     // MARK: - Search Bar
 
     private var searchBar: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: DS.Spacing.md) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
+                .font(.body.weight(.medium))
 
             TextField("Search shrines & temples", text: $searchService.queryFragment)
                 .textFieldStyle(.plain)
@@ -58,68 +68,77 @@ struct ExploreSearchSheet: View {
                             query: searchService.queryFragment,
                             in: region
                         )
+                        searchSubmitted.toggle()
                     }
                 }
 
             if !isQueryEmpty {
                 Button {
-                    searchService.clear()
+                    withAnimation(.spring(duration: 0.25)) {
+                        searchService.clear()
+                    }
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.secondary)
                 }
+                .transition(.scale.combined(with: .opacity))
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, DS.Spacing.lg)
+        .padding(.vertical, DS.Spacing.md)
         .onAppear { isFocused = true }
     }
 
-    // MARK: - Idle (カテゴリ + 近くの神社)
+    // MARK: - Idle Content
 
     private var idleContent: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: DS.Spacing.xl) {
                 categorySection
                 nearbyShrinesSection
             }
-            .padding()
+            .padding(DS.Spacing.lg)
         }
     }
 
     private var categorySection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
             Text("Categories")
-                .font(.subheadline.weight(.medium))
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 8)], spacing: 8) {
-                ForEach(categories, id: \.self) { category in
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 90), spacing: DS.Spacing.sm)], spacing: DS.Spacing.sm) {
+                ForEach(categories, id: \.0) { name, icon in
                     Button {
-                        searchService.queryFragment = category
-                        searchService.search(query: category, in: region)
+                        searchService.queryFragment = name
+                        searchService.search(query: name, in: region)
+                        searchSubmitted.toggle()
                     } label: {
-                        HStack(spacing: 4) {
-                            Text("\u{26E9}")
+                        HStack(spacing: 6) {
+                            Image(systemName: icon)
                                 .font(.caption)
-                            Text(category)
-                                .font(.subheadline)
+                                .foregroundStyle(.vermillion)
+                            Text(name)
+                                .font(.subheadline.weight(.medium))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color(.secondarySystemGroupedBackground),
-                                    in: RoundedRectangle(cornerRadius: 12))
+                        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DS.Radius.md)
+                                .strokeBorder(Color.vermillion.opacity(0.15), lineWidth: 1)
+                        )
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                 }
             }
         }
     }
 
     private var nearbyShrinesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Nearby Shrines")
-                .font(.subheadline.weight(.medium))
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            Text("Nearby")
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
 
             ForEach(nearbySamples) { shrine in
@@ -128,12 +147,11 @@ struct ExploreSearchSheet: View {
                 } label: {
                     shrineRow(shrine)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
             }
         }
     }
 
-    /// サンプル神社を現在のリージョンとの距離でソートして上位5件を返す
     private var nearbySamples: [Shrine] {
         let center = region.center
         return Shrine.samples
@@ -152,7 +170,7 @@ struct ExploreSearchSheet: View {
     }
 
     private func shrineRow(_ shrine: Shrine) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DS.Spacing.md) {
             ZStack {
                 Circle()
                     .fill(Color(.label))
@@ -162,7 +180,7 @@ struct ExploreSearchSheet: View {
                     .foregroundStyle(Color(.systemBackground))
             }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text(shrine.name)
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(.primary)
@@ -183,21 +201,22 @@ struct ExploreSearchSheet: View {
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, DS.Spacing.xs)
     }
 
-    // MARK: - Completions List (入力中の補完候補)
+    // MARK: - Completions
 
     private var completionsList: some View {
         List(searchService.completions, id: \.self) { completion in
             Button {
                 searchService.search(completion: completion)
+                searchSubmitted.toggle()
                 isFocused = false
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: DS.Spacing.md) {
                     Image(systemName: "magnifyingglass")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.vermillion.opacity(0.6))
                         .frame(width: 24)
 
                     VStack(alignment: .leading, spacing: 2) {
@@ -212,22 +231,23 @@ struct ExploreSearchSheet: View {
                     }
                 }
             }
+            .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
     }
 
-    // MARK: - Confirmed Results (確定検索結果)
+    // MARK: - Confirmed Results
 
     private var confirmedResultsList: some View {
         List(searchService.results, id: \.self) { item in
             Button {
                 onSelectMapItem(item)
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: DS.Spacing.md) {
                     ZStack {
                         Circle()
-                            .fill(Color.vermillion.opacity(0.12))
-                            .frame(width: 36, height: 36)
+                            .fill(Color.vermillionLight)
+                            .frame(width: 40, height: 40)
                         Image(systemName: "mappin.circle.fill")
                             .font(.body)
                             .foregroundStyle(.vermillion)
@@ -247,7 +267,6 @@ struct ExploreSearchSheet: View {
 
                     Spacer()
 
-                    // マッチする Shrine.samples があれば収集済みバッジ表示
                     if let shrine = matchingShrine(for: item),
                        collectedIds.contains(shrine.stampSlotId) {
                         Image(systemName: "checkmark.seal.fill")
@@ -256,11 +275,11 @@ struct ExploreSearchSheet: View {
                     }
                 }
             }
+            .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
     }
 
-    /// MKMapItem に対応する Shrine.samples を探す（名前一致）
     private func matchingShrine(for item: MKMapItem) -> Shrine? {
         guard let name = item.name else { return nil }
         return Shrine.samples.first { name.contains($0.name) }
@@ -269,23 +288,31 @@ struct ExploreSearchSheet: View {
     // MARK: - Loading / Empty
 
     private var loadingView: some View {
-        VStack {
+        VStack(spacing: DS.Spacing.md) {
             Spacer()
             ProgressView()
                 .controlSize(.regular)
+                .tint(.vermillion)
+            Text("Searching...")
+                .font(.caption)
+                .foregroundStyle(.secondary)
             Spacer()
         }
         .frame(maxWidth: .infinity)
     }
 
     private var emptyState: some View {
-        VStack {
+        VStack(spacing: DS.Spacing.md) {
             Spacer()
-            ContentUnavailableView(
-                "No Results",
-                systemImage: "magnifyingglass",
-                description: Text("Try a different search term")
-            )
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 40))
+                .foregroundStyle(.placeholderIcon)
+            Text("No Results")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            Text("Try a different search term")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
             Spacer()
         }
     }

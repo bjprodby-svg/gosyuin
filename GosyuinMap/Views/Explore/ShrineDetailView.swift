@@ -8,6 +8,7 @@ struct ShrineDetailView: View {
     @Environment(WorshipSessionManager.self) private var worshipManager
     @Query private var collectedStamps: [CollectedStamp]
     @State private var showingGuide = false
+    @State private var appeared = false
 
     private var isCollected: Bool {
         collectedStamps.contains { $0.slotId == shrine.stampSlotId }
@@ -19,7 +20,7 @@ struct ShrineDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: DS.Spacing.xl) {
                 heroMap
                 shrineInfo
 
@@ -31,8 +32,11 @@ struct ShrineDetailView: View {
 
                 guideLink
             }
-            .padding()
+            .padding(DS.Spacing.lg)
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 12)
         }
+        .background(Color.pageBackground)
         .navigationTitle("Shrine Detail")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingGuide) {
@@ -43,6 +47,12 @@ struct ShrineDetailView: View {
                             Button("Close") { showingGuide = false }
                         }
                     }
+            }
+        }
+        .sensoryFeedback(.selection, trigger: worshipManager.currentStep)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.4)) {
+                appeared = true
             }
         }
     }
@@ -64,14 +74,14 @@ struct ShrineDetailView: View {
             }
         }
         .frame(height: 200)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.lg))
         .allowsHitTesting(false)
     }
 
     // MARK: - Shrine Info
 
     private var shrineInfo: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
             Text(shrine.name)
                 .font(.title.bold())
 
@@ -90,41 +100,36 @@ struct ShrineDetailView: View {
     // MARK: - Worship Session
 
     private var worshipSessionSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: DS.Spacing.lg) {
+            // ステップインジケータ
             HStack(spacing: 0) {
                 ForEach(WorshipStep.allCases, id: \.self) { step in
                     stepIndicator(step)
                     if step.rawValue < WorshipStep.allCases.count - 1 {
                         Rectangle()
                             .fill(step.rawValue < worshipManager.currentStep.rawValue
-                                  ? Color.vermillion : Color(.systemGray4))
+                                  ? Color.vermillion : Color.progressEmpty)
                             .frame(height: 2)
+                            .animation(.spring(duration: 0.4), value: worshipManager.currentStep)
                     }
                 }
             }
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+            .cardStyle()
 
             if let next = worshipManager.currentStep.next {
                 Button {
                     worshipManager.advanceStep()
                 } label: {
                     Label("Next: \(next.labelEn)", systemImage: "arrow.right.circle.fill")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.vermillion, in: RoundedRectangle(cornerRadius: 14))
+                        .vermillionButtonStyle()
                 }
+                .buttonStyle(.pressable)
             } else {
                 Button(action: collectAndComplete) {
                     Label("Collect Stamp", systemImage: "seal.fill")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.vermillion, in: RoundedRectangle(cornerRadius: 14))
+                        .vermillionButtonStyle()
                 }
+                .buttonStyle(.stamp)
             }
 
             Button(role: .destructive) {
@@ -141,17 +146,20 @@ struct ShrineDetailView: View {
         let isCurrent = step == worshipManager.currentStep
         let isDone = step.rawValue < worshipManager.currentStep.rawValue
 
-        return VStack(spacing: 4) {
+        return VStack(spacing: DS.Spacing.xs) {
             ZStack {
                 Circle()
-                    .fill(isDone || isCurrent ? Color.vermillion : Color(.systemGray5))
+                    .fill(isDone || isCurrent ? Color.vermillion : Color.progressEmpty)
                     .frame(width: 36, height: 36)
                 Image(systemName: step.icon)
                     .font(.system(size: 14))
-                    .foregroundStyle(isDone || isCurrent ? .white : Color(.systemGray3))
+                    .foregroundStyle(isDone || isCurrent ? .white : Color.placeholderIcon)
             }
+            .animation(.spring(duration: 0.3, bounce: 0.4), value: isCurrent)
+            .scaleEffect(isCurrent ? 1.1 : 1.0)
+
             Text(step.labelEn)
-                .font(.caption2)
+                .font(.caption2.weight(isCurrent ? .bold : .regular))
                 .foregroundStyle(isCurrent ? .vermillion : .secondary)
         }
     }
@@ -166,21 +174,16 @@ struct ShrineDetailView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.systemGray3), in: RoundedRectangle(cornerRadius: 14))
+                .background(Color(.systemGray3), in: RoundedRectangle(cornerRadius: DS.Radius.md))
         } else {
             Button {
                 worshipManager.startSession(shrine: shrine.name)
             } label: {
                 Label("Start Worship", systemImage: "figure.walk")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(
-                        Color.vermillion,
-                        in: RoundedRectangle(cornerRadius: 14)
-                    )
+                    .vermillionButtonStyle()
             }
+            .buttonStyle(.pressable)
+            .sensoryFeedback(.impact(.medium), trigger: worshipManager.isActive)
         }
     }
 
@@ -197,12 +200,12 @@ struct ShrineDetailView: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
             }
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+            .cardStyle()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     private func collectAndComplete() {

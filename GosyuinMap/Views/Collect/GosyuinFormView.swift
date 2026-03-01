@@ -15,6 +15,10 @@ struct GosyuinFormView: View {
     @State private var templeName = ""
     @State private var date = Date.now
     @State private var memo = ""
+    @State private var didSave = false
+    @FocusState private var focusedField: Field?
+
+    private enum Field { case name, temple, memo }
 
     private var isEditing: Bool {
         if case .edit = mode { return true }
@@ -29,15 +33,34 @@ struct GosyuinFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Gosyuin Info") {
-                    TextField("Name", text: $name)
-                    TextField("Temple / Shrine Name", text: $templeName)
+                Section {
+                    HStack(spacing: DS.Spacing.md) {
+                        Image(systemName: "seal.fill")
+                            .foregroundStyle(.vermillion)
+                            .frame(width: 20)
+                        TextField("Gosyuin Name", text: $name)
+                            .focused($focusedField, equals: .name)
+                    }
+                    HStack(spacing: DS.Spacing.md) {
+                        Image(systemName: "building.columns")
+                            .foregroundStyle(.vermillion)
+                            .frame(width: 20)
+                        TextField("Temple / Shrine Name", text: $templeName)
+                            .focused($focusedField, equals: .temple)
+                    }
                     DatePicker("Date", selection: $date, displayedComponents: .date)
+                } header: {
+                    Text("Gosyuin Info")
+                        .font(.subheadline.weight(.semibold))
                 }
 
-                Section("Memo") {
+                Section {
                     TextField("Notes (optional)", text: $memo, axis: .vertical)
                         .lineLimit(3...6)
+                        .focused($focusedField, equals: .memo)
+                } header: {
+                    Text("Memo")
+                        .font(.subheadline.weight(.semibold))
                 }
             }
             .navigationTitle(isEditing ? "Edit Gosyuin" : "New Gosyuin")
@@ -48,7 +71,8 @@ struct GosyuinFormView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") { save() }
-                        .fontWeight(.semibold)
+                        .fontWeight(.bold)
+                        .foregroundStyle(isValid ? .vermillion : .secondary)
                         .disabled(!isValid)
                 }
             }
@@ -58,8 +82,11 @@ struct GosyuinFormView: View {
                     templeName = gosyuin.templeName
                     date = gosyuin.date
                     memo = gosyuin.memo
+                } else {
+                    focusedField = .name
                 }
             }
+            .sensoryFeedback(.success, trigger: didSave)
         }
     }
 
@@ -79,6 +106,7 @@ struct GosyuinFormView: View {
             gosyuin.date = date
             gosyuin.memo = memo.trimmingCharacters(in: .whitespaces)
         }
+        didSave.toggle()
         dismiss()
     }
 }

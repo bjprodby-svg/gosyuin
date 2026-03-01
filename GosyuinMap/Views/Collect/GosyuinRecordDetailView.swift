@@ -8,10 +8,11 @@ struct GosyuinRecordDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingEditSheet = false
     @State private var showingDeleteConfirmation = false
+    @State private var appeared = false
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: DS.Spacing.xl) {
                 header
                 infoSection
                 if !gosyuin.memo.isEmpty {
@@ -22,9 +23,11 @@ struct GosyuinRecordDetailView: View {
                 }
                 deleteButton
             }
-            .padding()
+            .padding(DS.Spacing.lg)
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 12)
         }
-        .background(Color(.systemBackground))
+        .background(Color.pageBackground)
         .navigationTitle(gosyuin.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -32,6 +35,7 @@ struct GosyuinRecordDetailView: View {
                 Button("Edit") {
                     showingEditSheet = true
                 }
+                .foregroundStyle(.vermillion)
             }
         }
         .sheet(isPresented: $showingEditSheet) {
@@ -43,22 +47,31 @@ struct GosyuinRecordDetailView: View {
                 dismiss()
             }
         }
+        .sensoryFeedback(.warning, trigger: showingDeleteConfirmation)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.4)) {
+                appeared = true
+            }
+        }
     }
 
     // MARK: - Header
 
     private var header: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: DS.Spacing.md) {
             ZStack {
+                // 外側の篆刻風リング
                 Circle()
                     .strokeBorder(
                         Color.vermillion,
-                        style: StrokeStyle(lineWidth: 3, dash: [6, 4])
+                        style: StrokeStyle(lineWidth: 3, dash: [8, 4])
                     )
                     .frame(width: 100, height: 100)
+
                 Circle()
-                    .fill(Color.vermillion.opacity(0.10))
+                    .fill(Color.vermillionLight)
                     .frame(width: 88, height: 88)
+
                 Image(systemName: "seal.fill")
                     .font(.system(size: 36))
                     .foregroundStyle(.vermillion)
@@ -66,15 +79,19 @@ struct GosyuinRecordDetailView: View {
 
             Text(gosyuin.name)
                 .font(.title2.bold())
+
+            Text(gosyuin.templeName)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical)
+        .padding(.vertical, DS.Spacing.lg)
     }
 
     // MARK: - Info
 
     private var infoSection: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: DS.Spacing.md) {
             infoRow(
                 icon: "building.columns.fill",
                 label: "Temple / Shrine",
@@ -89,12 +106,12 @@ struct GosyuinRecordDetailView: View {
     }
 
     private func infoRow(icon: String, label: String, value: String) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DS.Spacing.md) {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundStyle(.vermillion)
                 .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text(label)
                     .font(.subheadline.weight(.medium))
                 Text(value)
@@ -103,14 +120,13 @@ struct GosyuinRecordDetailView: View {
             }
             Spacer()
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+        .cardStyle()
     }
 
     // MARK: - Memo
 
     private var memoSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
             Label("Memo", systemImage: "note.text")
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.secondary)
@@ -119,8 +135,7 @@ struct GosyuinRecordDetailView: View {
                 .font(.body)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+        .accentedCard(accentColor: .vermillion)
     }
 
     // MARK: - Map
@@ -138,7 +153,7 @@ struct GosyuinRecordDetailView: View {
             }
         }
         .frame(height: 180)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.lg))
         .allowsHitTesting(false)
     }
 
@@ -152,9 +167,10 @@ struct GosyuinRecordDetailView: View {
                 .font(.subheadline)
                 .foregroundStyle(.red)
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+                .padding(DS.Spacing.lg)
+                .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
         }
+        .buttonStyle(.pressable)
     }
 }
 

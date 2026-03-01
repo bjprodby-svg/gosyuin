@@ -1,23 +1,35 @@
 import SwiftUI
 
 struct LearnListView: View {
+    @State private var appeared = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
-                    ForEach(GuideArticle.allArticles) { article in
+                VStack(spacing: DS.Spacing.lg) {
+                    ForEach(Array(GuideArticle.allArticles.enumerated()), id: \.element.id) { index, article in
                         NavigationLink(value: article) {
                             ArticleCard(article: article)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressable)
+                        .opacity(appeared ? 1 : 0)
+                        .offset(y: appeared ? 0 : 20)
+                        .animation(
+                            .spring(duration: 0.5, bounce: 0.25)
+                                .delay(Double(index) * 0.08),
+                            value: appeared
+                        )
                     }
                 }
-                .padding()
+                .padding(DS.Spacing.lg)
             }
-            .background(Color(.systemBackground))
+            .background(Color.pageBackground)
             .navigationTitle("Shrine Guide")
             .navigationDestination(for: GuideArticle.self) { article in
                 LearnDetailView(article: article)
+            }
+            .onAppear {
+                withAnimation { appeared = true }
             }
         }
     }
@@ -27,14 +39,15 @@ private struct ArticleCard: View {
     let article: GuideArticle
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: DS.Spacing.lg) {
             Image(systemName: article.icon)
                 .font(.title2)
                 .foregroundStyle(.white)
                 .frame(width: 48, height: 48)
-                .background(article.color, in: RoundedRectangle(cornerRadius: 12))
+                .background(article.color, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                .shadow(color: article.color.opacity(0.3), radius: 4, y: 2)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text(article.title)
                     .font(.headline)
                     .foregroundStyle(.primary)
@@ -47,11 +60,10 @@ private struct ArticleCard: View {
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.caption)
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(.tertiary)
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+        .cardStyle()
     }
 }
 
