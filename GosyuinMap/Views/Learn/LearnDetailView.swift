@@ -28,93 +28,93 @@ struct LearnDetailView: View {
         case "temizu": temizuContent
         case "omikuji": omikujiContent
         case "gosyuin": gosyuinContent
-        default: Text("準備中です")
+        default: Text("Coming soon")
         }
     }
 
-    // MARK: - 参拝の作法
+    // MARK: - Worship Etiquette
 
     private var sanpaiContent: some View {
         VStack(spacing: DS.Spacing.xxl) {
             illustratedStep(
-                number: 1, title: "二拝", subtitle: "Nihai - Bow Twice",
+                number: 1, title: "Bow Twice", subtitle: "Nihai",
                 emoji: "\u{26E9}\u{FE0F}",
-                description: "鳥居の前で一礼してからくぐり、拝殿の前で深く二回お辞儀をします。",
+                description: "Bow once before passing through the torii gate, then bow deeply twice in front of the main hall.",
                 delay: 0
             )
             illustratedStep(
-                number: 2, title: "二拍手", subtitle: "Nihakushu - Clap Twice",
+                number: 2, title: "Clap Twice", subtitle: "Nihakushu",
                 emoji: "\u{1F44F}",
-                description: "胸の高さで両手を合わせ、右手を少し下にずらしてから二回打ちます。手を合わせたまま心の中でお祈りします。",
+                description: "Bring your hands together at chest height, offset your right hand slightly downward, and clap twice. Keep your hands together and pray silently.",
                 delay: 0.1
             )
             illustratedStep(
-                number: 3, title: "一拝", subtitle: "Ippai - Bow Once",
+                number: 3, title: "Bow Once", subtitle: "Ippai",
                 emoji: "\u{1F64F}",
-                description: "最後にもう一度深くお辞儀をして、参拝を終えます。",
+                description: "Finish with one final deep bow to complete your worship.",
                 delay: 0.2
             )
 
             noteCard(
                 icon: "info.circle.fill", color: .orange,
-                title: "神社によって作法が異なります",
-                text: "出雲大社は「二礼四拍手一礼」、伊勢神宮では「八度拝八開手」など、神社ごとに独自の作法があります。参拝前に確認しましょう。"
+                title: "Customs vary by shrine",
+                text: "Izumo Taisha uses 'two bows, four claps, one bow', while Ise Jingu has its own unique ritual. Always check the shrine's specific etiquette before visiting."
             )
         }
     }
 
-    // MARK: - 手水の作法
+    // MARK: - Temizu Purification
 
     private var temizuContent: some View {
         VStack(spacing: DS.Spacing.xxl) {
-            illustratedStep(number: 1, title: "左手を洗う", subtitle: "Wash Left Hand", emoji: "\u{1F4A7}",
-                description: "右手で柄杓を持ち、水をすくって左手を洗います。", delay: 0)
-            illustratedStep(number: 2, title: "右手を洗う", subtitle: "Wash Right Hand", emoji: "\u{1F4A7}",
-                description: "柄杓を左手に持ち替えて、右手を洗います。", delay: 0.1)
-            illustratedStep(number: 3, title: "口をすすぐ", subtitle: "Rinse Mouth", emoji: "\u{1F4A6}",
-                description: "右手に持ち替え、左の手のひらに水を受けて口をすすぎます。柄杓に直接口をつけないようにしましょう。", delay: 0.2)
-            illustratedStep(number: 4, title: "左手を清める", subtitle: "Purify Left Hand", emoji: "\u{2728}",
-                description: "もう一度左手を洗い清めます。", delay: 0.3)
-            illustratedStep(number: 5, title: "柄杓を清める", subtitle: "Purify Ladle", emoji: "\u{1FAA3}",
-                description: "柄杓を立てて残りの水で柄の部分を洗い流し、元の位置に戻します。", delay: 0.4)
+            illustratedStep(number: 1, title: "Wash Left Hand", subtitle: "Step 1", emoji: "\u{1F4A7}",
+                description: "Hold the ladle in your right hand, scoop water, and rinse your left hand.", delay: 0)
+            illustratedStep(number: 2, title: "Wash Right Hand", subtitle: "Step 2", emoji: "\u{1F4A7}",
+                description: "Switch the ladle to your left hand and rinse your right hand.", delay: 0.1)
+            illustratedStep(number: 3, title: "Rinse Mouth", subtitle: "Step 3", emoji: "\u{1F4A6}",
+                description: "Switch back to your right hand, pour water into your cupped left palm, and rinse your mouth. Never touch the ladle directly to your lips.", delay: 0.2)
+            illustratedStep(number: 4, title: "Purify Left Hand", subtitle: "Step 4", emoji: "\u{2728}",
+                description: "Rinse your left hand one more time to purify it.", delay: 0.3)
+            illustratedStep(number: 5, title: "Purify the Ladle", subtitle: "Step 5", emoji: "\u{1FAA3}",
+                description: "Tilt the ladle upright so the remaining water runs down the handle, then return it to its place.", delay: 0.4)
         }
     }
 
-    // MARK: - おみくじの引き方
+    // MARK: - Omikuji Fortune
 
     private var omikujiContent: some View {
         VStack(spacing: DS.Spacing.xxl) {
-            illustratedStep(number: 1, title: "初穂料を納める", subtitle: "Pay the Fee", emoji: "\u{1FA99}",
-                description: "おみくじの料金（通常100〜200円）を納めます。", delay: 0)
-            illustratedStep(number: 2, title: "心を込めて引く", subtitle: "Draw with Sincerity", emoji: "\u{2728}",
-                description: "願い事を心に思い浮かべながらおみくじを引きます。", delay: 0.1)
-            illustratedStep(number: 3, title: "内容をよく読む", subtitle: "Read Carefully", emoji: "\u{1F4DC}",
-                description: "吉凶だけでなく、各項目の助言もしっかり読みましょう。", delay: 0.2)
-            illustratedStep(number: 4, title: "結ぶか持ち帰る", subtitle: "Tie or Keep", emoji: "\u{1F38B}",
-                description: "凶のおみくじは境内の指定場所に結びます。吉は持ち帰ってお守りにしても良いでしょう。", delay: 0.3)
+            illustratedStep(number: 1, title: "Pay the Fee", subtitle: "Step 1", emoji: "\u{1FA99}",
+                description: "Pay the omikuji fee, usually 100-200 yen.", delay: 0)
+            illustratedStep(number: 2, title: "Draw with Sincerity", subtitle: "Step 2", emoji: "\u{2728}",
+                description: "Hold your wish in your heart as you draw your fortune.", delay: 0.1)
+            illustratedStep(number: 3, title: "Read Carefully", subtitle: "Step 3", emoji: "\u{1F4DC}",
+                description: "Don't just check the overall fortune — read the advice in each section carefully.", delay: 0.2)
+            illustratedStep(number: 4, title: "Tie or Keep", subtitle: "Step 4", emoji: "\u{1F38B}",
+                description: "Tie bad fortunes at the designated spot in the shrine grounds. Good fortunes can be kept as a lucky charm.", delay: 0.3)
 
             noteCard(
                 icon: "list.number", color: Color.kincha,
-                title: "おみくじの順位",
-                text: "大吉 → 吉 → 中吉 → 小吉 → 末吉 → 凶 → 大凶。神社によって順位が異なる場合もあります。"
+                title: "Fortune Rankings",
+                text: "Great Blessing > Blessing > Medium Blessing > Small Blessing > Future Blessing > Curse > Great Curse. Rankings may vary by shrine."
             )
         }
     }
 
-    // MARK: - 御朱印のいただき方
+    // MARK: - Gosyuin Stamps
 
     private var gosyuinContent: some View {
         VStack(spacing: DS.Spacing.xxl) {
-            illustratedStep(number: 1, title: "御朱印帳を用意", subtitle: "Prepare Stamp Book", emoji: "\u{1F4D5}",
-                description: "専用の御朱印帳を準備しましょう。ノートやメモ帳は避けます。", delay: 0)
-            illustratedStep(number: 2, title: "先に参拝する", subtitle: "Worship First", emoji: "\u{1F64F}",
-                description: "御朱印は参拝の証。必ず先に参拝を済ませましょう。", delay: 0.1)
-            illustratedStep(number: 3, title: "社務所へ", subtitle: "Visit the Office", emoji: "\u{1F3EC}",
-                description: "受付で御朱印帳を開いて渡し、「御朱印をお願いします」と伝えます。", delay: 0.2)
-            illustratedStep(number: 4, title: "初穂料を納める", subtitle: "Pay Offering", emoji: "\u{1FA99}",
-                description: "300〜500円程度。お釣りのないよう小銭を用意しましょう。", delay: 0.3)
-            illustratedStep(number: 5, title: "感謝して受け取る", subtitle: "Receive with Thanks", emoji: "\u{1F64C}",
-                description: "両手で御朱印帳を受け取り、お礼を述べましょう。", delay: 0.4)
+            illustratedStep(number: 1, title: "Prepare Your Book", subtitle: "Step 1", emoji: "\u{1F4D5}",
+                description: "Get a proper gosyuin-cho (stamp book). Regular notebooks are not appropriate.", delay: 0)
+            illustratedStep(number: 2, title: "Worship First", subtitle: "Step 2", emoji: "\u{1F64F}",
+                description: "Gosyuin are proof of worship. Always complete your prayers before requesting one.", delay: 0.1)
+            illustratedStep(number: 3, title: "Visit the Office", subtitle: "Step 3", emoji: "\u{1F3EC}",
+                description: "Open your stamp book to the correct page and hand it to the staff. Say 'Gosyuin o onegai shimasu' (I'd like a gosyuin, please).", delay: 0.2)
+            illustratedStep(number: 4, title: "Pay the Offering", subtitle: "Step 4", emoji: "\u{1FA99}",
+                description: "The fee is typically 300-500 yen. Have exact change ready to be polite.", delay: 0.3)
+            illustratedStep(number: 5, title: "Receive with Thanks", subtitle: "Step 5", emoji: "\u{1F64C}",
+                description: "Accept your stamp book back with both hands and express your gratitude.", delay: 0.4)
         }
     }
 
@@ -125,7 +125,6 @@ struct LearnDetailView: View {
         emoji: String, description: String, delay: Double
     ) -> some View {
         VStack(spacing: DS.Spacing.md) {
-            // Step number badge
             HStack(spacing: DS.Spacing.sm) {
                 Text("\(number)")
                     .font(.caption.bold())
@@ -143,13 +142,11 @@ struct LearnDetailView: View {
                 Spacer()
             }
 
-            // Emoji illustration
             Text(emoji)
                 .font(.system(size: 72))
                 .frame(height: 90)
                 .frame(maxWidth: .infinity)
 
-            // Description
             Text(description)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

@@ -12,13 +12,13 @@ struct ExploreSearchSheet: View {
     @FocusState private var isFocused: Bool
     @State private var searchSubmitted = false
 
-    private let categories: [(String, String)] = [
-        ("神社", "building.columns"),
-        ("寺", "house.lodge"),
-        ("神宮", "crown"),
-        ("大社", "mountain.2"),
-        ("天満宮", "graduationcap"),
-        ("稲荷", "flame"),
+    private let categories: [(display: String, icon: String, query: String)] = [
+        ("Shrine", "building.columns", "神社"),
+        ("Temple", "house.lodge", "寺"),
+        ("Jingu", "crown", "神宮"),
+        ("Grand Shrine", "mountain.2", "大社"),
+        ("Tenmangu", "graduationcap", "天満宮"),
+        ("Inari", "flame", "稲荷"),
     ]
 
     private var collectedIds: Set<Int> {
@@ -108,17 +108,17 @@ struct ExploreSearchSheet: View {
                 .foregroundStyle(.secondary)
 
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 90), spacing: DS.Spacing.sm)], spacing: DS.Spacing.sm) {
-                ForEach(categories, id: \.0) { name, icon in
+                ForEach(categories, id: \.display) { category in
                     Button {
-                        searchService.queryFragment = name
-                        searchService.search(query: name, in: region)
+                        searchService.queryFragment = category.display
+                        searchService.search(query: category.query, in: region)
                         searchSubmitted.toggle()
                     } label: {
                         HStack(spacing: 6) {
-                            Image(systemName: icon)
+                            Image(systemName: category.icon)
                                 .font(.caption)
                                 .foregroundStyle(Color.vermillion)
-                            Text(name)
+                            Text(category.display)
                                 .font(.subheadline.weight(.medium))
                         }
                         .frame(maxWidth: .infinity)

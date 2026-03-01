@@ -19,15 +19,7 @@ enum WorshipStep: Int, Codable, CaseIterable, Hashable {
 
     var label: String {
         switch self {
-        case .temizu: "手水"
-        case .sanpai: "参拝"
-        case .gosyuin: "御朱印"
-        }
-    }
-
-    var labelEn: String {
-        switch self {
-        case .temizu: "Temizu"
+        case .temizu: "Purify"
         case .sanpai: "Worship"
         case .gosyuin: "Stamp"
         }

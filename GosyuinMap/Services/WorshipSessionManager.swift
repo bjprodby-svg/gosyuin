@@ -48,7 +48,7 @@ final class WorshipSessionManager {
         guard isActive else { return }
         let finalState = GosyuinActivityAttributes.ContentState(
             templeName: shrineName,
-            status: "完了",
+            status: "Complete",
             currentStep: .gosyuin,
             startDate: startDate
         )
@@ -66,7 +66,7 @@ final class WorshipSessionManager {
         guard isActive else { return }
         let state = GosyuinActivityAttributes.ContentState(
             templeName: shrineName,
-            status: "中止",
+            status: "Cancelled",
             currentStep: currentStep,
             startDate: startDate
         )

@@ -29,7 +29,7 @@ struct SplashView: View {
                     Text("GosyuinMap")
                         .font(.title.bold())
                         .foregroundStyle(Color.vermillion)
-                    Text("御朱印マップ")
+                    Text("Shrine Stamp Collector")
                         .font(.subheadline)
                         .foregroundStyle(Color.bodyText)
                 }
