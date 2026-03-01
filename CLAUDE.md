@@ -21,7 +21,7 @@ GosyuinMap/
 │   ├── Explore/             # 地図タブ（MapKit + MKLocalSearch）
 │   │   ├── ExploreView.swift
 │   │   ├── ShrineDetailView.swift
-│   │   └── SearchSheetView.swift    # 神社検索シート
+│   │   └── ExploreSearchSheet.swift # Apple Maps風 統合検索シート
 │   ├── Collect/             # スタンプ帳 + 御朱印記録タブ
 │   │   ├── CollectView.swift
 │   │   ├── StampDetailView.swift
@@ -54,7 +54,7 @@ GosyuinMap/
 
 | タブ | View | 機能 |
 |------|------|------|
-| Explore | `ExploreView` | MapKit で周辺の神社仏閣を表示 + MKLocalSearch で動的検索 |
+| Explore | `ExploreView` | MapKit 地図 + Apple Maps 風検索シート（MKLocalSearchCompleter 補完 + MKLocalSearch 確定検索） |
 | Collect | `CollectView` | スタンプ帳グリッドでコレクション管理 |
 | Records | `GosyuinListView` | SwiftData で御朱印記録の CRUD |
 | Learn | `LearnListView` | 参拝作法・御朱印マナーの解説 |

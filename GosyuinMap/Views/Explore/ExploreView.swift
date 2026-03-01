@@ -11,17 +11,17 @@ struct ExploreView: View {
         )
     )
     @State private var visibleRegion: MKCoordinateRegion?
-    @State private var searchText = ""
     @State private var selectedShrine: Shrine?
     @State private var selectedMapItem: MKMapItem?
     @State private var mapStyleOption: MapStyleOption = .standard
-    @State private var showingSearchSheet = false
+    @State private var searchSheetDetent: PresentationDetent = .height(56)
+    @State private var showSearchSheet = true
 
-    private var filteredShrines: [Shrine] {
-        if searchText.isEmpty {
-            return Shrine.samples
-        }
-        return Shrine.samples.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+    private var currentRegion: MKCoordinateRegion {
+        visibleRegion ?? MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917),
+            span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+        )
     }
 
     var body: some View {
@@ -29,8 +29,8 @@ struct ExploreView: View {
             ZStack {
                 mapContent
 
-                VStack(spacing: 0) {
-                    searchOverlay
+                // 下部カード（選択中の神社 / MapItem）
+                VStack {
                     Spacer()
                     if let shrine = selectedShrine {
                         shrineCard(shrine)
@@ -52,34 +52,26 @@ struct ExploreView: View {
             .onAppear {
                 locationService.requestPermission()
             }
-            .sheet(isPresented: $showingSearchSheet) {
-                SearchSheetView(
+            .sheet(isPresented: $showSearchSheet) {
+                ExploreSearchSheet(
                     searchService: searchService,
-                    region: visibleRegion ?? defaultRegion
-                ) { mapItem in
-                    showingSearchSheet = false
-                    selectedShrine = nil
-                    selectedMapItem = mapItem
-                    if let coord = mapItem.placemark.location?.coordinate {
-                        withAnimation {
-                            position = .region(
-                                MKCoordinateRegion(
-                                    center: coord,
-                                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                                )
-                            )
-                        }
+                    region: currentRegion,
+                    onSelectMapItem: { item in
+                        handleSelectMapItem(item)
+                    },
+                    onSelectShrine: { shrine in
+                        handleSelectShrine(shrine)
                     }
-                }
+                )
+                .presentationDetents(
+                    [.height(56), .medium, .large],
+                    selection: $searchSheetDetent
+                )
+                .presentationDragIndicator(.hidden)
+                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .interactiveDismissDisabled()
             }
         }
-    }
-
-    private var defaultRegion: MKCoordinateRegion {
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917),
-            span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
-        )
     }
 
     // MARK: - Map
@@ -88,14 +80,17 @@ struct ExploreView: View {
         Map(position: $position) {
             UserAnnotation()
 
-            ForEach(filteredShrines) { shrine in
+            // 固定の神社サンプル
+            ForEach(Shrine.samples) { shrine in
                 Annotation(shrine.name, coordinate: shrine.coordinate, anchor: .bottom) {
                     shrinePin(for: shrine)
                 }
             }
 
+            // 検索結果のピン
             ForEach(searchService.results, id: \.self) { item in
-                if let coord = item.placemark.location?.coordinate {
+                if let coord = item.placemark.location?.coordinate,
+                   !isDuplicateOfSample(item) {
                     Annotation(item.name ?? "", coordinate: coord, anchor: .bottom) {
                         mapItemPin(for: item)
                     }
@@ -109,7 +104,20 @@ struct ExploreView: View {
         }
         .onMapCameraChange { context in
             visibleRegion = context.region
+            searchService.updateRegion(context.region)
         }
+        .onTapGesture {
+            withAnimation {
+                selectedShrine = nil
+                selectedMapItem = nil
+            }
+        }
+    }
+
+    /// 検索結果が Shrine.samples と重複するかチェック
+    private func isDuplicateOfSample(_ item: MKMapItem) -> Bool {
+        guard let name = item.name else { return false }
+        return Shrine.samples.contains { name.contains($0.name) }
     }
 
     private func shrinePin(for shrine: Shrine) -> some View {
@@ -117,6 +125,7 @@ struct ExploreView: View {
             withAnimation(.spring(duration: 0.3)) {
                 selectedMapItem = nil
                 selectedShrine = shrine
+                searchSheetDetent = .height(56)
                 position = .region(
                     MKCoordinateRegion(
                         center: shrine.coordinate,
@@ -135,11 +144,12 @@ struct ExploreView: View {
             withAnimation(.spring(duration: 0.3)) {
                 selectedShrine = nil
                 selectedMapItem = item
+                searchSheetDetent = .height(56)
             }
         } label: {
             ZStack {
                 Circle()
-                    .fill(Color.vermillion.opacity(0.8))
+                    .fill(Color.vermillion.opacity(0.85))
                     .frame(width: selectedMapItem == item ? 40 : 30,
                            height: selectedMapItem == item ? 40 : 30)
                     .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
@@ -152,64 +162,38 @@ struct ExploreView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Search Overlay
+    // MARK: - Selection Handlers
 
-    private var searchOverlay: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                TextField("Search shrines", text: $searchText)
-                    .textFieldStyle(.plain)
-                if !searchText.isEmpty {
-                    Button {
-                        searchText = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .padding(12)
-            .adaptiveGlassBackground(cornerRadius: 12)
+    private func handleSelectMapItem(_ item: MKMapItem) {
+        selectedShrine = nil
+        selectedMapItem = item
+        searchSheetDetent = .height(56)
 
-            HStack(spacing: 8) {
-                Button {
-                    showingSearchSheet = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Text("\u{26E9}")
-                        Text("Search nearby")
-                    }
-                    .font(.subheadline.weight(.medium))
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .adaptiveGlassBackground(cornerRadius: 20)
-                }
-                .buttonStyle(.plain)
-
-                if !searchService.results.isEmpty {
-                    Button {
-                        withAnimation {
-                            searchService.clear()
-                            selectedMapItem = nil
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "xmark")
-                            Text("Clear")
-                        }
-                        .font(.caption.weight(.medium))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .adaptiveGlassBackground(cornerRadius: 20)
-                    }
-                    .buttonStyle(.plain)
-                }
+        if let coord = item.placemark.location?.coordinate {
+            withAnimation {
+                position = .region(
+                    MKCoordinateRegion(
+                        center: coord,
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    )
+                )
             }
         }
-        .padding(.horizontal)
-        .padding(.top, 8)
+    }
+
+    private func handleSelectShrine(_ shrine: Shrine) {
+        selectedMapItem = nil
+        selectedShrine = shrine
+        searchSheetDetent = .height(56)
+
+        withAnimation {
+            position = .region(
+                MKCoordinateRegion(
+                    center: shrine.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+            )
+        }
     }
 
     // MARK: - Selected Shrine Card
@@ -245,7 +229,8 @@ struct ExploreView: View {
             .adaptiveGlassBackground(cornerRadius: 16)
         }
         .buttonStyle(.plain)
-        .padding()
+        .padding(.horizontal)
+        .padding(.bottom, 72)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
@@ -277,12 +262,10 @@ struct ExploreView: View {
             Spacer()
 
             Button {
-                if let url = item.url {
-                    UIApplication.shared.open(url)
-                } else if let coord = item.placemark.location?.coordinate {
-                    let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord))
-                    mapItem.name = item.name
-                    mapItem.openInMaps()
+                if let coord = item.placemark.location?.coordinate {
+                    let destination = MKMapItem(placemark: MKPlacemark(coordinate: coord))
+                    destination.name = item.name
+                    destination.openInMaps()
                 }
             } label: {
                 Image(systemName: "arrow.triangle.turn.up.right.circle.fill")
@@ -292,7 +275,8 @@ struct ExploreView: View {
         }
         .padding()
         .adaptiveGlassBackground(cornerRadius: 16)
-        .padding()
+        .padding(.horizontal)
+        .padding(.bottom, 72)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
@@ -366,4 +350,5 @@ enum MapStyleOption: CaseIterable, Identifiable {
 
 #Preview {
     ExploreView()
+        .modelContainer(for: [CollectedStamp.self], inMemory: true)
 }

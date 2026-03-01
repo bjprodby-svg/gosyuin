@@ -30,7 +30,7 @@
 		089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B1293AF1B0007B3F21 /* SplashView.swift */; };
 		089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16B2293AF1B0007B3F21 /* WorshipSessionManager.swift */; };
 		089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */; };
-		089C16F2293AF1B0007B3F21 /* SearchSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F3293AF1B0007B3F21 /* SearchSheetView.swift */; };
+		089C16F2293AF1B0007B3F21 /* ExploreSearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */; };
 		089C16F4293AF1B0007B3F21 /* GosyuinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */; };
 		089C16F6293AF1B0007B3F21 /* GosyuinFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */; };
 		089C16F8293AF1B0007B3F21 /* GosyuinRecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */; };
@@ -97,7 +97,7 @@
 		089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GosyuinMapWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineSearchService.swift; sourceTree = "<group>"; };
-		089C16F3293AF1B0007B3F21 /* SearchSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheetView.swift; sourceTree = "<group>"; };
+		089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSearchSheet.swift; sourceTree = "<group>"; };
 		089C16F5293AF1B0007B3F21 /* GosyuinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinListView.swift; sourceTree = "<group>"; };
 		089C16F7293AF1B0007B3F21 /* GosyuinFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinFormView.swift; sourceTree = "<group>"; };
 		089C16F9293AF1B0007B3F21 /* GosyuinRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinRecordDetailView.swift; sourceTree = "<group>"; };
@@ -172,7 +172,7 @@
 			children = (
 				089C167A293AF1B0007B3F21 /* ExploreView.swift */,
 				089C16A0293AF1B0007B3F21 /* ShrineDetailView.swift */,
-				089C16F3293AF1B0007B3F21 /* SearchSheetView.swift */,
+				089C16F3293AF1B0007B3F21 /* ExploreSearchSheet.swift */,
 			);
 			path = Explore;
 			sourceTree = "<group>";
