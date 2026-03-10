@@ -3,13 +3,13 @@ import SwiftData
 
 @main
 struct GosyuinMapApp: App {
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var hasCompletedOnboarding = false
     @State private var showSplash = true
 
     var body: some Scene {
         WindowGroup {
             if !hasCompletedOnboarding {
-                OnboardingView()
+                OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
             } else {
                 ZStack {
                     ContentView()

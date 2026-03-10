@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Taisha (大社) - Shimenawa rope style -->
+  <!-- Main roof with wide spread -->
+  <polygon points="32,8 2,36 62,36" fill="currentColor"/>
+  <!-- Body -->
+  <rect x="12" y="36" width="40" height="18" fill="currentColor"/>
+  <!-- Door -->
+  <rect x="25" y="40" width="14" height="14" rx="2" fill="white"/>
+  <!-- Shimenawa (sacred rope) across top -->
+  <path d="M8 32 Q20 28, 32 32 Q44 36, 56 32" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Foundation -->
+  <rect x="8" y="54" width="48" height="3" rx="1" fill="currentColor"/>
+  <rect x="4" y="57" width="56" height="3" rx="1" fill="currentColor"/>
+</svg>

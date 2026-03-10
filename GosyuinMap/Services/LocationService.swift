@@ -22,8 +22,9 @@ final class LocationService: NSObject, @unchecked Sendable, CLLocationManagerDel
     }
 
     func startUpdatingLocation() {
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        manager.distanceFilter = 20
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = 10
+        manager.activityType = .fitness
         manager.startUpdatingLocation()
     }
 
@@ -37,9 +38,19 @@ final class LocationService: NSObject, @unchecked Sendable, CLLocationManagerDel
             return
         }
 
+        // Ignore inaccurate readings
+        guard location.horizontalAccuracy >= 0,
+              location.horizontalAccuracy < 50 else {
+            return
+        }
+
         let nearest = Shrine.samples
             .filter { !collectedSlotIds.contains($0.stampSlotId) }
-            .map { (shrine: $0, distance: location.distance(from: CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude))) }
+            .map { shrine in
+                let shrineLoc = CLLocation(latitude: shrine.coordinate.latitude,
+                                           longitude: shrine.coordinate.longitude)
+                return (shrine: shrine, distance: location.distance(from: shrineLoc))
+            }
             .filter { $0.distance <= proximityThreshold }
             .min(by: { $0.distance < $1.distance })
 
@@ -50,6 +61,8 @@ final class LocationService: NSObject, @unchecked Sendable, CLLocationManagerDel
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        // Skip stale locations (older than 10 seconds)
+        guard abs(location.timestamp.timeIntervalSinceNow) < 10 else { return }
         Task { @MainActor [weak self] in
             self?.currentLocation = location
             self?.checkProximity()

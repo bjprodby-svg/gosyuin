@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Torii Gate - Shrine (神社) -->
+  <!-- Top beam (kasagi) with curved ends -->
+  <path d="M6 14 C6 12, 8 8, 32 6 C56 8, 58 12, 58 14 L58 17 L6 17 Z" fill="currentColor"/>
+  <!-- Second beam (nuki) -->
+  <rect x="12" y="22" width="40" height="4" rx="1" fill="currentColor"/>
+  <!-- Left pillar -->
+  <rect x="14" y="14" width="5" height="46" rx="1" fill="currentColor"/>
+  <!-- Right pillar -->
+  <rect x="45" y="14" width="5" height="46" rx="1" fill="currentColor"/>
+</svg>

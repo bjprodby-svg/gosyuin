@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Hachimangu (八幡宮) - Dove/pigeon (symbol of Hachiman) -->
+  <!-- Body -->
+  <ellipse cx="30" cy="38" rx="18" ry="14" fill="currentColor"/>
+  <!-- Head -->
+  <circle cx="48" cy="24" r="10" fill="currentColor"/>
+  <!-- Beak -->
+  <polygon points="56,22 64,24 56,26" fill="currentColor"/>
+  <!-- Eye -->
+  <circle cx="51" cy="22" r="2.5" fill="white"/>
+  <!-- Wing -->
+  <path d="M16 30 Q8 18, 14 10 Q22 18, 30 26" fill="currentColor"/>
+  <!-- Tail -->
+  <polygon points="12,36 2,28 4,42" fill="currentColor"/>
+  <!-- Feet -->
+  <line x1="26" y1="50" x2="24" y2="60" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="34" y1="50" x2="36" y2="60" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

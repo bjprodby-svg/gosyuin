@@ -43,21 +43,12 @@ struct StampDetailView: View {
     // MARK: - Stamp Header
 
     private var stampHeader: some View {
-        VStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .strokeBorder(
-                        stamp.color,
-                        style: StrokeStyle(lineWidth: 3, dash: [6, 4])
-                    )
-                    .frame(width: 100, height: 100)
-                Circle()
-                    .fill(stamp.color.opacity(0.10))
-                    .frame(width: 88, height: 88)
-                Image(systemName: stamp.icon)
-                    .font(.system(size: 36))
-                    .foregroundStyle(stamp.color)
-            }
+        VStack(spacing: DS.Spacing.lg) {
+            GosyuinArtworkView(
+                stamp: stamp,
+                collectedDate: collectedStamp?.collectedDate
+            )
+            .frame(width: 280)
 
             Text(stamp.name)
                 .font(.title2.bold())
