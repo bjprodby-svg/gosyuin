@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>DI Proto</title><style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,sans-serif;background:#1a1a2e;color:#fff;height:100dvh;display:flex;flex-direction:column}
+.top{flex:1;position:relative;background:linear-gradient(#2d3a4a,#1a2332);overflow:hidden}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+.shrine{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);text-align:center;font-size:32px}.shrine span{display:block;font-size:11px;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:8px;margin-top:4px}
+.dot{position:absolute;left:50%;transform:translateX(-50%);width:14px;height:14px;background:#007aff;border:3px solid #fff;border-radius:50%;transition:bottom .5s;box-shadow:0 0 12px rgba(0,122,255,.5)}
+#di{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#000;border-radius:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 20px rgba(0,0,0,.5);transition:all .4s cubic-bezier(.4,0,.2,1);overflow:hidden;cursor:pointer}
+.idle{width:120px;height:36px}
+.compact{width:200px;height:40px;padding:0 14px;justify-content:space-between}
+.expand{width:calc(100% - 20px);min-height:76px;padding:12px 16px;border-radius:22px;flex-wrap:wrap;align-content:flex-start}
+.cL,.cR{display:none;font-size:15px;font-weight:600}.compact .cL,.compact .cR{display:block}
+.ex{display:none;width:100%}.expand .ex{display:block}
+.ex .r1{display:flex;justify-content:space-between;font-size:15px;font-weight:600}.ex .r2{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px}
+.bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:6px;display:none}.bar div{height:100%;background:#34c759;border-radius:2px;transition:width .5s}
+.msg{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,.5);text-align:center;width:90%}
+.ctl{background:rgba(0,0,0,.88);padding:14px 14px calc(14px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1)}
+.ctl h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.35);margin-bottom:8px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{flex:1;padding:7px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:0 0;color:rgba(255,255,255,.5);font-size:12px;cursor:pointer}.tabs .on{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.4)}
+.sl{margin-bottom:10px}.sl label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}.sl b{color:#34c759}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:rgba(255,255,255,.15)}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.3)}
+.btns{display:flex;gap:8px}.btns button{flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.bc{background:#34c759;color:#000}.bd{background:rgba(255,255,255,.12);color:#fff}.off{opacity:.3;pointer-events:none}
+</style></head><body>
+<div class="top"><div class="grid"></div>
+<div class="shrine">⛩️<span>Meiji Jingu</span></div>
+<div class="dot" id="dot" style="bottom:20%"></div>
+<div id="di" class="idle" onclick="tap()"><span class="cL" id="cL">⛩️</span><span class="cR" id="cR">250m</span><div class="ex"><div class="r1"><span id="eName">⛩️ Meiji Jingu</span><span id="eDist">250m</span></div><div class="r2" id="eSub">You're near this shrine</div><div class="bar" id="bar"><div id="fill" style="width:0"></div></div></div></div>
+<div class="msg" id="msg">スライダーで神社に近づいてみて</div>
+</div>
+<div class="ctl">
+<h4>シナリオ</h4>
+<div class="tabs"><button class="on" id="t0" onclick="mode(0)">散策型</button><button id="t1" onclick="mode(1)">ナビ型</button></div>
+<div class="sl"><label>距離 <b id="dv">250m</b></label><input type="range" id="sl" min="0" max="500" value="250" oninput="upd(+this.value)"></div>
+<div class="btns"><button class="bc off" id="bc" onclick="collect()">Collect Stamp</button><button class="bd off" id="bx" onclick="dismiss()">Not Now</button></div>
+</div>
+<script>
+let di=document.getElementById('di'),s='idle',m=0,d=250,ex=false,tm=null
+function mode(v){m=v;document.getElementById('t0').className=v?'':'on';document.getElementById('t1').className=v?'on':'';reset();document.getElementById('sl').value=250;upd(250);document.getElementById('cL').textContent=v?'🚶':'⛩️';document.getElementById('msg').textContent=v?'ナビ開始。近づいてみて':'散策中。近づいてみて'}
+function reset(){s='idle';ex=false;di.className='idle';off('bc');off('bx');document.getElementById('bar').style.display='none';document.getElementById('eSub').style.display='';document.getElementById('eDist').style.display='';if(tm){clearTimeout(tm);tm=null}}
+function off(id){document.getElementById(id).classList.add('off')}
+function on(id){document.getElementById(id).classList.remove('off')}
+function upd(v){d=+v;document.getElementById('dv').textContent=d+'m';document.getElementById('cR').textContent=d+'m';document.getElementById('eDist').textContent=d+'m';document.getElementById('dot').style.bottom=(15+d/500*40)+'%'
+if(s==='done'||s==='x')return
+if(m===0){px()}else{nv()}}
+function px(){if(d<=100&&s==='idle'){s='compact';di.className='compact';on('bx');document.getElementById('msg').textContent='⛩️ 近くに神社を検出！';if(tm){clearTimeout(tm);tm=null}}
+if(d<=50&&s!=='idle'){on('bc');document.getElementById('msg').textContent='✨ 取得可能！'}else if(d>50&&d<=100&&s!=='idle'){off('bc');document.getElementById('msg').textContent='もう少し近づくと取得できます'}
+if(d>100&&(s==='compact'||s==='exp')){document.getElementById('msg').textContent='圏外。3秒後に自動消滅';tm=setTimeout(()=>{di.style.opacity='0';setTimeout(()=>{reset();di.style.opacity='1';document.getElementById('msg').textContent='消滅。再び近づくと再表示'},400)},3000)}}
+function nv(){if(s==='idle'){s='compact';di.className='compact';document.getElementById('bar').style.display='block';on('bx')}
+if(s==='compact'||s==='exp'){let p=Math.min(100,(500-d)/500*100);document.getElementById('fill').style.width=p+'%';let mn=Math.ceil(d/80);document.getElementById('eSub').textContent=d<=100?"You've arrived!":mn+' min remaining';document.getElementById('msg').textContent=d<=100?'🎉 到着！スタンプを取得しよう':'ナビ中… あと'+d+'m';if(d<=100){on('bc')}else{off('bc')}}}
+function tap(){if(s==='idle'||s==='done'||s==='x')return;ex=!ex;if(ex){s='exp';di.className='expand';if(m)document.getElementById('bar').style.display='block'}else{s='compact';di.className='compact'}}
+function collect(){if(document.getElementById('bc').classList.contains('off'))return;s='done';di.className='expand';document.getElementById('bar').style.display='none';document.getElementById('eDist').textContent='✓';document.getElementById('eSub').textContent='Stamp added to your collection';off('bc');off('bx');document.getElementById('msg').textContent='✓ Collected! 5秒後に消えます';setTimeout(()=>{di.style.opacity='0';setTimeout(()=>{reset();di.style.opacity='1';document.getElementById('msg').textContent='完了！次の神社へ'},400)},5000)}
+function dismiss(){if(document.getElementById('bx').classList.contains('off'))return;s='x';di.style.opacity='0';off('bc');off('bx');document.getElementById('msg').textContent='Not Now → 再表示しません';setTimeout(()=>{reset();s='x';di.style.opacity='1'},400)}
+</script></body></html>
