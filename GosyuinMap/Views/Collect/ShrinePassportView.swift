@@ -238,16 +238,68 @@ private struct JourneyCardContent: View {
         let mapRect = CGRect(x: 12, y: 8, width: size.width - 24, height: size.height - 16)
 
         for island in JapanCoordinates.allIslands {
-            var path = Path()
-            for (i, pt) in island.enumerated() {
-                let p = mapPoint(lat: pt.lat, lon: pt.lon, in: mapRect)
-                if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
-            }
-            path.closeSubpath()
+            let points = island.map { mapPoint(lat: $0.lat, lon: $0.lon, in: mapRect) }
+            let path = catmullRomPath(points: points, closed: true, alpha: 0.5)
 
             context.fill(path, with: .color(Color(red: 0.85, green: 0.83, blue: 0.78).opacity(0.7)))
             context.stroke(path, with: .color(Color(red: 0.65, green: 0.62, blue: 0.58).opacity(0.5)), lineWidth: 0.8)
         }
+    }
+
+    /// Centripetal Catmull-Rom spline for smooth coastlines
+    private func catmullRomPath(points: [CGPoint], closed: Bool, alpha: CGFloat) -> Path {
+        var path = Path()
+        guard points.count > 2 else {
+            if let first = points.first {
+                path.move(to: first)
+                for p in points.dropFirst() { path.addLine(to: p) }
+                if closed { path.closeSubpath() }
+            }
+            return path
+        }
+
+        let pts: [CGPoint]
+        if closed {
+            pts = [points[points.count - 1]] + points + [points[0], points[1]]
+        } else {
+            let first = CGPoint(x: 2 * points[0].x - points[1].x, y: 2 * points[0].y - points[1].y)
+            let last = CGPoint(x: 2 * points[points.count - 1].x - points[points.count - 2].x,
+                               y: 2 * points[points.count - 1].y - points[points.count - 2].y)
+            pts = [first] + points + [last]
+        }
+
+        path.move(to: pts[1])
+
+        for i in 1..<(pts.count - 2) {
+            let p0 = pts[i - 1], p1 = pts[i], p2 = pts[i + 1], p3 = pts[min(i + 2, pts.count - 1)]
+
+            let d1 = hypot(p1.x - p0.x, p1.y - p0.y)
+            let d2 = hypot(p2.x - p1.x, p2.y - p1.y)
+            let d3 = hypot(p3.x - p2.x, p3.y - p2.y)
+
+            let t1 = pow(d1, alpha)
+            let t2 = pow(d2, alpha)
+            let t3 = pow(d3, alpha)
+
+            guard t1 > 0, t2 > 0, t3 > 0 else {
+                path.addLine(to: p2)
+                continue
+            }
+
+            let cp1 = CGPoint(
+                x: (t1 * t1 * p2.x - t2 * t2 * p0.x + (2 * t1 * t1 + 3 * t1 * t2 + t2 * t2) * p1.x) / (3 * t1 * (t1 + t2)),
+                y: (t1 * t1 * p2.y - t2 * t2 * p0.y + (2 * t1 * t1 + 3 * t1 * t2 + t2 * t2) * p1.y) / (3 * t1 * (t1 + t2))
+            )
+            let cp2 = CGPoint(
+                x: (t3 * t3 * p1.x - t2 * t2 * p3.x + (2 * t3 * t3 + 3 * t3 * t2 + t2 * t2) * p2.x) / (3 * t3 * (t3 + t2)),
+                y: (t3 * t3 * p1.y - t2 * t2 * p3.y + (2 * t3 * t3 + 3 * t3 * t2 + t2 * t2) * p2.y) / (3 * t3 * (t3 + t2))
+            )
+
+            path.addCurve(to: p2, control1: cp1, control2: cp2)
+        }
+
+        if closed { path.closeSubpath() }
+        return path
     }
 
     private func drawVisitedShrines(context: GraphicsContext, size: CGSize) {
@@ -289,8 +341,8 @@ private struct JourneyCardContent: View {
     }
 
     private func mapPoint(lat: Double, lon: Double, in rect: CGRect) -> CGPoint {
-        let minLat = 30.0, maxLat = 46.0
-        let minLon = 128.0, maxLon = 146.0
+        let minLat = 25.5, maxLat = 46.0
+        let minLon = 127.0, maxLon = 146.5
         let x = rect.minX + (lon - minLon) / (maxLon - minLon) * rect.width
         let y = rect.minY + (1 - (lat - minLat) / (maxLat - minLat)) * rect.height
         return CGPoint(x: x, y: y)
