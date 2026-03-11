@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Dynamic Island Prototype</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Phone frame */
+  .phone {
+    position: relative;
+    max-width: 393px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: linear-gradient(180deg, #2d3a4a 0%, #1a2332 100%);
+    overflow: hidden;
+  }
+
+  /* Fake map background */
+  .map-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 60% 40%, rgba(76,175,80,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 30% 70%, rgba(33,150,243,0.1) 0%, transparent 40%),
+      linear-gradient(180deg, #e8e0d0 0%, #d4cabb 100%);
+    opacity: 0.3;
+  }
+  .map-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Dynamic Island */
+  .dynamic-island {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    border-radius: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .di-idle {
+    width: 126px;
+    height: 37px;
+  }
+  .di-compact {
+    width: 220px;
+    height: 42px;
+    padding: 0 16px;
+  }
+  .di-expanded {
+    width: calc(100% - 24px);
+    height: auto;
+    min-height: 84px;
+    padding: 14px 18px;
+    border-radius: 24px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .di-collected {
+    width: calc(100% - 24px);
+    min-height: 84px;
+    padding: 14px 18px;
+    border-radius: 24px;
+    flex-direction: column;
+    align-items: stretch;
+    background: linear-gradient(135deg, #000 60%, #1a3a1a);
+  }
+
+  /* Compact content */
+  .compact-content {
+    display: none;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .di-compact .compact-content,
+  .di-compact .compact-content { display: flex; }
+  .compact-icon { font-size: 18px; }
+  .compact-distance {
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+
+  /* Expanded content */
+  .expanded-content {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .di-expanded .expanded-content,
+  .di-collected .expanded-content { display: flex; }
+  .expanded-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .expanded-name {
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .expanded-dist {
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .expanded-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* Navigation progress */
+  .progress-bar {
+    display: none;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #34c759;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  /* Collected state */
+  .collected-check {
+    display: none;
+    font-size: 28px;
+    color: #34c759;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+
+  /* Controls panel */
+  .controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+    z-index: 200;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .controls h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 10px;
+  }
+
+  .scenario-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .scenario-tab {
+    flex: 1;
+    padding: 8px 4px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .scenario-tab.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  .slider-group {
+    margin-bottom: 12px;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .slider-value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #34c759;
+  }
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.15);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .action-btns {
+    display: flex;
+    gap: 8px;
+  }
+  .action-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-collect {
+    background: #34c759;
+    color: #000;
+  }
+  .btn-dismiss {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+  }
+  .btn-collect:active { transform: scale(0.96); }
+  .btn-dismiss:active { transform: scale(0.96); }
+  .btn-disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Status indicator */
+  .status-bar {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    z-index: 50;
+    transition: opacity 0.3s;
+    text-align: center;
+    max-width: 90%;
+  }
+
+  /* Shrine marker on map */
+  .shrine-marker {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+    transition: all 0.5s;
+  }
+  .shrine-marker .icon {
+    font-size: 36px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  }
+  .shrine-marker .label {
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(0,0,0,0.6);
+    padding: 2px 8px;
+    border-radius: 8px;
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+
+  /* User dot */
+  .user-dot {
+    position: absolute;
+    bottom: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    transition: bottom 1s ease;
+  }
+  .user-dot-inner {
+    width: 16px;
+    height: 16px;
+    background: #007aff;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,122,255,0.4);
+  }
+  .user-dot-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0,122,255,0.2);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: translate(-50%,-50%) scale(0.8); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(2); opacity: 0; }
+  }
+
+  /* Fade animation */
+  .fade-out {
+    animation: fadeOut 0.5s forwards;
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="map-bg"></div>
+  <div class="map-grid"></div>
+
+  <div class="shrine-marker" id="shrineMarker">
+    <div class="icon">⛩️</div>
+    <div class="label">Meiji Jingu</div>
+  </div>
+
+  <div class="user-dot" id="userDot">
+    <div class="user-dot-pulse"></div>
+    <div class="user-dot-inner"></div>
+  </div>
+
+  <!-- Dynamic Island -->
+  <div class="dynamic-island di-idle" id="island" onclick="toggleExpand()">
+    <div class="compact-content">
+      <span class="compact-icon" id="compactIcon">⛩️</span>
+      <span class="compact-distance" id="compactDist">85m</span>
+    </div>
+    <div class="expanded-content">
+      <div class="expanded-row">
+        <span class="expanded-name">
+          <span id="expandedIcon">⛩️</span>
+          <span>Meiji Jingu</span>
+        </span>
+        <span class="expanded-dist" id="expandedDist">85m</span>
+      </div>
+      <div class="expanded-row">
+        <span class="expanded-sub" id="expandedSub">You're near this shrine</span>
+        <span class="collected-check" id="collectedCheck">✓</span>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-fill" id="progressFill" style="width: 30%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar">距離スライダーで近づいてみてください</div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <h3>シナリオ</h3>
+  <div class="scenario-tabs">
+    <button class="scenario-tab active" onclick="setScenario('proximity')">散策型</button>
+    <button class="scenario-tab" onclick="setScenario('navigation')">ナビ型</button>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-label">
+      <span>神社までの距離</span>
+      <span class="slider-value" id="distLabel">250m</span>
+    </div>
+    <input type="range" id="distSlider" min="0" max="500" value="250"
+           oninput="onDistanceChange(this.value)">
+  </div>
+
+  <div class="action-btns">
+    <button class="action-btn btn-collect btn-disabled" id="btnCollect" onclick="doCollect()">
+      Collect Stamp
+    </button>
+    <button class="action-btn btn-dismiss btn-disabled" id="btnDismiss" onclick="doDismiss()">
+      Not Now
+    </button>
+  </div>
+</div>
+
+<script>
+  const island = document.getElementById('island');
+  const statusBar = document.getElementById('statusBar');
+  const distLabel = document.getElementById('distLabel');
+  const distSlider = document.getElementById('distSlider');
+  const btnCollect = document.getElementById('btnCollect');
+  const btnDismiss = document.getElementById('btnDismiss');
+  const userDot = document.getElementById('userDot');
+  const progressBar = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
+  const compactIcon = document.getElementById('compactIcon');
+  const expandedIcon = document.getElementById('expandedIcon');
+  const expandedSub = document.getElementById('expandedSub');
+  const collectedCheck = document.getElementById('collectedCheck');
+
+  let state = 'idle';        // idle | compact | expanded | collected | dismissed
+  let scenario = 'proximity'; // proximity | navigation
+  let isExpanded = false;
+  let distance = 250;
+  let dismissTimer = null;
+
+  function setScenario(s) {
+    scenario = s;
+    document.querySelectorAll('.scenario-tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && s === 'proximity') || (i === 1 && s === 'navigation'));
+    });
+
+    // Reset
+    resetState();
+    distSlider.value = 250;
+    onDistanceChange(250);
+
+    if (s === 'navigation') {
+      statusBar.textContent = 'ナビ開始。スライダーで歩いてみてください';
+      compactIcon.textContent = '🚶';
+      expandedIcon.textContent = '🚶';
+    } else {
+      statusBar.textContent = '散策中。スライダーで近づいてみてください';
+      compactIcon.textContent = '⛩️';
+      expandedIcon.textContent = '⛩️';
+    }
+  }
+
+  function resetState() {
+    state = 'idle';
+    isExpanded = false;
+    island.className = 'dynamic-island di-idle';
+    btnCollect.classList.add('btn-disabled');
+    btnDismiss.classList.add('btn-disabled');
+    progressBar.style.display = 'none';
+    collectedCheck.style.display = 'none';
+    expandedSub.style.display = '';
+    if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+  }
+
+  function onDistanceChange(val) {
+    distance = parseInt(val);
+    distLabel.textContent = distance + 'm';
+
+    // Move user dot visually
+    const pct = 45 + (distance / 500) * 30; // 45% (close) to 75% (far) from bottom
+    userDot.style.bottom = (90 - pct) + '%';
+
+    // Update displayed distance
+    document.getElementById('compactDist').textContent = distance + 'm';
+    document.getElementById('expandedDist').textContent = distance + 'm';
+
+    if (state === 'collected' || state === 'dismissed') return;
+
+    if (scenario === 'navigation') {
+      updateNavigation();
+    } else {
+      updateProximity();
+    }
+  }
+
+  function updateProximity() {
+    if (distance <= 100 && state === 'idle') {
+      // Enter proximity zone
+      state = 'compact';
+      island.className = 'dynamic-island di-compact';
+      statusBar.textContent = '⛩️ 近くに神社を検出！タップで詳細';
+      btnDismiss.classList.remove('btn-disabled');
+      if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+
+      if (distance <= 50) {
+        btnCollect.classList.remove('btn-disabled');
+      }
+    } else if (distance <= 100 && (state === 'compact' || state === 'expanded')) {
+      // Within zone, update
+      if (distance <= 50) {
+        btnCollect.classList.remove('btn-disabled');
+        statusBar.textContent = '✨ 取得可能距離！ "Collect Stamp" を押してみて';
+      } else {
+        btnCollect.classList.add('btn-disabled');
+        statusBar.textContent = '⛩️ もう少し近づくと取得できます';
+      }
+    } else if (distance > 100 && (state === 'compact' || state === 'expanded')) {
+      // Left zone — start 30s fade (simulated as 3s for demo)
+      statusBar.textContent = '圏外に出ました。30秒後に自動終了（デモ: 3秒）';
+      dismissTimer = setTimeout(() => {
+        if (state === 'compact' || state === 'expanded') {
+          island.classList.add('fade-out');
+          setTimeout(() => {
+            resetState();
+            island.classList.remove('fade-out');
+            statusBar.textContent = '自然消滅しました。再び近づくと再表示';
+          }, 500);
+        }
+      }, 3000);
+    }
+  }
+
+  function updateNavigation() {
+    if (state === 'idle' && distance < 500) {
+      // Navigation always shows
+      state = 'compact';
+      island.className = 'dynamic-island di-compact';
+      progressBar.style.display = 'block';
+    }
+
+    if (state === 'compact' || state === 'expanded') {
+      const progress = Math.max(0, Math.min(100, ((500 - distance) / 500) * 100));
+      progressFill.style.width = progress + '%';
+      const mins = Math.ceil(distance / 80); // ~80m/min walking
+      expandedSub.textContent = `${mins} min remaining`;
+
+      if (distance <= 100) {
+        statusBar.textContent = "🎉 You've arrived! Collect your stamp";
+        expandedSub.textContent = "You've arrived!";
+        btnCollect.classList.remove('btn-disabled');
+        btnDismiss.classList.remove('btn-disabled');
+        progressFill.style.width = '100%';
+      } else {
+        statusBar.textContent = `ナビ中… あと ${distance}m（約${mins}分）`;
+        btnCollect.classList.add('btn-disabled');
+        btnDismiss.classList.remove('btn-disabled');
+      }
+    }
+  }
+
+  function toggleExpand() {
+    if (state === 'idle' || state === 'dismissed') return;
+    if (state === 'collected') return;
+
+    isExpanded = !isExpanded;
+    if (isExpanded) {
+      state = 'expanded';
+      island.className = 'dynamic-island di-expanded';
+      if (scenario === 'navigation') progressBar.style.display = 'block';
+
+      if (scenario === 'proximity') {
+        expandedSub.textContent = "You're near this shrine";
+      }
+    } else {
+      state = 'compact';
+      island.className = 'dynamic-island di-compact';
+    }
+  }
+
+  function doCollect() {
+    if (btnCollect.classList.contains('btn-disabled')) return;
+    state = 'collected';
+    isExpanded = true;
+    island.className = 'dynamic-island di-collected';
+    progressBar.style.display = 'none';
+
+    expandedSub.textContent = 'Stamp added to your collection';
+    expandedSub.style.display = '';
+    collectedCheck.style.display = 'inline';
+    document.getElementById('expandedDist').textContent = '';
+
+    statusBar.textContent = '✓ Collected! 5秒後に Dynamic Island が消えます';
+    btnCollect.classList.add('btn-disabled');
+    btnDismiss.classList.add('btn-disabled');
+
+    setTimeout(() => {
+      island.classList.add('fade-out');
+      setTimeout(() => {
+        resetState();
+        island.classList.remove('fade-out');
+        statusBar.textContent = '取得完了。次の神社を探しに行こう！';
+      }, 500);
+    }, 5000);
+  }
+
+  function doDismiss() {
+    if (btnDismiss.classList.contains('btn-disabled')) return;
+    state = 'dismissed';
+    island.classList.add('fade-out');
+    statusBar.textContent = '"Not Now" → このセッション中は再表示しません';
+    btnCollect.classList.add('btn-disabled');
+    btnDismiss.classList.add('btn-disabled');
+
+    setTimeout(() => {
+      resetState();
+      state = 'dismissed'; // keep dismissed so slider won't re-trigger
+      island.classList.remove('fade-out');
+    }, 500);
+  }
+
+  // Init
+  setScenario('proximity');
+</script>
+
+</body>
+</html>
