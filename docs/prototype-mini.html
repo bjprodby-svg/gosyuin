@@ -2,6 +2,7 @@
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,sans-serif;background:#1a1a2e;color:#fff;height:100dvh;display:flex;flex-direction:column}
 .top{flex:1;position:relative;background:linear-gradient(#2d3a4a,#1a2332);overflow:hidden}
 .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+.japan-map{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);opacity:.18;pointer-events:none}
 .shrine{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);text-align:center;font-size:32px}.shrine span{display:block;font-size:11px;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:8px;margin-top:4px}
 .dot{position:absolute;left:50%;transform:translateX(-50%);width:14px;height:14px;background:#007aff;border:3px solid #fff;border-radius:50%;transition:bottom .5s;box-shadow:0 0 12px rgba(0,122,255,.5)}
 #di{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#000;border-radius:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 20px rgba(0,0,0,.5);transition:all .4s cubic-bezier(.4,0,.2,1);overflow:hidden;cursor:pointer}
@@ -22,6 +23,13 @@ input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3p
 .bc{background:#34c759;color:#000}.bd{background:rgba(255,255,255,.12);color:#fff}.off{opacity:.3;pointer-events:none}
 </style></head><body>
 <div class="top"><div class="grid"></div>
+<svg class="japan-map" width="280" height="360" viewBox="838 108 32 52" xmlns="http://www.w3.org/2000/svg">
+<path fill="none" stroke="#fff" stroke-width="0.4" stroke-linejoin="round" d="M859.934,114.749L862.128,115.401L863.030,114.104L865.891,117.538L862.718,118.375L862.519,121.412L857.172,119.322L857.978,122.668L855.185,122.714L852.875,119.674L852.599,117.320L855.173,117.150L853.140,112.920L852.190,110.531L857.335,113.720Z"/>
+<path fill="none" stroke="#fff" stroke-width="0.4" stroke-linejoin="round" d="M865.622,136.617L865.961,139.159L867.242,140.756L867.042,143.000L864.367,144.485L859.839,144.678L857.593,148.268L855.324,147.059L854.244,144.709L849.966,145.403L847.458,146.884L844.405,146.944L848.004,149.258L848.390,154.602L847.204,155.925L845.432,154.703L844.952,151.869L842.916,150.955L840.990,148.798L843.095,147.830L843.685,145.853L845.671,144.227L846.600,142.060L851.332,141.110L854.448,141.761L854.332,136.099L856.830,137.620L859.012,134.434L859.847,133.197L859.462,129.302L856.990,125.792L856.817,123.860L859.155,123.298L863.314,127.541L864.587,130.124L863.873,133.331Z"/>
+<path fill="none" stroke="#fff" stroke-width="0.4" stroke-linejoin="round" d="M853.667,146.115L854.447,147.194L853.747,149.097L852.252,148.088L851.200,148.819L851.249,150.658L849.165,149.763L848.583,148.271L849.278,146.395L850.920,146.759L851.460,145.437Z"/>
+<circle cx="856" cy="140" r="0.6" fill="#ff6b6b" opacity="0.9"/>
+<text x="856" y="139" text-anchor="middle" fill="#ff6b6b" font-size="1.2" font-family="-apple-system,sans-serif" opacity="0.8">Tokyo</text>
+</svg>
 <div class="shrine">⛩️<span>Meiji Jingu</span></div>
 <div class="dot" id="dot" style="bottom:20%"></div>
 <div id="di" class="idle" onclick="tap()"><span class="cL" id="cL">⛩️</span><span class="cR" id="cR">250m</span><div class="ex"><div class="r1"><span id="eName">⛩️ Meiji Jingu</span><span id="eDist">250m</span></div><div class="r2" id="eSub">You're near this shrine</div><div class="bar" id="bar"><div id="fill" style="width:0"></div></div></div></div>
