@@ -54,506 +54,449 @@ private enum Pal {
 
 // MARK: - Person Drawing Helpers
 
-/// Shared building blocks for drawing people with visible actions.
+/// Cute, rounded character drawing at small scale.
+/// Proportions: ~4.5 head body. No individual fingers — mitten hands.
 /// All coordinates are absolute — caller computes position.
 private enum Person {
 
-    // ── Shared parts ──
+    // ── Layout helper: compute consistent body landmarks from (cx, bottom, h) ──
+
+    struct Landmarks {
+        let headR: CGFloat
+        let headCY: CGFloat
+        let neckY: CGFloat
+        let shoulderY: CGFloat
+        let shoulderW: CGFloat
+        let torsoBottom: CGFloat
+        let hipW: CGFloat
+        let bottom: CGFloat
+        let cx: CGFloat
+        let h: CGFloat
+
+        init(cx: CGFloat, bottom: CGFloat, h: CGFloat) {
+            self.cx = cx; self.bottom = bottom; self.h = h
+            headR = h * 0.12          // bigger head = cuter
+            headCY = bottom - h + headR + 2
+            neckY = headCY + headR
+            shoulderY = neckY + h * 0.03
+            shoulderW = h * 0.15
+            hipW = h * 0.12
+            torsoBottom = bottom - h * 0.34
+        }
+    }
+
+    // ── Head (round, simple, cute) ──
 
     static func head(_ ctx: GraphicsContext, cx: CGFloat, cy: CGFloat, r: CGFloat, closedEyes: Bool = false) {
-        // Hair (slightly larger ellipse behind)
+        // Hair (round behind head)
         var hair = Path()
-        hair.addEllipse(in: CGRect(x: cx - r * 1.2, y: cy - r * 1.25, width: r * 2.4, height: r * 2.3))
+        hair.addEllipse(in: CGRect(x: cx - r * 1.15, y: cy - r * 1.2, width: r * 2.3, height: r * 2.25))
         ctx.fill(hair, with: .color(Pal.hair))
 
         // Face
         var face = Path()
-        face.addEllipse(in: CGRect(x: cx - r, y: cy - r, width: r * 2, height: r * 2))
+        face.addEllipse(in: CGRect(x: cx - r, y: cy - r * 0.9, width: r * 2, height: r * 1.9))
         ctx.fill(face, with: .color(Pal.skin))
 
+        let eyeSpacing = r * 0.35
+        let eyeY = cy - r * 0.05
+
         if closedEyes {
-            // Peaceful closed eyes (curved lines)
             for side in [-1.0, 1.0] {
-                let ex = cx + CGFloat(side) * r * 0.32
+                let ex = cx + CGFloat(side) * eyeSpacing
                 var eye = Path()
-                eye.move(to: CGPoint(x: ex - 3, y: cy))
-                eye.addQuadCurve(to: CGPoint(x: ex + 3, y: cy), control: CGPoint(x: ex, y: cy + 2.5))
-                ctx.stroke(eye, with: .color(Pal.hair.opacity(0.6)), style: StrokeStyle(lineWidth: 1.3, lineCap: .round))
+                eye.move(to: CGPoint(x: ex - 3, y: eyeY))
+                eye.addQuadCurve(to: CGPoint(x: ex + 3, y: eyeY), control: CGPoint(x: ex, y: eyeY + 3))
+                ctx.stroke(eye, with: .color(Pal.hair.opacity(0.55)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
             }
         } else {
-            // Open eyes (dots)
             for side in [-1.0, 1.0] {
+                let ex = cx + CGFloat(side) * eyeSpacing
                 var eye = Path()
-                let ex = cx + CGFloat(side) * r * 0.32
-                eye.addEllipse(in: CGRect(x: ex - 1.5, y: cy - 1.5, width: 3, height: 3.5))
-                ctx.fill(eye, with: .color(Pal.hair.opacity(0.8)))
+                eye.addEllipse(in: CGRect(x: ex - 2, y: eyeY - 2, width: 4, height: 4.5))
+                ctx.fill(eye, with: .color(Pal.hair.opacity(0.75)))
+                // Tiny highlight
+                var hl = Path()
+                hl.addEllipse(in: CGRect(x: ex - 0.5, y: eyeY - 1.5, width: 1.5, height: 1.5))
+                ctx.fill(hl, with: .color(.white.opacity(0.7)))
             }
         }
 
-        // Small smile
+        // Blush
+        for side in [-1.0, 1.0] {
+            let bx = cx + CGFloat(side) * r * 0.55
+            var blush = Path()
+            blush.addEllipse(in: CGRect(x: bx - 4, y: eyeY + 4, width: 8, height: 4))
+            ctx.fill(blush, with: .color(Color(red: 0.95, green: 0.65, blue: 0.60).opacity(0.25)))
+        }
+
+        // Smile
         var mouth = Path()
-        mouth.move(to: CGPoint(x: cx - 2.5, y: cy + r * 0.4))
-        mouth.addQuadCurve(to: CGPoint(x: cx + 2.5, y: cy + r * 0.4), control: CGPoint(x: cx, y: cy + r * 0.55))
-        ctx.stroke(mouth, with: .color(Pal.hair.opacity(0.35)), style: StrokeStyle(lineWidth: 1.1, lineCap: .round))
+        mouth.move(to: CGPoint(x: cx - 3, y: cy + r * 0.35))
+        mouth.addQuadCurve(to: CGPoint(x: cx + 3, y: cy + r * 0.35), control: CGPoint(x: cx, y: cy + r * 0.52))
+        ctx.stroke(mouth, with: .color(Pal.hair.opacity(0.3)), style: StrokeStyle(lineWidth: 1.2, lineCap: .round))
     }
 
-    static func lowerBody(_ ctx: GraphicsContext, cx: CGFloat, hipY: CGFloat, bottomY: CGFloat, kimono: Color) {
-        let hipW: CGFloat = 14
-        let legLen = bottomY - hipY - 4
+    // ── Torso (smooth trapezoid with collar + obi) ──
 
-        // Hakama / skirt portion
-        var skirt = Path()
-        skirt.move(to: CGPoint(x: cx - hipW, y: hipY))
-        skirt.addLine(to: CGPoint(x: cx + hipW, y: hipY))
-        skirt.addLine(to: CGPoint(x: cx + hipW + 3, y: hipY + legLen * 0.6))
-        skirt.addLine(to: CGPoint(x: cx - hipW - 3, y: hipY + legLen * 0.6))
-        skirt.closeSubpath()
-        ctx.fill(skirt, with: .color(kimono.opacity(0.82)))
-
-        // Legs below skirt
-        let legTop = hipY + legLen * 0.55
-        for side in [-1.0, 1.0] {
-            let lx = cx + CGFloat(side) * 5
-            var leg = Path()
-            leg.addRoundedRect(in: CGRect(x: lx - 3, y: legTop, width: 6, height: bottomY - legTop - 4),
-                               cornerSize: CGSize(width: 3, height: 3))
-            ctx.fill(leg, with: .color(Pal.skin))
-        }
-
-        // Feet (geta)
-        for side in [-1.0, 1.0] {
-            let fx = cx + CGFloat(side) * 5
-            var foot = Path()
-            foot.addRoundedRect(in: CGRect(x: fx - 5, y: bottomY - 5, width: 10, height: 5),
-                                cornerSize: CGSize(width: 2, height: 2))
-            ctx.fill(foot, with: .color(Pal.wood.opacity(0.5)))
-        }
-    }
-
-    static func torso(_ ctx: GraphicsContext, cx: CGFloat, topY: CGFloat, bottomY: CGFloat, shoulderW: CGFloat, hipW: CGFloat, kimono: Color) {
+    static func torso(_ ctx: GraphicsContext, lm: Landmarks, kimono: Color) {
+        // Body shape — rounded trapezoid
         var body = Path()
-        body.move(to: CGPoint(x: cx - shoulderW, y: topY))
-        body.addLine(to: CGPoint(x: cx + shoulderW, y: topY))
-        body.addLine(to: CGPoint(x: cx + hipW, y: bottomY))
-        body.addLine(to: CGPoint(x: cx - hipW, y: bottomY))
+        body.move(to: CGPoint(x: lm.cx - lm.shoulderW, y: lm.shoulderY))
+        body.addQuadCurve(to: CGPoint(x: lm.cx + lm.shoulderW, y: lm.shoulderY),
+                          control: CGPoint(x: lm.cx, y: lm.shoulderY - 3))
+        body.addLine(to: CGPoint(x: lm.cx + lm.hipW, y: lm.torsoBottom))
+        body.addLine(to: CGPoint(x: lm.cx - lm.hipW, y: lm.torsoBottom))
         body.closeSubpath()
         ctx.fill(body, with: .color(kimono))
 
         // V collar
+        let collarDepth = (lm.torsoBottom - lm.shoulderY) * 0.3
         var collar = Path()
-        collar.move(to: CGPoint(x: cx - 6, y: topY))
-        collar.addLine(to: CGPoint(x: cx, y: topY + (bottomY - topY) * 0.35))
-        collar.addLine(to: CGPoint(x: cx + 6, y: topY))
-        ctx.stroke(collar, with: .color(Pal.white.opacity(0.8)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+        collar.move(to: CGPoint(x: lm.cx - 5, y: lm.shoulderY))
+        collar.addLine(to: CGPoint(x: lm.cx, y: lm.shoulderY + collarDepth))
+        collar.addLine(to: CGPoint(x: lm.cx + 5, y: lm.shoulderY))
+        ctx.stroke(collar, with: .color(Pal.white.opacity(0.75)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
 
         // Obi sash
-        let obiY = bottomY - (bottomY - topY) * 0.2
+        let obiH = (lm.torsoBottom - lm.shoulderY) * 0.14
+        let obiY = lm.torsoBottom - obiH - 2
         var obi = Path()
-        obi.addRoundedRect(in: CGRect(x: cx - hipW + 2, y: obiY, width: (hipW - 2) * 2, height: (bottomY - topY) * 0.14),
+        obi.addRoundedRect(in: CGRect(x: lm.cx - lm.hipW + 1, y: obiY, width: (lm.hipW - 1) * 2, height: obiH),
                            cornerSize: CGSize(width: 2, height: 2))
         ctx.fill(obi, with: .color(Pal.sash))
     }
 
-    // ── Arm as a filled shape (not a line!) from shoulder point to hand point ──
+    // ── Lower body (hakama skirt + simple feet, no visible legs) ──
+
+    static func lowerBody(_ ctx: GraphicsContext, lm: Landmarks, kimono: Color) {
+        let skirtH = lm.bottom - lm.torsoBottom - 6
+
+        // Hakama (A-line skirt shape)
+        var skirt = Path()
+        skirt.move(to: CGPoint(x: lm.cx - lm.hipW, y: lm.torsoBottom))
+        skirt.addLine(to: CGPoint(x: lm.cx + lm.hipW, y: lm.torsoBottom))
+        skirt.addQuadCurve(to: CGPoint(x: lm.cx - lm.hipW - 4, y: lm.torsoBottom + skirtH),
+                           control: CGPoint(x: lm.cx + lm.hipW + 4, y: lm.torsoBottom + skirtH))
+        skirt.closeSubpath()
+        ctx.fill(skirt, with: .color(kimono.opacity(0.8)))
+
+        // Center fold line
+        var fold = Path()
+        fold.move(to: CGPoint(x: lm.cx, y: lm.torsoBottom + 3))
+        fold.addLine(to: CGPoint(x: lm.cx, y: lm.torsoBottom + skirtH - 4))
+        ctx.stroke(fold, with: .color(kimono.opacity(0.3)), style: StrokeStyle(lineWidth: 0.8))
+
+        // Simple feet (two small rounded rects)
+        for side in [-1.0, 1.0] {
+            let fx = lm.cx + CGFloat(side) * 6
+            var foot = Path()
+            foot.addRoundedRect(in: CGRect(x: fx - 5, y: lm.bottom - 5, width: 10, height: 5),
+                                cornerSize: CGSize(width: 3, height: 3))
+            ctx.fill(foot, with: .color(Pal.wood.opacity(0.45)))
+        }
+    }
+
+    // ── Arm: smooth sleeve + forearm + mitten hand ──
 
     static func arm(_ ctx: GraphicsContext, from shoulder: CGPoint, to hand: CGPoint, width: CGFloat, kimono: Color, showHand: Bool = true) {
         let dx = hand.x - shoulder.x
         let dy = hand.y - shoulder.y
         let len = sqrt(dx * dx + dy * dy)
         guard len > 0 else { return }
-        let px = -dy / len * width / 2  // perpendicular
+        let px = -dy / len * width / 2
         let py = dx / len * width / 2
 
-        // Sleeve (upper 2/3 in kimono color)
-        let sleeveEnd = CGPoint(x: shoulder.x + dx * 0.65, y: shoulder.y + dy * 0.65)
+        // Sleeve (upper 60%)
+        let sleeveEnd = CGPoint(x: shoulder.x + dx * 0.6, y: shoulder.y + dy * 0.6)
         var sleeve = Path()
         sleeve.move(to: CGPoint(x: shoulder.x + px, y: shoulder.y + py))
         sleeve.addLine(to: CGPoint(x: shoulder.x - px, y: shoulder.y - py))
-        sleeve.addLine(to: CGPoint(x: sleeveEnd.x - px * 1.3, y: sleeveEnd.y - py * 1.3))
-        sleeve.addLine(to: CGPoint(x: sleeveEnd.x + px * 1.3, y: sleeveEnd.y + py * 1.3))
+        sleeve.addQuadCurve(to: CGPoint(x: sleeveEnd.x - px * 1.2, y: sleeveEnd.y - py * 1.2),
+                            control: CGPoint(x: shoulder.x - px + dx * 0.3, y: shoulder.y - py + dy * 0.3 + 3))
+        sleeve.addLine(to: CGPoint(x: sleeveEnd.x + px * 1.2, y: sleeveEnd.y + py * 1.2))
         sleeve.closeSubpath()
-        ctx.fill(sleeve, with: .color(kimono.opacity(0.9)))
+        ctx.fill(sleeve, with: .color(kimono.opacity(0.88)))
 
         // Forearm (skin)
         var forearm = Path()
-        forearm.move(to: CGPoint(x: sleeveEnd.x + px * 0.8, y: sleeveEnd.y + py * 0.8))
-        forearm.addLine(to: CGPoint(x: sleeveEnd.x - px * 0.8, y: sleeveEnd.y - py * 0.8))
-        forearm.addLine(to: CGPoint(x: hand.x - px * 0.7, y: hand.y - py * 0.7))
-        forearm.addLine(to: CGPoint(x: hand.x + px * 0.7, y: hand.y + py * 0.7))
+        forearm.move(to: CGPoint(x: sleeveEnd.x + px * 0.7, y: sleeveEnd.y + py * 0.7))
+        forearm.addLine(to: CGPoint(x: sleeveEnd.x - px * 0.7, y: sleeveEnd.y - py * 0.7))
+        forearm.addLine(to: CGPoint(x: hand.x - px * 0.6, y: hand.y - py * 0.6))
+        forearm.addLine(to: CGPoint(x: hand.x + px * 0.6, y: hand.y + py * 0.6))
         forearm.closeSubpath()
         ctx.fill(forearm, with: .color(Pal.skin))
 
         if showHand {
-            // Hand (circle)
+            // Mitten hand (rounded ellipse)
             var h = Path()
-            h.addEllipse(in: CGRect(x: hand.x - 4, y: hand.y - 4, width: 8, height: 8))
+            h.addEllipse(in: CGRect(x: hand.x - 5, y: hand.y - 4, width: 10, height: 9))
             ctx.fill(h, with: .color(Pal.skin))
+            ctx.stroke(h, with: .color(Pal.skinShade.opacity(0.2)), lineWidth: 0.5)
         }
     }
 
-    // ── Full pose: deep bow (90°) facing a direction ──
+    // ── Full standing body (shared base for all standing poses) ──
+
+    private static func drawBody(_ ctx: GraphicsContext, lm: Landmarks, kimono: Color, closedEyes: Bool = false) {
+        // Neck
+        var neck = Path()
+        neck.addRoundedRect(in: CGRect(x: lm.cx - 3.5, y: lm.neckY - 1, width: 7, height: lm.h * 0.04),
+                            cornerSize: CGSize(width: 2, height: 2))
+        ctx.fill(neck, with: .color(Pal.skin))
+
+        head(ctx, cx: lm.cx, cy: lm.headCY, r: lm.headR, closedEyes: closedEyes)
+        torso(ctx, lm: lm, kimono: kimono)
+        lowerBody(ctx, lm: lm, kimono: kimono)
+    }
+
+    // ── Pose: deep bow (90°) ──
 
     static func drawDeepBow(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color, facingRight: Bool) {
         let dir: CGFloat = facingRight ? 1 : -1
-        let headR = h * 0.09
-        let hipY = bottom - h * 0.35
-        let bodyLen = h * 0.32
+        let headR = h * 0.11
+        let hipY = bottom - h * 0.34
+        let bodyLen = h * 0.30
+        let backW = h * 0.13
 
-        // Lower body (standing straight)
-        lowerBody(ctx, cx: cx, hipY: hipY, bottomY: bottom, kimono: kimono)
+        // Lower body (standing)
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        lowerBody(ctx, lm: lm, kimono: kimono)
 
-        // Upper body bent forward at ~90° (horizontal)
+        // Upper body bent forward — simple curved shape
         let backEndX = cx + dir * bodyLen
-        let backEndY = hipY - h * 0.02 // nearly horizontal
+        let backEndY = hipY - h * 0.01
 
-        // Back/torso as thick horizontal shape
-        let backW: CGFloat = h * 0.14
         var back = Path()
         back.move(to: CGPoint(x: cx - backW * 0.5, y: hipY - backW))
-        back.addLine(to: CGPoint(x: cx + backW * 0.5, y: hipY - backW))
-        back.addQuadCurve(to: CGPoint(x: backEndX + dir * 2, y: backEndY + backW * 0.4),
-                          control: CGPoint(x: cx + dir * bodyLen * 0.5, y: hipY - backW * 1.1))
+        back.addLine(to: CGPoint(x: cx + backW * 0.3, y: hipY - backW))
+        back.addQuadCurve(to: CGPoint(x: backEndX, y: backEndY),
+                          control: CGPoint(x: cx + dir * bodyLen * 0.5, y: hipY - backW * 1.05))
         back.addQuadCurve(to: CGPoint(x: cx - backW * 0.5, y: hipY),
-                          control: CGPoint(x: cx + dir * bodyLen * 0.5, y: hipY + backW * 0.1))
+                          control: CGPoint(x: cx + dir * bodyLen * 0.5, y: hipY + 2))
         back.closeSubpath()
         ctx.fill(back, with: .color(kimono))
 
-        // Obi at hinge point
+        // Obi at pivot
         var obi = Path()
-        obi.addRoundedRect(in: CGRect(x: cx - 12, y: hipY - backW - 2, width: 24, height: 5),
+        obi.addRoundedRect(in: CGRect(x: cx - 10, y: hipY - backW - 1, width: 20, height: 4),
                            cornerSize: CGSize(width: 2, height: 2))
         ctx.fill(obi, with: .color(Pal.sash))
 
-        // Head at end of bent body
-        let headX = backEndX + dir * headR * 1.5
-        let headY = backEndY - headR * 0.3
+        // Head
+        let headX = backEndX + dir * headR
+        let headY = backEndY - headR * 0.5
         head(ctx, cx: headX, cy: headY, r: headR, closedEyes: true)
 
-        // Arms hanging down from mid-back towards the ground (key visual for bowing!)
-        let armStartX = cx + dir * bodyLen * 0.6
-        let armStartY = hipY - backW * 0.6
-        let armEndX = armStartX + dir * 3
-        let armEndY = armStartY + h * 0.18
-        arm(ctx, from: CGPoint(x: armStartX, y: armStartY),
-            to: CGPoint(x: armEndX, y: armEndY), width: 8, kimono: kimono)
+        // Arms hanging straight down from back
+        let armX = cx + dir * bodyLen * 0.5
+        let armTopY = hipY - backW * 0.5
+        arm(ctx, from: CGPoint(x: armX, y: armTopY),
+            to: CGPoint(x: armX + dir * 2, y: armTopY + h * 0.15), width: 8, kimono: kimono)
 
-        // Motion lines behind (to show the bowing motion)
-        for i in 0..<3 {
-            let ly = hipY - backW - 6 - CGFloat(i) * 6
+        // Motion arcs
+        for i in 0..<2 {
+            let ly = hipY - backW - 4 - CGFloat(i) * 7
             var line = Path()
-            let startX = cx - dir * 5
-            line.move(to: CGPoint(x: startX, y: ly))
-            line.addQuadCurve(to: CGPoint(x: startX + dir * 15 + CGFloat(i) * dir * 4, y: ly + 8),
-                              control: CGPoint(x: startX + dir * 10, y: ly - 2))
-            ctx.stroke(line, with: .color(kimono.opacity(0.15 - Double(i) * 0.04)),
+            line.move(to: CGPoint(x: cx - dir * 3, y: ly))
+            line.addQuadCurve(to: CGPoint(x: cx + dir * 18, y: ly + 6),
+                              control: CGPoint(x: cx + dir * 8, y: ly - 3))
+            ctx.stroke(line, with: .color(kimono.opacity(0.12 - Double(i) * 0.04)),
                        style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
         }
     }
 
-    // ── Full pose: standing with hands clapping in front ──
+    // ── Pose: clapping ──
 
     static func drawClapping(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color) {
-        let headR = h * 0.09
-        let headCY = bottom - h + headR + 2
-        let neckBottom = headCY + headR + h * 0.04
-        let shoulderW = h * 0.17
-        let hipW = h * 0.13
-        let torsoBottom = bottom - h * 0.38
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        drawBody(ctx, lm: lm, kimono: kimono)
 
-        head(ctx, cx: cx, cy: headCY, r: headR)
-
-        // Neck
-        var neck = Path()
-        neck.addRect(CGRect(x: cx - 4, y: headCY + headR, width: 8, height: h * 0.04))
-        ctx.fill(neck, with: .color(Pal.skin))
-
-        torso(ctx, cx: cx, topY: neckBottom, bottomY: torsoBottom, shoulderW: shoulderW, hipW: hipW, kimono: kimono)
-        lowerBody(ctx, cx: cx, hipY: torsoBottom, bottomY: bottom, kimono: kimono)
-
-        // Both arms reaching forward and up to chest level where hands meet
-        let shoulderLX = cx - shoulderW + 2
-        let shoulderRX = cx + shoulderW - 2
-        let shoulderY = neckBottom + 5
-
-        // Hands meet in front of chest — slightly in front (offset forward)
+        let shoulderY = lm.shoulderY + 3
         let handsX = cx
-        let handsY = neckBottom + h * 0.12
+        let handsY = lm.shoulderY + h * 0.13
 
-        arm(ctx, from: CGPoint(x: shoulderLX, y: shoulderY),
+        // Sleeves going to center
+        arm(ctx, from: CGPoint(x: cx - lm.shoulderW, y: shoulderY),
             to: CGPoint(x: handsX - 2, y: handsY), width: 9, kimono: kimono, showHand: false)
-        arm(ctx, from: CGPoint(x: shoulderRX, y: shoulderY),
+        arm(ctx, from: CGPoint(x: cx + lm.shoulderW, y: shoulderY),
             to: CGPoint(x: handsX + 2, y: handsY), width: 9, kimono: kimono, showHand: false)
 
-        // Detailed hands clapping together
-        // Left palm
-        var lPalm = Path()
-        lPalm.addRoundedRect(in: CGRect(x: handsX - 14, y: handsY - 10, width: 12, height: 18),
-                             cornerSize: CGSize(width: 4, height: 4))
-        ctx.fill(lPalm, with: .color(Pal.skin))
-        ctx.stroke(lPalm, with: .color(Pal.skinShade.opacity(0.5)), lineWidth: 0.8)
-
-        // Left fingers
-        for i in 0..<4 {
-            var f = Path()
-            f.addRoundedRect(in: CGRect(x: handsX - 13 + CGFloat(i) * 3, y: handsY - 18, width: 2.8, height: 9),
-                             cornerSize: CGSize(width: 1.2, height: 1.2))
-            ctx.fill(f, with: .color(Pal.skin))
+        // Two mitten hands meeting
+        for side in [-1.0, 1.0] {
+            let hx = handsX + CGFloat(side) * 6
+            var palm = Path()
+            palm.addRoundedRect(in: CGRect(x: hx - 5, y: handsY - 8, width: 10, height: 16),
+                                cornerSize: CGSize(width: 4, height: 4))
+            ctx.fill(palm, with: .color(Pal.skin))
+            ctx.stroke(palm, with: .color(Pal.skinShade.opacity(0.3)), lineWidth: 0.6)
         }
 
-        // Right palm
-        var rPalm = Path()
-        rPalm.addRoundedRect(in: CGRect(x: handsX + 2, y: handsY - 8, width: 12, height: 18),
-                             cornerSize: CGSize(width: 4, height: 4))
-        ctx.fill(rPalm, with: .color(Pal.skin))
-        ctx.stroke(rPalm, with: .color(Pal.skinShade.opacity(0.5)), lineWidth: 0.8)
-
-        // Right fingers
+        // Impact lines
         for i in 0..<4 {
-            var f = Path()
-            f.addRoundedRect(in: CGRect(x: handsX + 3 + CGFloat(i) * 3, y: handsY - 16, width: 2.8, height: 9),
-                             cornerSize: CGSize(width: 1.2, height: 1.2))
-            ctx.fill(f, with: .color(Pal.skin))
-        }
-
-        // Impact/sound lines radiating from hands
-        for i in 0..<5 {
-            let angle = Double(i - 2) * 25.0
+            let angle = Double(i - 1) * 30.0 - 15
             let rad = angle * .pi / 180
-            let r1: CGFloat = 18
-            let r2: CGFloat = 26
+            let r1: CGFloat = 16
+            let r2: CGFloat = 22 + CGFloat(i) * 2
             var impact = Path()
-            impact.move(to: CGPoint(x: handsX + cos(rad) * r1, y: handsY - 5 + sin(rad) * r1))
-            impact.addLine(to: CGPoint(x: handsX + cos(rad) * r2, y: handsY - 5 + sin(rad) * r2))
-            ctx.stroke(impact, with: .color(kimono.opacity(0.3)), style: StrokeStyle(lineWidth: 1.8, lineCap: .round))
+            impact.move(to: CGPoint(x: handsX + cos(rad) * r1, y: handsY - 2 + sin(rad) * r1))
+            impact.addLine(to: CGPoint(x: handsX + cos(rad) * r2, y: handsY - 2 + sin(rad) * r2))
+            ctx.stroke(impact, with: .color(kimono.opacity(0.25)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
         }
     }
 
-    // ── Full pose: standing praying (hands together, peaceful) ──
+    // ── Pose: praying (hands together, peaceful) ──
 
     static func drawPraying(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color) {
-        let headR = h * 0.09
-        let headCY = bottom - h + headR + 2
-        let neckBottom = headCY + headR + h * 0.04
-        let shoulderW = h * 0.17
-        let hipW = h * 0.13
-        let torsoBottom = bottom - h * 0.38
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        drawBody(ctx, lm: lm, kimono: kimono, closedEyes: true)
 
-        head(ctx, cx: cx, cy: headCY, r: headR, closedEyes: true)
-
-        var neck = Path()
-        neck.addRect(CGRect(x: cx - 4, y: headCY + headR, width: 8, height: h * 0.04))
-        ctx.fill(neck, with: .color(Pal.skin))
-
-        torso(ctx, cx: cx, topY: neckBottom, bottomY: torsoBottom, shoulderW: shoulderW, hipW: hipW, kimono: kimono)
-        lowerBody(ctx, cx: cx, hipY: torsoBottom, bottomY: bottom, kimono: kimono)
-
-        // Arms meeting at center in prayer position
-        let shoulderY = neckBottom + 5
-        let handsY = neckBottom + h * 0.1
+        let shoulderY = lm.shoulderY + 3
         let handsX = cx
+        let handsY = lm.shoulderY + h * 0.10
 
-        // Large kimono sleeves draping down (bell shape)
-        var leftSleeve = Path()
-        leftSleeve.move(to: CGPoint(x: cx - shoulderW, y: shoulderY))
-        leftSleeve.addLine(to: CGPoint(x: handsX - 3, y: handsY))
-        leftSleeve.addLine(to: CGPoint(x: handsX - 5, y: handsY + 15))
-        leftSleeve.addLine(to: CGPoint(x: cx - shoulderW - 8, y: shoulderY + h * 0.15))
-        leftSleeve.closeSubpath()
-        ctx.fill(leftSleeve, with: .color(kimono.opacity(0.9)))
+        // Sleeves draping to center (bell shape)
+        for side in [-1.0, 1.0] {
+            let sx = cx + CGFloat(side) * lm.shoulderW
+            var sleeve = Path()
+            sleeve.move(to: CGPoint(x: sx, y: shoulderY))
+            sleeve.addLine(to: CGPoint(x: handsX + CGFloat(side) * 3, y: handsY))
+            sleeve.addLine(to: CGPoint(x: handsX + CGFloat(side) * 5, y: handsY + 14))
+            sleeve.addLine(to: CGPoint(x: sx + CGFloat(side) * 6, y: shoulderY + h * 0.14))
+            sleeve.closeSubpath()
+            ctx.fill(sleeve, with: .color(kimono.opacity(0.88)))
+        }
 
-        var rightSleeve = Path()
-        rightSleeve.move(to: CGPoint(x: cx + shoulderW, y: shoulderY))
-        rightSleeve.addLine(to: CGPoint(x: handsX + 3, y: handsY))
-        rightSleeve.addLine(to: CGPoint(x: handsX + 5, y: handsY + 15))
-        rightSleeve.addLine(to: CGPoint(x: cx + shoulderW + 8, y: shoulderY + h * 0.15))
-        rightSleeve.closeSubpath()
-        ctx.fill(rightSleeve, with: .color(kimono.opacity(0.9)))
-
-        // Clasped hands (pointed upward shape)
+        // Clasped hands (simple leaf/teardrop shape)
         var hands = Path()
-        hands.move(to: CGPoint(x: handsX, y: handsY - 8))
-        hands.addQuadCurve(to: CGPoint(x: handsX + 6, y: handsY + 8),
-                           control: CGPoint(x: handsX + 8, y: handsY - 2))
-        hands.addQuadCurve(to: CGPoint(x: handsX - 6, y: handsY + 8),
-                           control: CGPoint(x: handsX, y: handsY + 12))
-        hands.addQuadCurve(to: CGPoint(x: handsX, y: handsY - 8),
-                           control: CGPoint(x: handsX - 8, y: handsY - 2))
+        hands.move(to: CGPoint(x: handsX, y: handsY - 7))
+        hands.addQuadCurve(to: CGPoint(x: handsX, y: handsY + 7),
+                           control: CGPoint(x: handsX + 7, y: handsY))
+        hands.addQuadCurve(to: CGPoint(x: handsX, y: handsY - 7),
+                           control: CGPoint(x: handsX - 7, y: handsY))
         ctx.fill(hands, with: .color(Pal.skin))
+        ctx.stroke(hands, with: .color(Pal.skinShade.opacity(0.2)), lineWidth: 0.5)
     }
 
-    // ── Full pose: tossing a coin (right arm extended forward-up) ──
+    // ── Pose: tossing a coin ──
 
     static func drawTossing(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color) {
-        let headR = h * 0.09
-        let headCY = bottom - h + headR + 2
-        let neckBottom = headCY + headR + h * 0.04
-        let shoulderW = h * 0.17
-        let hipW = h * 0.13
-        let torsoBottom = bottom - h * 0.38
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        drawBody(ctx, lm: lm, kimono: kimono)
 
-        head(ctx, cx: cx, cy: headCY, r: headR)
+        let shoulderY = lm.shoulderY + 3
 
-        var neck = Path()
-        neck.addRect(CGRect(x: cx - 4, y: headCY + headR, width: 8, height: h * 0.04))
-        ctx.fill(neck, with: .color(Pal.skin))
+        // Left arm at side
+        arm(ctx, from: CGPoint(x: cx - lm.shoulderW, y: shoulderY),
+            to: CGPoint(x: cx - lm.shoulderW - 4, y: shoulderY + h * 0.18), width: 8, kimono: kimono)
 
-        torso(ctx, cx: cx, topY: neckBottom, bottomY: torsoBottom, shoulderW: shoulderW, hipW: hipW, kimono: kimono)
-        lowerBody(ctx, cx: cx, hipY: torsoBottom, bottomY: bottom, kimono: kimono)
-
-        let shoulderY = neckBottom + 5
-
-        // Left arm: hanging at side
-        arm(ctx, from: CGPoint(x: cx - shoulderW + 2, y: shoulderY),
-            to: CGPoint(x: cx - shoulderW - 5, y: shoulderY + h * 0.2), width: 8, kimono: kimono)
-
-        // Right arm: extended forward and up (tossing motion!)
-        let handX = cx + shoulderW + h * 0.18
-        let handY = shoulderY - h * 0.1
-        arm(ctx, from: CGPoint(x: cx + shoulderW - 2, y: shoulderY),
+        // Right arm extended up-forward (tossing)
+        let handX = cx + lm.shoulderW + h * 0.15
+        let handY = shoulderY - h * 0.08
+        arm(ctx, from: CGPoint(x: cx + lm.shoulderW, y: shoulderY),
             to: CGPoint(x: handX, y: handY), width: 8, kimono: kimono)
 
-        // Release arc from hand
+        // Toss arc
         var tossArc = Path()
         tossArc.move(to: CGPoint(x: handX + 4, y: handY))
-        tossArc.addQuadCurve(to: CGPoint(x: handX + 30, y: handY + 25),
-                             control: CGPoint(x: handX + 25, y: handY - 15))
-        ctx.stroke(tossArc, with: .color(Pal.gold.opacity(0.4)),
+        tossArc.addQuadCurve(to: CGPoint(x: handX + 28, y: handY + 22),
+                             control: CGPoint(x: handX + 22, y: handY - 12))
+        ctx.stroke(tossArc, with: .color(Pal.gold.opacity(0.35)),
                    style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [4, 3]))
     }
 
-    // ── Full pose: using ladle at basin (arms reaching forward) ──
+    // ── Pose: using ladle (both arms reaching forward) ──
 
     static func drawUsingLadle(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color, ladleTargetX: CGFloat, ladleTargetY: CGFloat) {
-        let headR = h * 0.09
-        let headCY = bottom - h + headR + 2
-        let neckBottom = headCY + headR + h * 0.04
-        let shoulderW = h * 0.17
-        let hipW = h * 0.13
-        let torsoBottom = bottom - h * 0.38
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        drawBody(ctx, lm: lm, kimono: kimono)
 
-        head(ctx, cx: cx, cy: headCY, r: headR)
-
-        var neck = Path()
-        neck.addRect(CGRect(x: cx - 4, y: headCY + headR, width: 8, height: h * 0.04))
-        ctx.fill(neck, with: .color(Pal.skin))
-
-        torso(ctx, cx: cx, topY: neckBottom, bottomY: torsoBottom, shoulderW: shoulderW, hipW: hipW, kimono: kimono)
-        lowerBody(ctx, cx: cx, hipY: torsoBottom, bottomY: bottom, kimono: kimono)
-
-        let shoulderY = neckBottom + 5
-
-        // Both arms reaching forward toward the ladle
+        let shoulderY = lm.shoulderY + 3
         let holdX = ladleTargetX + 15
         let holdY = ladleTargetY
 
-        arm(ctx, from: CGPoint(x: cx - shoulderW + 2, y: shoulderY),
-            to: CGPoint(x: holdX - 3, y: holdY + 3), width: 8, kimono: kimono, showHand: false)
-        arm(ctx, from: CGPoint(x: cx + shoulderW - 2, y: shoulderY),
+        // Both arms reaching to ladle
+        arm(ctx, from: CGPoint(x: cx - lm.shoulderW, y: shoulderY),
+            to: CGPoint(x: holdX - 3, y: holdY + 2), width: 8, kimono: kimono, showHand: false)
+        arm(ctx, from: CGPoint(x: cx + lm.shoulderW, y: shoulderY),
             to: CGPoint(x: holdX + 3, y: holdY), width: 8, kimono: kimono, showHand: false)
 
-        // Hands gripping ladle handle
+        // Grip (mitten)
         var grip = Path()
-        grip.addEllipse(in: CGRect(x: holdX - 5, y: holdY - 4, width: 10, height: 9))
+        grip.addEllipse(in: CGRect(x: holdX - 6, y: holdY - 5, width: 12, height: 10))
         ctx.fill(grip, with: .color(Pal.skin))
 
-        // Ladle extending from hands
+        // Ladle handle
         var handle = Path()
         handle.move(to: CGPoint(x: holdX, y: holdY))
         handle.addLine(to: CGPoint(x: ladleTargetX - 25, y: ladleTargetY - 5))
         ctx.stroke(handle, with: .color(Pal.woodLt), style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
 
-        // Ladle cup at end
+        // Ladle cup
         var cup = Path()
         cup.addEllipse(in: CGRect(x: ladleTargetX - 35, y: ladleTargetY - 12, width: 14, height: 10))
         ctx.fill(cup, with: .color(Pal.woodLt))
         ctx.stroke(cup, with: .color(Pal.wood), lineWidth: 1)
 
-        // Water pouring from ladle
+        // Water stream
         var waterStream = Path()
         waterStream.move(to: CGPoint(x: ladleTargetX - 28, y: ladleTargetY - 3))
-        waterStream.addQuadCurve(to: CGPoint(x: ladleTargetX - 32, y: ladleTargetY + 20),
-                                 control: CGPoint(x: ladleTargetX - 25, y: ladleTargetY + 8))
-        ctx.stroke(waterStream, with: .color(Pal.water.opacity(0.6)),
+        waterStream.addQuadCurve(to: CGPoint(x: ladleTargetX - 32, y: ladleTargetY + 18),
+                                 control: CGPoint(x: ladleTargetX - 24, y: ladleTargetY + 7))
+        ctx.stroke(waterStream, with: .color(Pal.water.opacity(0.55)),
                    style: StrokeStyle(lineWidth: 2, lineCap: .round))
 
         // Water drops
         for i in 0..<3 {
             var drop = Path()
             drop.addEllipse(in: CGRect(x: ladleTargetX - 34 + CGFloat(i) * 3,
-                                        y: ladleTargetY + 15 + CGFloat(i) * 5,
+                                        y: ladleTargetY + 14 + CGFloat(i) * 5,
                                         width: 3, height: 4))
-            ctx.fill(drop, with: .color(Pal.water.opacity(0.5)))
+            ctx.fill(drop, with: .color(Pal.water.opacity(0.45)))
         }
     }
 
-    // ── Full pose: fanning smoke (one hand waving) ──
+    // ── Pose: fanning smoke ──
 
     static func drawFanning(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color) {
-        let headR = h * 0.09
-        let headCY = bottom - h + headR + 2
-        let neckBottom = headCY + headR + h * 0.04
-        let shoulderW = h * 0.17
-        let hipW = h * 0.13
-        let torsoBottom = bottom - h * 0.38
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        drawBody(ctx, lm: lm, kimono: kimono)
 
-        head(ctx, cx: cx, cy: headCY, r: headR)
+        let shoulderY = lm.shoulderY + 3
 
-        var neck = Path()
-        neck.addRect(CGRect(x: cx - 4, y: headCY + headR, width: 8, height: h * 0.04))
-        ctx.fill(neck, with: .color(Pal.skin))
-
-        torso(ctx, cx: cx, topY: neckBottom, bottomY: torsoBottom, shoulderW: shoulderW, hipW: hipW, kimono: kimono)
-        lowerBody(ctx, cx: cx, hipY: torsoBottom, bottomY: bottom, kimono: kimono)
-
-        let shoulderY = neckBottom + 5
-
-        // Left arm waving/fanning (raised, slightly bent, hand near face)
-        let leftHandX = cx - shoulderW - 8
-        let leftHandY = shoulderY - h * 0.05
-        arm(ctx, from: CGPoint(x: cx - shoulderW + 2, y: shoulderY),
+        // Left arm waving (raised)
+        let leftHandX = cx - lm.shoulderW - 6
+        let leftHandY = shoulderY - h * 0.04
+        arm(ctx, from: CGPoint(x: cx - lm.shoulderW, y: shoulderY),
             to: CGPoint(x: leftHandX, y: leftHandY), width: 8, kimono: kimono)
 
-        // Motion arcs showing fanning action
+        // Motion arcs
         for i in 0..<3 {
-            let arcOffset = CGFloat(i) * 5
+            let off = CGFloat(i) * 5
             var fan = Path()
-            fan.move(to: CGPoint(x: leftHandX - 5 - arcOffset, y: leftHandY - 5))
-            fan.addQuadCurve(to: CGPoint(x: leftHandX - 5 - arcOffset, y: leftHandY + 15),
-                             control: CGPoint(x: leftHandX - 15 - arcOffset, y: leftHandY + 5))
-            ctx.stroke(fan, with: .color(kimono.opacity(0.15 - Double(i) * 0.04)),
+            fan.move(to: CGPoint(x: leftHandX - 4 - off, y: leftHandY - 4))
+            fan.addQuadCurve(to: CGPoint(x: leftHandX - 4 - off, y: leftHandY + 12),
+                             control: CGPoint(x: leftHandX - 13 - off, y: leftHandY + 4))
+            ctx.stroke(fan, with: .color(kimono.opacity(0.12 - Double(i) * 0.03)),
                        style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
         }
 
         // Right arm at side
-        arm(ctx, from: CGPoint(x: cx + shoulderW - 2, y: shoulderY),
-            to: CGPoint(x: cx + shoulderW + 3, y: shoulderY + h * 0.18), width: 8, kimono: kimono)
+        arm(ctx, from: CGPoint(x: cx + lm.shoulderW, y: shoulderY),
+            to: CGPoint(x: cx + lm.shoulderW + 3, y: shoulderY + h * 0.16), width: 8, kimono: kimono)
     }
 
-    // ── Full pose: standing with hands at side (generic, used for simpler scenes) ──
+    // ── Pose: standing (arms at sides) ──
 
     static func drawStanding(_ ctx: GraphicsContext, cx: CGFloat, bottom: CGFloat, h: CGFloat, kimono: Color) {
-        let headR = h * 0.09
-        let headCY = bottom - h + headR + 2
-        let neckBottom = headCY + headR + h * 0.04
-        let shoulderW = h * 0.17
-        let hipW = h * 0.13
-        let torsoBottom = bottom - h * 0.38
+        let lm = Landmarks(cx: cx, bottom: bottom, h: h)
+        drawBody(ctx, lm: lm, kimono: kimono)
 
-        head(ctx, cx: cx, cy: headCY, r: headR)
-
-        var neck = Path()
-        neck.addRect(CGRect(x: cx - 4, y: headCY + headR, width: 8, height: h * 0.04))
-        ctx.fill(neck, with: .color(Pal.skin))
-
-        torso(ctx, cx: cx, topY: neckBottom, bottomY: torsoBottom, shoulderW: shoulderW, hipW: hipW, kimono: kimono)
-        lowerBody(ctx, cx: cx, hipY: torsoBottom, bottomY: bottom, kimono: kimono)
-
-        let shoulderY = neckBottom + 5
-
-        arm(ctx, from: CGPoint(x: cx - shoulderW + 2, y: shoulderY),
-            to: CGPoint(x: cx - shoulderW - 5, y: shoulderY + h * 0.2), width: 8, kimono: kimono)
-        arm(ctx, from: CGPoint(x: cx + shoulderW - 2, y: shoulderY),
-            to: CGPoint(x: cx + shoulderW + 5, y: shoulderY + h * 0.2), width: 8, kimono: kimono)
+        let shoulderY = lm.shoulderY + 3
+        arm(ctx, from: CGPoint(x: cx - lm.shoulderW, y: shoulderY),
+            to: CGPoint(x: cx - lm.shoulderW - 4, y: shoulderY + h * 0.18), width: 8, kimono: kimono)
+        arm(ctx, from: CGPoint(x: cx + lm.shoulderW, y: shoulderY),
+            to: CGPoint(x: cx + lm.shoulderW + 4, y: shoulderY + h * 0.18), width: 8, kimono: kimono)
     }
 }
 
