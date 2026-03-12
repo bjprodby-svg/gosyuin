@@ -233,10 +233,6 @@ struct ExploreView: View {
         }
         .sensoryFeedback(.selection, trigger: exploreMode)
         .sensoryFeedback(.success, trigger: directionsService.isArrived)
-        .overlay(alignment: .bottom) {
-            debugStampButton
-                .padding(.bottom, 70)
-        }
     }
 
     private var sheetBottomPadding: CGFloat {
@@ -552,38 +548,6 @@ struct ExploreView: View {
         return Shrine.samples.contains { name.contains($0.name) }
     }
 
-    // MARK: - DEBUG Test
-
-    private var debugStampButton: some View {
-        Button {
-            let coord = locationService.currentLocation?.coordinate
-                ?? CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917)
-            let testShrine = Shrine(
-                id: UUID(uuidString: "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")!,
-                name: "Test Shrine",
-                address: "Current Location",
-                description: "A test shrine for previewing stamp collection.",
-                coordinate: coord,
-                stampSlotId: 1,
-                category: .jinja,
-                tagline: "Debug only"
-            )
-            promptShrine = testShrine
-            showCollectionPrompt = true
-        } label: {
-            HStack(spacing: 8) {
-                Image(systemName: "stamp.fill")
-                    .font(.body.bold())
-                Text("Test Stamp")
-                    .font(.subheadline.bold())
-            }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(Color.vermillion, in: Capsule())
-            .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
-        }
-    }
 }
 
 // MARK: - Map Style Option
