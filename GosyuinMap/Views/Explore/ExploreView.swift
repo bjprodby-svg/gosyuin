@@ -132,9 +132,7 @@ struct ExploreView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        #if DEBUG
                         debugStampButton
-                        #endif
                         Spacer()
                         MapFloatingButtons(
                             mapStyleOption: $mapStyleOption,
@@ -553,7 +551,6 @@ struct ExploreView: View {
 
     // MARK: - DEBUG Test
 
-    #if DEBUG
     private var debugStampButton: some View {
         Button {
             let coord = locationService.currentLocation?.coordinate
@@ -584,7 +581,6 @@ struct ExploreView: View {
             .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
         }
     }
-    #endif
 }
 
 // MARK: - Map Style Option
