@@ -132,7 +132,6 @@ struct ExploreView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        debugStampButton
                         Spacer()
                         MapFloatingButtons(
                             mapStyleOption: $mapStyleOption,
@@ -143,7 +142,7 @@ struct ExploreView: View {
                             }
                         )
                     }
-                    .padding(.horizontal, DS.Spacing.lg)
+                    .padding(.trailing, DS.Spacing.lg)
                     .padding(.bottom, sheetBottomPadding)
                 }
             }
@@ -234,6 +233,10 @@ struct ExploreView: View {
         }
         .sensoryFeedback(.selection, trigger: exploreMode)
         .sensoryFeedback(.success, trigger: directionsService.isArrived)
+        .overlay(alignment: .bottom) {
+            debugStampButton
+                .padding(.bottom, 70)
+        }
     }
 
     private var sheetBottomPadding: CGFloat {
