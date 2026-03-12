@@ -8,18 +8,17 @@ struct StampCollectionPrompt: View {
     // MARK: - State
 
     @State private var phase: Phase = .ready
-    @State private var isPressing = false
-    @State private var inkScale: CGFloat = 0.01
-    @State private var inkOpacity: Double = 0
-    @State private var stampScale: CGFloat = 2.0
+    @State private var stampScale: CGFloat = 2.5
     @State private var stampOpacity: Double = 0
-    @State private var stampRotation: Double = -12
-    @State private var stampY: CGFloat = -80
-    @State private var splatters: [InkSplatter] = []
-    @State private var ringWaves: [RingWave] = []
+    @State private var stampRotation: Double = -10
+    @State private var stampY: CGFloat = -120
+    @State private var impactRingScale: CGFloat = 0.3
+    @State private var impactRingOpacity: Double = 0
+    @State private var paperShake: CGFloat = 0
     @State private var textOpacity: Double = 1
     @State private var doneButtonOpacity: Double = 0
     @State private var buttonPulse = false
+    @State private var hapticTick = 0
 
     private var stampDef: StampDefinition? {
         StampDefinition.all.first { $0.id == shrine.stampSlotId }
@@ -30,56 +29,32 @@ struct StampCollectionPrompt: View {
     }
 
     private enum Phase {
-        case ready, pressing, stamped
+        case ready, stamped
     }
 
     // MARK: - Body
 
     var body: some View {
         ZStack {
-            // Washi paper background
             washiBackground
 
             VStack(spacing: 0) {
                 Spacer()
 
-                // Main stamp area
+                // Stamp area
                 ZStack {
-                    // Ink bloom — radial ink spread on impact
-                    inkBloom
+                    // Impact ring — shockwave on contact
+                    Circle()
+                        .stroke(stampColor.opacity(impactRingOpacity), lineWidth: 3)
+                        .frame(width: 200, height: 200)
+                        .scaleEffect(impactRingScale)
 
-                    // Expanding ring waves
-                    ForEach(ringWaves) { wave in
-                        Circle()
-                            .stroke(stampColor.opacity(wave.opacity), lineWidth: 1.5)
-                            .frame(width: wave.size, height: wave.size)
-                    }
-
-                    // Ink splatters — flying droplets
-                    ForEach(splatters) { splat in
-                        Ellipse()
-                            .fill(splat.color)
-                            .frame(width: splat.size, height: splat.size * splat.elongation)
-                            .rotationEffect(.degrees(splat.rotation))
-                            .offset(x: splat.offset.width, y: splat.offset.height)
-                            .opacity(splat.opacity)
-                    }
-
-                    // Pre-stamp: shrine icon with pulse
+                    // Pre-stamp: ghost outline showing where stamp will land
                     if phase == .ready {
-                        pressTarget
+                        stampPlaceholder
                     }
 
-                    // Pressing state: stamp shadow descending
-                    if phase == .pressing {
-                        Circle()
-                            .fill(stampColor.opacity(0.1))
-                            .frame(width: 150, height: 150)
-                            .scaleEffect(isPressing ? 0.85 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: isPressing)
-                    }
-
-                    // Revealed stamp — slams down from above
+                    // The actual stamp — slams down
                     if phase == .stamped, let def = stampDef {
                         GosyuinStampView(stamp: def, size: 160, showDate: false)
                             .scaleEffect(stampScale)
@@ -89,25 +64,18 @@ struct StampCollectionPrompt: View {
                     }
                 }
                 .frame(height: 240)
+                .offset(x: paperShake)
 
                 Spacer().frame(height: 32)
 
                 // Text
                 VStack(spacing: DS.Spacing.sm) {
-                    switch phase {
-                    case .ready:
+                    if phase == .ready {
                         Text("\(shrine.name) に到着！")
                             .font(.title2.bold())
                             .foregroundStyle(Color.bodyText)
                             .multilineTextAlignment(.center)
-                        Text("Collect your shrine stamp now.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    case .pressing:
-                        Text("ぺたん...")
-                            .font(.title2.bold())
-                            .foregroundStyle(stampColor)
-                    case .stamped:
+                    } else {
                         Text("Stamp Collected!")
                             .font(.title2.bold())
                             .foregroundStyle(Color.bodyText)
@@ -123,7 +91,7 @@ struct StampCollectionPrompt: View {
 
                 Spacer()
 
-                // Bottom buttons
+                // Buttons
                 if phase == .stamped {
                     Button {
                         onDismiss()
@@ -134,10 +102,10 @@ struct StampCollectionPrompt: View {
                     .buttonStyle(.pressable)
                     .opacity(doneButtonOpacity)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
-                } else if phase == .ready {
+                } else {
                     VStack(spacing: DS.Spacing.md) {
                         Button {
-                            beginStampPress()
+                            triggerStamp()
                         } label: {
                             HStack(spacing: DS.Spacing.sm) {
                                 Image(systemName: "hand.point.down.fill")
@@ -165,15 +133,22 @@ struct StampCollectionPrompt: View {
             }
             .padding(DS.Spacing.xxl)
         }
-        .sensoryFeedback(.impact(flexibility: .solid, intensity: 0.6), trigger: phase == .pressing)
-        .sensoryFeedback(.impact(flexibility: .rigid, intensity: 1.0), trigger: phase == .stamped)
+        // Bump-style haptic sequence: heavy hit → bounce → settle
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 1.0), trigger: hapticTick) { old, new in
+            new == 1
+        }
+        .sensoryFeedback(.impact(weight: .medium, intensity: 0.6), trigger: hapticTick) { old, new in
+            new == 2
+        }
+        .sensoryFeedback(.impact(weight: .light, intensity: 0.3), trigger: hapticTick) { old, new in
+            new == 3
+        }
     }
 
     // MARK: - Washi Background
 
     private var washiBackground: some View {
         Canvas { context, size in
-            // Subtle fiber texture
             for i in stride(from: 0, to: size.width, by: 3) {
                 for j in stride(from: 0, to: size.height, by: 3) {
                     let noise = sin(i * 0.7) * cos(j * 0.5) * 0.015
@@ -189,228 +164,103 @@ struct StampCollectionPrompt: View {
         .opacity(0.3)
     }
 
-    // MARK: - Press Target
+    // MARK: - Stamp Placeholder
 
-    private var pressTarget: some View {
+    private var stampPlaceholder: some View {
         ZStack {
-            // Gentle pulsing circle
+            // Dashed circle — "stamp here" target
             Circle()
-                .fill(stampColor.opacity(0.08))
-                .frame(width: 140, height: 140)
-                .scaleEffect(buttonPulse ? 1.06 : 1.0)
+                .strokeBorder(stampColor.opacity(0.2), style: StrokeStyle(lineWidth: 2, dash: [8, 6]))
+                .frame(width: 160, height: 160)
 
-            Circle()
-                .strokeBorder(stampColor.opacity(0.25), lineWidth: 2)
-                .frame(width: 140, height: 140)
-
-            // Inner shrine icon
-            VStack(spacing: 6) {
+            VStack(spacing: 8) {
                 if let def = stampDef {
                     Image(systemName: def.icon)
-                        .font(.system(size: 48))
-                        .foregroundStyle(stampColor)
+                        .font(.system(size: 40))
+                        .foregroundStyle(stampColor.opacity(0.3))
                 } else {
                     Text("\u{26E9}")
-                        .font(.system(size: 48))
+                        .font(.system(size: 40))
+                        .foregroundStyle(stampColor.opacity(0.3))
                 }
-
-                Text(shrine.name)
-                    .font(.caption.bold())
-                    .foregroundStyle(stampColor)
-                    .lineLimit(1)
             }
         }
     }
 
-    // MARK: - Ink Bloom
-
-    private var inkBloom: some View {
-        Circle()
-            .fill(
-                RadialGradient(
-                    colors: [
-                        stampColor.opacity(0.7),
-                        stampColor.opacity(0.4),
-                        stampColor.opacity(0.1),
-                        .clear
-                    ],
-                    center: .center,
-                    startRadius: 0,
-                    endRadius: 120
-                )
-            )
-            .frame(width: 260, height: 260)
-            .scaleEffect(inkScale)
-            .opacity(inkOpacity)
-    }
-
-    // MARK: - Stamp Press Sequence
-
-    private func beginStampPress() {
-        phase = .pressing
-        isPressing = true
-
-        // Phase 1: Ink starts bleeding on the paper (anticipation)
-        withAnimation(.easeIn(duration: 0.4)) {
-            inkScale = 0.4
-            inkOpacity = 0.5
-        }
-
-        // Phase 2: Auto-trigger the slam after brief build-up
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            triggerStamp()
-        }
-    }
+    // MARK: - Stamp Animation
 
     private func triggerStamp() {
-        isPressing = false
         phase = .stamped
         onCollect()
 
-        // 1. Ink bloom EXPLODES outward
-        withAnimation(.spring(duration: 0.3, bounce: 0.1)) {
-            inkScale = 1.4
-            inkOpacity = 0.8
-        }
-
-        // 2. Stamp SLAMS down — fast, heavy
-        withAnimation(.spring(duration: 0.3, bounce: 0.0)) {
-            stampScale = 1.1
+        // 1. Stamp SLAMS down — fast, no bounce initially
+        withAnimation(.easeIn(duration: 0.18)) {
+            stampScale = 1.08
             stampOpacity = 1.0
             stampRotation = Double.random(in: -2...2)
             stampY = 0
         }
 
-        // 3. Spawn ink splatters on impact
-        spawnSplatters()
+        // Haptic 1: heavy BUMP on impact
+        hapticTick = 1
 
-        // 4. Ring waves ripple out
-        spawnRingWaves()
+        // 2. Impact shockwave ring
+        withAnimation(.easeOut(duration: 0.5)) {
+            impactRingScale = 1.5
+            impactRingOpacity = 0.5
+        }
+        withAnimation(.easeOut(duration: 0.7).delay(0.1)) {
+            impactRingOpacity = 0
+        }
 
-        // 5. Stamp settles with bounce
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            withAnimation(.spring(duration: 0.5, bounce: 0.35)) {
+        // 3. Paper shake — the whole surface trembles on impact
+        withAnimation(.linear(duration: 0.04)) {
+            paperShake = -6
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
+            withAnimation(.linear(duration: 0.04)) {
+                paperShake = 5
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
+            withAnimation(.linear(duration: 0.04)) {
+                paperShake = -3
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+            withAnimation(.spring(duration: 0.2)) {
+                paperShake = 0
+            }
+        }
+
+        // 4. Stamp bounce-back — like rubber stamp lifting slightly then settling
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            hapticTick = 2 // medium bounce haptic
+
+            withAnimation(.spring(duration: 0.35, bounce: 0.4)) {
                 stampScale = 1.0
                 stampRotation = Double.random(in: -3...3)
             }
         }
 
-        // 6. Ink bloom fades
-        withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
-            inkScale = 1.8
-            inkOpacity = 0
+        // 5. Tiny settle haptic
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            hapticTick = 3
         }
 
-        // 7. Text flash
-        withAnimation(.easeOut(duration: 0.1).delay(0.15)) {
+        // 6. Text transition
+        withAnimation(.easeOut(duration: 0.1).delay(0.1)) {
             textOpacity = 0
         }
-        withAnimation(.easeIn(duration: 0.3).delay(0.5)) {
+        withAnimation(.easeIn(duration: 0.3).delay(0.45)) {
             textOpacity = 1
         }
 
-        // 8. Done button appears
-        withAnimation(.easeIn(duration: 0.4).delay(0.9)) {
+        // 7. Done button
+        withAnimation(.easeIn(duration: 0.4).delay(0.8)) {
             doneButtonOpacity = 1
         }
     }
-
-    // MARK: - Splatter Generation
-
-    private func spawnSplatters() {
-        // Large splatters — dramatic impact droplets
-        for i in 0..<10 {
-            let angle = Double(i) / 10.0 * .pi * 2 + Double.random(in: -0.4...0.4)
-            let dist = CGFloat.random(in: 55...120)
-            splatters.append(InkSplatter(
-                id: UUID(),
-                offset: CGSize(width: cos(angle) * dist, height: sin(angle) * dist),
-                size: CGFloat.random(in: 8...18),
-                elongation: CGFloat.random(in: 0.5...1.0),
-                rotation: Double.random(in: 0...360),
-                color: stampColor.opacity(Double.random(in: 0.4...0.8)),
-                opacity: 1.0
-            ))
-        }
-
-        // Medium droplets — mid range
-        for _ in 0..<14 {
-            let angle = Double.random(in: 0...(2 * .pi))
-            let dist = CGFloat.random(in: 70...160)
-            splatters.append(InkSplatter(
-                id: UUID(),
-                offset: CGSize(width: cos(angle) * dist, height: sin(angle) * dist),
-                size: CGFloat.random(in: 4...10),
-                elongation: CGFloat.random(in: 0.4...1.0),
-                rotation: Double.random(in: 0...360),
-                color: stampColor.opacity(Double.random(in: 0.3...0.6)),
-                opacity: 1.0
-            ))
-        }
-
-        // Fine mist — tiny dots scattered far
-        for _ in 0..<20 {
-            let angle = Double.random(in: 0...(2 * .pi))
-            let dist = CGFloat.random(in: 90...200)
-            splatters.append(InkSplatter(
-                id: UUID(),
-                offset: CGSize(width: cos(angle) * dist, height: sin(angle) * dist),
-                size: CGFloat.random(in: 2...5),
-                elongation: CGFloat.random(in: 0.6...1.0),
-                rotation: Double.random(in: 0...360),
-                color: stampColor.opacity(Double.random(in: 0.2...0.5)),
-                opacity: 1.0
-            ))
-        }
-
-        // Animate splatters
-        withAnimation(.spring(duration: 0.4, bounce: 0.2)) {
-            // SwiftUI picks up array changes
-        }
-
-        // Splatters fade out slowly (ink drying)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            withAnimation(.easeOut(duration: 1.0)) {
-                for i in splatters.indices {
-                    splatters[i].opacity = 0
-                }
-            }
-        }
-    }
-
-    private func spawnRingWaves() {
-        for delay in [0.0, 0.12, 0.24, 0.36] {
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                let wave = RingWave(id: UUID(), size: 20, opacity: 0.5)
-                ringWaves.append(wave)
-
-                if let idx = ringWaves.firstIndex(where: { $0.id == wave.id }) {
-                    withAnimation(.easeOut(duration: 0.9)) {
-                        ringWaves[idx].size = 300
-                        ringWaves[idx].opacity = 0
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Data Types
-
-private struct InkSplatter: Identifiable {
-    let id: UUID
-    let offset: CGSize
-    let size: CGFloat
-    var elongation: CGFloat = 1.0
-    var rotation: Double = 0
-    let color: Color
-    var opacity: Double
-}
-
-private struct RingWave: Identifiable {
-    let id: UUID
-    var size: CGFloat
-    var opacity: Double
 }
 
 // MARK: - Preview
