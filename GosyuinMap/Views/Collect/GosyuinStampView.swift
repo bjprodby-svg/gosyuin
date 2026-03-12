@@ -1,7 +1,13 @@
 import SwiftUI
 
-/// A gosyuin-style stamp that mimics real shrine stamps:
-/// central red circular seal (朱印), vertical shrine name, 奉拝 header.
+/// Authentic gosyuin (御朱印) stamp view.
+///
+/// Layout mirrors a real shrine stamp:
+/// - Central red circular seal (朱印) with stamp symbol
+/// - Shrine name in bold serif above the seal
+/// - 「奉拝」top-right in small text
+/// - Location subtitle bottom-left
+/// - Slightly irregular seal edges for hand-stamped feel
 struct GosyuinStampView: View {
     let stamp: StampDefinition
     let size: CGFloat
@@ -15,13 +21,37 @@ struct GosyuinStampView: View {
         self.collectedDate = collectedDate
     }
 
-    /// Seal radius relative to overall size
-    private var sealRadius: CGFloat { size * 0.32 }
+    private var sealSize: CGFloat { size * 0.52 }
+    private var sealColor: Color { stamp.color }
 
     var body: some View {
         VStack(spacing: 2) {
-            Canvas { context, canvasSize in
-                drawGosyuin(context: context, size: canvasSize)
+            ZStack {
+                // 奉拝 — top-right
+                Text("奉拝")
+                    .font(.system(size: max(6, size * 0.075), weight: .medium, design: .serif))
+                    .foregroundStyle(.black.opacity(0.6))
+                    .offset(x: size * 0.3, y: -size * 0.38)
+
+                // Shrine name — bold, centered above seal
+                Text(stamp.name)
+                    .font(.system(size: max(7, size * 0.1), weight: .heavy, design: .serif))
+                    .foregroundStyle(.black.opacity(0.8))
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.5)
+                    .multilineTextAlignment(.center)
+                    .frame(width: size * 0.85)
+                    .offset(y: -size * 0.25)
+
+                // Central seal (朱印)
+                seal
+                    .offset(y: size * 0.08)
+
+                // Location — bottom-left, small
+                Text(stamp.subtitle)
+                    .font(.system(size: max(5, size * 0.06), weight: .regular, design: .serif))
+                    .foregroundStyle(.black.opacity(0.4))
+                    .offset(x: -size * 0.2, y: size * 0.4)
             }
             .frame(width: size, height: size)
 
@@ -33,112 +63,52 @@ struct GosyuinStampView: View {
         }
     }
 
-    // MARK: - Canvas Drawing
+    // MARK: - Seal
 
-    private func drawGosyuin(context: GraphicsContext, size: CGSize) {
-        let cx = size.width / 2
-        let cy = size.height / 2
-        let r = sealRadius
+    private var seal: some View {
+        Canvas { context, canvasSize in
+            let cx = canvasSize.width / 2
+            let cy = canvasSize.height / 2
+            let radius = min(canvasSize.width, canvasSize.height) / 2 - 2
 
-        // 1. Central red circular seal (朱印)
-        drawSeal(context: context, cx: cx, cy: cy + size.height * 0.05, radius: r)
+            // Outer ring with wobble
+            let outerPath = wobbledCircle(cx: cx, cy: cy, radius: radius, seed: stamp.id, wobbleAmount: 0.015)
+            context.fill(outerPath, with: .color(sealColor.opacity(0.12)))
+            context.stroke(outerPath, with: .color(sealColor.opacity(0.9)), lineWidth: max(1.5, radius * 0.055))
 
-        // 2. 「奉拝」 — top right, small
-        let houhaiFont = Font.system(size: max(6, self.size * 0.08), weight: .medium, design: .serif)
-        let houhaiPoint = CGPoint(x: cx + size.width * 0.3, y: size.height * 0.08)
-        drawVerticalText("奉拝", at: houhaiPoint, font: houhaiFont, color: .black.opacity(0.7), context: context, spacing: self.size * 0.1)
+            // Inner ring
+            let innerPath = wobbledCircle(cx: cx, cy: cy, radius: radius * 0.82, seed: stamp.id + 100, wobbleAmount: 0.012)
+            context.stroke(innerPath, with: .color(sealColor.opacity(0.45)), lineWidth: max(0.8, radius * 0.025))
 
-        // 3. Shrine name — vertical calligraphy, center-right
-        let nameFont = Font.system(size: max(8, self.size * 0.13), weight: .bold, design: .serif)
-        let nameX = cx + size.width * 0.08
-        let nameY = size.height * 0.1
-        drawVerticalText(stamp.name, at: CGPoint(x: nameX, y: nameY), font: nameFont, color: .black.opacity(0.85), context: context, spacing: self.size * 0.14)
-
-        // 4. Subtitle location — bottom left, smaller
-        let subFont = Font.system(size: max(5, self.size * 0.065), weight: .regular, design: .serif)
-        let subX = cx - size.width * 0.28
-        let subY = size.height * 0.55
-        drawVerticalText(stamp.subtitle, at: CGPoint(x: subX, y: subY), font: subFont, color: .black.opacity(0.5), context: context, spacing: self.size * 0.075)
+            // Stamp symbol
+            let symbolText = Text(stamp.stampSymbol)
+                .font(.system(size: max(10, radius * 0.7)))
+                .foregroundColor(sealColor)
+            context.draw(symbolText.resolve(in: context.environment), at: CGPoint(x: cx, y: cy), anchor: .center)
+        }
+        .frame(width: sealSize, height: sealSize)
     }
 
-    // MARK: - Seal (朱印)
+    // MARK: - Wobbled Circle
 
-    private func drawSeal(context: GraphicsContext, cx: CGFloat, cy: CGFloat, radius: CGFloat) {
-        let sealColor = stamp.color
-
-        // Outer ring — slightly uneven (hand-stamped feel)
-        var outerRing = Path()
-        let segments = 60
+    private func wobbledCircle(cx: CGFloat, cy: CGFloat, radius: CGFloat, seed: Int, wobbleAmount: Double) -> Path {
+        var path = Path()
+        let segments = 64
         for i in 0...segments {
             let angle = Double(i) / Double(segments) * 2 * .pi
-            // Subtle wobble based on stamp id for uniqueness
-            let wobble = 1.0 + sin(angle * 7 + Double(stamp.id)) * 0.012
-                              + cos(angle * 11 + Double(stamp.id) * 2) * 0.008
+            let wobble = 1.0
+                + sin(angle * 7 + Double(seed)) * wobbleAmount
+                + cos(angle * 11 + Double(seed) * 2.3) * wobbleAmount * 0.7
             let r = radius * wobble
-            let x = cx + cos(angle) * r
-            let y = cy + sin(angle) * r
-            if i == 0 {
-                outerRing.move(to: CGPoint(x: x, y: y))
-            } else {
-                outerRing.addLine(to: CGPoint(x: x, y: y))
-            }
+            let point = CGPoint(x: cx + cos(angle) * r, y: cy + sin(angle) * r)
+            if i == 0 { path.move(to: point) } else { path.addLine(to: point) }
         }
-        outerRing.closeSubpath()
-
-        // Fill with slight opacity variation (ink texture)
-        context.fill(outerRing, with: .color(sealColor.opacity(0.15)))
-
-        // Stroke the ring
-        context.stroke(outerRing, with: .color(sealColor.opacity(0.85)), lineWidth: max(1.5, radius * 0.06))
-
-        // Inner ring
-        var innerRing = Path()
-        let innerRadius = radius * 0.82
-        for i in 0...segments {
-            let angle = Double(i) / Double(segments) * 2 * .pi
-            let wobble = 1.0 + cos(angle * 9 + Double(stamp.id) * 3) * 0.01
-            let r = innerRadius * wobble
-            let x = cx + cos(angle) * r
-            let y = cy + sin(angle) * r
-            if i == 0 {
-                innerRing.move(to: CGPoint(x: x, y: y))
-            } else {
-                innerRing.addLine(to: CGPoint(x: x, y: y))
-            }
-        }
-        innerRing.closeSubpath()
-        context.stroke(innerRing, with: .color(sealColor.opacity(0.5)), lineWidth: max(0.8, radius * 0.025))
-
-        // Stamp symbol inside the seal
-        let symbolFont = Font.system(size: max(12, radius * 0.7))
-        var symbolText = Text(stamp.stampSymbol)
-            .font(symbolFont)
-            .foregroundColor(sealColor)
-        context.draw(
-            symbolText.resolve(in: context.environment),
-            at: CGPoint(x: cx, y: cy),
-            anchor: .center
-        )
-    }
-
-    // MARK: - Vertical Text
-
-    private func drawVerticalText(_ text: String, at origin: CGPoint, font: Font, color: Color, context: GraphicsContext, spacing: CGFloat) {
-        for (i, char) in text.enumerated() {
-            let charText = Text(String(char))
-                .font(font)
-                .foregroundColor(color)
-            let y = origin.y + CGFloat(i) * spacing
-            context.draw(
-                charText.resolve(in: context.environment),
-                at: CGPoint(x: origin.x, y: y),
-                anchor: .center
-            )
-        }
+        path.closeSubpath()
+        return path
     }
 }
 
-// MARK: - Hexagon Shape (kept for backward compatibility)
+// MARK: - Hexagon Shape
 
 struct HexagonShape: InsettableShape {
     var insetAmount: CGFloat = 0
@@ -158,11 +128,7 @@ struct HexagonShape: InsettableShape {
             let angle = Angle.degrees(Double(i) * 60 - 90)
             let x = cx + radius * cos(angle.radians)
             let y = cy + radius * sin(angle.radians)
-            if i == 0 {
-                path.move(to: CGPoint(x: x, y: y))
-            } else {
-                path.addLine(to: CGPoint(x: x, y: y))
-            }
+            if i == 0 { path.move(to: CGPoint(x: x, y: y)) } else { path.addLine(to: CGPoint(x: x, y: y)) }
         }
         path.closeSubpath()
         return path
@@ -174,21 +140,13 @@ struct HexagonShape: InsettableShape {
 #Preview("Stamp Grid") {
     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
         ForEach(Array(StampDefinition.all.prefix(9))) { stamp in
-            GosyuinStampView(
-                stamp: stamp,
-                size: 110,
-                collectedDate: .now
-            )
+            GosyuinStampView(stamp: stamp, size: 110, collectedDate: .now)
         }
     }
     .padding()
 }
 
 #Preview("Single Large") {
-    GosyuinStampView(
-        stamp: StampDefinition.all[0],
-        size: 240,
-        collectedDate: .now
-    )
-    .padding()
+    GosyuinStampView(stamp: StampDefinition.all[0], size: 240, collectedDate: .now)
+        .padding()
 }

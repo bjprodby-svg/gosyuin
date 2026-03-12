@@ -8,17 +8,24 @@ struct StampCollectionPrompt: View {
     // MARK: - State
 
     @State private var phase: Phase = .ready
-    @State private var stampScale: CGFloat = 2.5
+    // Stamp slam animation
+    @State private var stampScale: CGFloat = 3.0
     @State private var stampOpacity: Double = 0
-    @State private var stampRotation: Double = -10
-    @State private var stampY: CGFloat = -120
-    @State private var impactRingScale: CGFloat = 0.3
-    @State private var impactRingOpacity: Double = 0
-    @State private var paperShake: CGFloat = 0
-    @State private var textOpacity: Double = 1
-    @State private var doneButtonOpacity: Double = 0
-    @State private var buttonPulse = false
-    @State private var hapticTick = 0
+    @State private var stampRotation: Double = -15
+    @State private var stampY: CGFloat = -200
+    // Impact effects
+    @State private var shakeX: CGFloat = 0
+    @State private var flashOpacity: Double = 0
+    @State private var ringScale: CGFloat = 0.2
+    @State private var ringOpacity: Double = 0
+    @State private var ring2Scale: CGFloat = 0.2
+    @State private var ring2Opacity: Double = 0
+    // UI
+    @State private var celebrationOpacity: Double = 0
+    @State private var doneOpacity: Double = 0
+    @State private var buttonBounce = false
+    // Haptics
+    @State private var hapticStep = 0
 
     private var stampDef: StampDefinition? {
         StampDefinition.all.first { $0.id == shrine.stampSlotId }
@@ -36,62 +43,78 @@ struct StampCollectionPrompt: View {
 
     var body: some View {
         ZStack {
+            // Washi paper background
             washiBackground
+
+            // White flash on impact
+            Color.white
+                .opacity(flashOpacity)
+                .ignoresSafeArea()
 
             VStack(spacing: 0) {
                 Spacer()
 
-                // Stamp area
+                // — Stamp Area —
                 ZStack {
-                    // Impact ring — shockwave on contact
+                    // Impact rings
                     Circle()
-                        .stroke(stampColor.opacity(impactRingOpacity), lineWidth: 3)
-                        .frame(width: 200, height: 200)
-                        .scaleEffect(impactRingScale)
+                        .stroke(stampColor.opacity(ringOpacity), lineWidth: 3)
+                        .frame(width: 220, height: 220)
+                        .scaleEffect(ringScale)
+                    Circle()
+                        .stroke(stampColor.opacity(ring2Opacity), lineWidth: 2)
+                        .frame(width: 220, height: 220)
+                        .scaleEffect(ring2Scale)
 
-                    // Pre-stamp: ghost outline showing where stamp will land
                     if phase == .ready {
-                        stampPlaceholder
+                        // Ghost placeholder — dashed target
+                        placeholder
                     }
 
-                    // The actual stamp — slams down
                     if phase == .stamped, let def = stampDef {
-                        GosyuinStampView(stamp: def, size: 160, showDate: false)
+                        // The real stamp — slams in
+                        GosyuinStampView(stamp: def, size: 180, showDate: false)
                             .scaleEffect(stampScale)
                             .opacity(stampOpacity)
                             .rotationEffect(.degrees(stampRotation))
                             .offset(y: stampY)
                     }
                 }
-                .frame(height: 240)
-                .offset(x: paperShake)
+                .frame(height: 260)
+                .offset(x: shakeX)
 
-                Spacer().frame(height: 32)
+                Spacer().frame(height: 24)
 
-                // Text
+                // — Text —
                 VStack(spacing: DS.Spacing.sm) {
                     if phase == .ready {
-                        Text("\(shrine.name) に到着！")
-                            .font(.title2.bold())
+                        Text(shrine.name)
+                            .font(.title.bold())
                             .foregroundStyle(Color.bodyText)
                             .multilineTextAlignment(.center)
-                    } else {
-                        Text("Stamp Collected!")
-                            .font(.title2.bold())
-                            .foregroundStyle(Color.bodyText)
-                            .transition(.scale.combined(with: .opacity))
-                        Text("Check your Stamp Book to see it.")
-                            .font(.subheadline)
+
+                        Text("に到着しました")
+                            .font(.title3)
                             .foregroundStyle(.secondary)
-                            .transition(.opacity)
+                    } else {
+                        VStack(spacing: DS.Spacing.xs) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 32))
+                                .foregroundStyle(stampColor)
+                                .opacity(celebrationOpacity)
+
+                            Text("Stamp Collected!")
+                                .font(.title2.bold())
+                                .foregroundStyle(Color.bodyText)
+                                .opacity(celebrationOpacity)
+                        }
+                        .transition(.scale.combined(with: .opacity))
                     }
                 }
-                .opacity(textOpacity)
-                .animation(.easeInOut(duration: 0.3), value: phase)
 
                 Spacer()
 
-                // Buttons
+                // — Buttons —
                 if phase == .stamped {
                     Button {
                         onDismiss()
@@ -100,19 +123,22 @@ struct StampCollectionPrompt: View {
                             .vermillionButtonStyle()
                     }
                     .buttonStyle(.pressable)
-                    .opacity(doneButtonOpacity)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .opacity(doneOpacity)
                 } else {
                     VStack(spacing: DS.Spacing.md) {
                         Button {
-                            triggerStamp()
+                            slamStamp()
                         } label: {
                             HStack(spacing: DS.Spacing.sm) {
                                 Image(systemName: "hand.point.down.fill")
                                 Text("スタンプを押しましょう！")
                             }
-                            .vermillionButtonStyle()
-                            .scaleEffect(buttonPulse ? 1.03 : 1.0)
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 18)
+                            .background(stampColor, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                            .scaleEffect(buttonBounce ? 1.04 : 1.0)
                         }
                         .buttonStyle(.stamp)
 
@@ -125,140 +151,154 @@ struct StampCollectionPrompt: View {
                         }
                     }
                     .onAppear {
-                        withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
-                            buttonPulse = true
+                        withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                            buttonBounce = true
                         }
                     }
                 }
             }
             .padding(DS.Spacing.xxl)
         }
-        // Bump-style haptic sequence: heavy hit → bounce → settle
-        .sensoryFeedback(.impact(weight: .heavy, intensity: 1.0), trigger: hapticTick) { old, new in
-            new == 1
-        }
-        .sensoryFeedback(.impact(weight: .medium, intensity: 0.6), trigger: hapticTick) { old, new in
-            new == 2
-        }
-        .sensoryFeedback(.impact(weight: .light, intensity: 0.3), trigger: hapticTick) { old, new in
-            new == 3
-        }
+        // 3-hit haptic chain: SLAM → bounce → settle
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 1.0), trigger: hapticStep) { _, new in new == 1 }
+        .sensoryFeedback(.impact(weight: .medium, intensity: 0.5), trigger: hapticStep) { _, new in new == 2 }
+        .sensoryFeedback(.impact(weight: .light, intensity: 0.3), trigger: hapticStep) { _, new in new == 3 }
+        .sensoryFeedback(.success, trigger: hapticStep) { _, new in new == 4 }
     }
 
     // MARK: - Washi Background
 
     private var washiBackground: some View {
-        Canvas { context, size in
-            for i in stride(from: 0, to: size.width, by: 3) {
-                for j in stride(from: 0, to: size.height, by: 3) {
-                    let noise = sin(i * 0.7) * cos(j * 0.5) * 0.015
-                    if abs(noise) > 0.005 {
-                        var dot = Path()
-                        dot.addEllipse(in: CGRect(x: i, y: j, width: 1.5, height: 1.5))
-                        context.fill(dot, with: .color(.brown.opacity(abs(noise))))
+        ZStack {
+            Color.pageBackground.ignoresSafeArea()
+
+            Canvas { context, size in
+                for i in stride(from: 0, to: size.width, by: 3) {
+                    for j in stride(from: 0, to: size.height, by: 3) {
+                        let noise = sin(i * 0.7) * cos(j * 0.5) * 0.015
+                        if abs(noise) > 0.005 {
+                            var dot = Path()
+                            dot.addEllipse(in: CGRect(x: i, y: j, width: 1.5, height: 1.5))
+                            context.fill(dot, with: .color(.brown.opacity(abs(noise))))
+                        }
                     }
                 }
             }
+            .ignoresSafeArea()
+            .opacity(0.25)
         }
-        .ignoresSafeArea()
-        .opacity(0.3)
     }
 
-    // MARK: - Stamp Placeholder
+    // MARK: - Placeholder
 
-    private var stampPlaceholder: some View {
+    private var placeholder: some View {
         ZStack {
-            // Dashed circle — "stamp here" target
             Circle()
-                .strokeBorder(stampColor.opacity(0.2), style: StrokeStyle(lineWidth: 2, dash: [8, 6]))
-                .frame(width: 160, height: 160)
+                .strokeBorder(stampColor.opacity(0.15), style: StrokeStyle(lineWidth: 2, dash: [8, 6]))
+                .frame(width: 120, height: 120)
 
-            VStack(spacing: 8) {
-                if let def = stampDef {
-                    Image(systemName: def.icon)
-                        .font(.system(size: 40))
-                        .foregroundStyle(stampColor.opacity(0.3))
-                } else {
-                    Text("\u{26E9}")
-                        .font(.system(size: 40))
-                        .foregroundStyle(stampColor.opacity(0.3))
-                }
+            if let def = stampDef {
+                Image(systemName: def.icon)
+                    .font(.system(size: 36))
+                    .foregroundStyle(stampColor.opacity(0.2))
             }
         }
     }
 
-    // MARK: - Stamp Animation
+    // MARK: - Stamp Slam Animation
 
-    private func triggerStamp() {
+    private func slamStamp() {
         phase = .stamped
         onCollect()
 
-        // 1. Stamp SLAMS down — fast, no bounce initially
-        withAnimation(.easeIn(duration: 0.18)) {
-            stampScale = 1.08
+        // === HIT 1: SLAM (0.0s) ===
+        // Stamp flies down fast
+        withAnimation(.easeIn(duration: 0.15)) {
+            stampScale = 1.05
             stampOpacity = 1.0
             stampRotation = Double.random(in: -2...2)
             stampY = 0
         }
 
-        // Haptic 1: heavy BUMP on impact
-        hapticTick = 1
+        // Heavy haptic
+        hapticStep = 1
 
-        // 2. Impact shockwave ring
-        withAnimation(.easeOut(duration: 0.5)) {
-            impactRingScale = 1.5
-            impactRingOpacity = 0.5
+        // Screen flash on impact
+        withAnimation(.easeOut(duration: 0.06)) {
+            flashOpacity = 0.4
         }
-        withAnimation(.easeOut(duration: 0.7).delay(0.1)) {
-            impactRingOpacity = 0
-        }
-
-        // 3. Paper shake — the whole surface trembles on impact
-        withAnimation(.linear(duration: 0.04)) {
-            paperShake = -6
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
-            withAnimation(.linear(duration: 0.04)) {
-                paperShake = 5
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
-            withAnimation(.linear(duration: 0.04)) {
-                paperShake = -3
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-            withAnimation(.spring(duration: 0.2)) {
-                paperShake = 0
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
+            withAnimation(.easeOut(duration: 0.15)) {
+                flashOpacity = 0
             }
         }
 
-        // 4. Stamp bounce-back — like rubber stamp lifting slightly then settling
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
-            hapticTick = 2 // medium bounce haptic
+        // Paper shake
+        shakeSequence()
 
-            withAnimation(.spring(duration: 0.35, bounce: 0.4)) {
+        // Impact ring 1
+        withAnimation(.easeOut(duration: 0.6)) {
+            ringScale = 1.6
+            ringOpacity = 0.5
+        }
+        withAnimation(.easeOut(duration: 0.5).delay(0.15)) {
+            ringOpacity = 0
+        }
+
+        // === HIT 2: BOUNCE (0.15s) ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            hapticStep = 2
+
+            // Stamp bounces back to 1.0 with spring
+            withAnimation(.spring(duration: 0.4, bounce: 0.35)) {
                 stampScale = 1.0
                 stampRotation = Double.random(in: -3...3)
             }
+
+            // Impact ring 2
+            withAnimation(.easeOut(duration: 0.7)) {
+                ring2Scale = 1.3
+                ring2Opacity = 0.3
+            }
+            withAnimation(.easeOut(duration: 0.5).delay(0.2)) {
+                ring2Opacity = 0
+            }
         }
 
-        // 5. Tiny settle haptic
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            hapticTick = 3
+        // === HIT 3: SETTLE (0.35s) ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            hapticStep = 3
         }
 
-        // 6. Text transition
-        withAnimation(.easeOut(duration: 0.1).delay(0.1)) {
-            textOpacity = 0
-        }
-        withAnimation(.easeIn(duration: 0.3).delay(0.45)) {
-            textOpacity = 1
+        // === CELEBRATION (0.6s) ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            hapticStep = 4
+
+            withAnimation(.spring(duration: 0.5, bounce: 0.3)) {
+                celebrationOpacity = 1
+            }
         }
 
-        // 7. Done button
-        withAnimation(.easeIn(duration: 0.4).delay(0.8)) {
-            doneButtonOpacity = 1
+        // === DONE BUTTON (1.0s) ===
+        withAnimation(.easeIn(duration: 0.4).delay(1.0)) {
+            doneOpacity = 1
+        }
+    }
+
+    // MARK: - Shake
+
+    private func shakeSequence() {
+        let steps: [(CGFloat, Double)] = [
+            (-8, 0.03), (6, 0.03), (-4, 0.03), (3, 0.03), (-1, 0.03), (0, 0.05)
+        ]
+        var delay = 0.0
+        for (offset, duration) in steps {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                withAnimation(.linear(duration: duration)) {
+                    shakeX = offset
+                }
+            }
+            delay += duration
         }
     }
 }
@@ -273,7 +313,7 @@ struct StampCollectionPrompt: View {
     )
 }
 
-#Preview("Stamp Collection - Dark") {
+#Preview("Dark") {
     StampCollectionPrompt(
         shrine: Shrine.samples[1],
         onCollect: {},
