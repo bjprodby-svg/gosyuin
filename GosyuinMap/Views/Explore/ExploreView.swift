@@ -198,8 +198,9 @@ struct ExploreView: View {
                         promptShrine = nil
                     }
                 )
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.hidden)
+                .interactiveDismissDisabled()
             }
         }
         .onAppear {
