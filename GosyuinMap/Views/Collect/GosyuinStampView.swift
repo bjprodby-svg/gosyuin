@@ -81,10 +81,12 @@ struct GosyuinStampView: View {
             context.stroke(innerPath, with: .color(sealColor.opacity(0.45)), lineWidth: max(0.8, radius * 0.025))
 
             // Stamp symbol
-            let symbolText = Text(stamp.stampSymbol)
-                .font(.system(size: max(10, radius * 0.7)))
-                .foregroundColor(sealColor)
-            context.draw(symbolText.resolve(in: context.environment), at: CGPoint(x: cx, y: cy), anchor: .center)
+            let symbolText = context.resolve(
+                Text(stamp.stampSymbol)
+                    .font(.system(size: max(10, radius * 0.7)))
+                    .foregroundColor(sealColor)
+            )
+            context.draw(symbolText, at: CGPoint(x: cx, y: cy), anchor: .center)
         }
         .frame(width: sealSize, height: sealSize)
     }
