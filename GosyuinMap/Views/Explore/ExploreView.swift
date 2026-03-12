@@ -159,14 +159,15 @@ struct ExploreView: View {
             // Test stamp collection at current location
             if !isNavigating && !showCollectionPrompt {
                 VStack {
+                    Spacer()
                     HStack {
                         debugStampButton
                         Spacer()
                     }
                     .padding(.leading, DS.Spacing.lg)
-                    .padding(.top, 100)
-                    Spacer()
+                    .padding(.bottom, 16)
                 }
+                .ignoresSafeArea(.keyboard)
             }
             #endif
         }
@@ -568,13 +569,14 @@ struct ExploreView: View {
     #if DEBUG
     private var debugStampButton: some View {
         Button {
-            guard let loc = locationService.currentLocation else { return }
+            let coord = locationService.currentLocation?.coordinate
+                ?? CLLocationCoordinate2D(latitude: 35.6895, longitude: 139.6917)
             let testShrine = Shrine(
                 id: UUID(uuidString: "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")!,
                 name: "Test Shrine",
                 address: "Current Location",
                 description: "A test shrine for previewing stamp collection.",
-                coordinate: loc.coordinate,
+                coordinate: coord,
                 stampSlotId: 1,
                 category: .jinja,
                 tagline: "Debug only"
@@ -582,17 +584,17 @@ struct ExploreView: View {
             promptShrine = testShrine
             showCollectionPrompt = true
         } label: {
-            HStack(spacing: 6) {
+            HStack(spacing: 8) {
                 Image(systemName: "stamp.fill")
-                    .font(.caption)
+                    .font(.body.bold())
                 Text("Test Stamp")
-                    .font(.caption.bold())
+                    .font(.subheadline.bold())
             }
             .foregroundStyle(.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color.vermillion.opacity(0.9), in: Capsule())
-            .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color.vermillion, in: Capsule())
+            .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
         }
     }
     #endif
