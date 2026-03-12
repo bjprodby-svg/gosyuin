@@ -132,6 +132,9 @@ struct ExploreView: View {
                 VStack {
                     Spacer()
                     HStack {
+                        #if DEBUG
+                        debugStampButton
+                        #endif
                         Spacer()
                         MapFloatingButtons(
                             mapStyleOption: $mapStyleOption,
@@ -142,7 +145,7 @@ struct ExploreView: View {
                             }
                         )
                     }
-                    .padding(.trailing, DS.Spacing.lg)
+                    .padding(.horizontal, DS.Spacing.lg)
                     .padding(.bottom, sheetBottomPadding)
                 }
             }
@@ -154,22 +157,6 @@ struct ExploreView: View {
                     Spacer()
                 }
             }
-
-            #if DEBUG
-            // Test stamp collection at current location
-            if !isNavigating && !showCollectionPrompt {
-                VStack {
-                    Spacer()
-                    HStack {
-                        debugStampButton
-                        Spacer()
-                    }
-                    .padding(.leading, DS.Spacing.lg)
-                    .padding(.bottom, 16)
-                }
-                .ignoresSafeArea(.keyboard)
-            }
-            #endif
         }
         // Detail sheet (only for placeDetail / mapItemDetail / navigating)
         .sheet(isPresented: $showDetailSheet) {
