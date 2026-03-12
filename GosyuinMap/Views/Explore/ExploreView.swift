@@ -159,13 +159,13 @@ struct ExploreView: View {
             // Test stamp collection at current location
             if !isNavigating && !showCollectionPrompt {
                 VStack {
-                    Spacer()
                     HStack {
                         debugStampButton
                         Spacer()
                     }
                     .padding(.leading, DS.Spacing.lg)
-                    .padding(.bottom, sheetBottomPadding + 60)
+                    .padding(.top, 100)
+                    Spacer()
                 }
             }
             #endif
