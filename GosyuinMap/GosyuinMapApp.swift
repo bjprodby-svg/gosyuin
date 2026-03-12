@@ -22,31 +22,19 @@ struct GosyuinMapApp: App {
                             .zIndex(1)
                     }
 
-                    // Test stamp button — always on top
+                    // Test stamp button — always on top, center of screen
                     if !showSplash {
-                        VStack {
-                            Spacer()
-                            HStack {
-                                Button {
-                                    showTestStampPrompt = true
-                                } label: {
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "stamp.fill")
-                                            .font(.body.bold())
-                                        Text("Test Stamp")
-                                            .font(.subheadline.bold())
-                                    }
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 12)
-                                    .background(Color.red)
-                                    .clipShape(Capsule())
-                                    .shadow(color: .black.opacity(0.4), radius: 8, y: 4)
-                                }
-                                Spacer()
-                            }
-                            .padding(.leading, 20)
-                            .padding(.bottom, 100)
+                        Button {
+                            showTestStampPrompt = true
+                        } label: {
+                            Text("Test Stamp")
+                                .font(.headline.bold())
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 14)
+                                .background(Color.red)
+                                .clipShape(Capsule())
+                                .shadow(color: .black.opacity(0.5), radius: 10, y: 5)
                         }
                         .zIndex(2)
                     }
