@@ -154,6 +154,21 @@ struct ExploreView: View {
                     Spacer()
                 }
             }
+
+            #if DEBUG
+            // Test stamp collection at current location
+            if !isNavigating && !showCollectionPrompt {
+                VStack {
+                    Spacer()
+                    HStack {
+                        debugStampButton
+                        Spacer()
+                    }
+                    .padding(.leading, DS.Spacing.lg)
+                    .padding(.bottom, sheetBottomPadding + 60)
+                }
+            }
+            #endif
         }
         // Detail sheet (only for placeDetail / mapItemDetail / navigating)
         .sheet(isPresented: $showDetailSheet) {
@@ -547,6 +562,40 @@ struct ExploreView: View {
         guard let name = item.name else { return false }
         return Shrine.samples.contains { name.contains($0.name) }
     }
+
+    // MARK: - DEBUG Test
+
+    #if DEBUG
+    private var debugStampButton: some View {
+        Button {
+            guard let loc = locationService.currentLocation else { return }
+            let testShrine = Shrine(
+                id: UUID(uuidString: "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")!,
+                name: "Test Shrine",
+                address: "Current Location",
+                description: "A test shrine for previewing stamp collection.",
+                coordinate: loc.coordinate,
+                stampSlotId: 1,
+                category: .jinja,
+                tagline: "Debug only"
+            )
+            promptShrine = testShrine
+            showCollectionPrompt = true
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "stamp.fill")
+                    .font(.caption)
+                Text("Test Stamp")
+                    .font(.caption.bold())
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color.vermillion.opacity(0.9), in: Capsule())
+            .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+        }
+    }
+    #endif
 }
 
 // MARK: - Map Style Option
