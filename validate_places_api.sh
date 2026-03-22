@@ -9,11 +9,11 @@
 # 3. 環境変数 PLACES_API_KEY をセット、または下の変数を直接書き換え
 # ============================================================
 
-API_KEY="${PLACES_API_KEY:-YOUR_API_KEY_HERE}"
+API_KEY="${GOOGLE_PLACES_API_KEY:-YOUR_API_KEY_HERE}"
 
 if [ "${API_KEY}" = "YOUR_API_KEY_HERE" ]; then
   echo "エラー: API Key が未設定です。"
-  echo "  export PLACES_API_KEY=\"your-key\" で設定するか、スクリプト内を直接編集してください。"
+  echo "  export GOOGLE_PLACES_API_KEY=\"your-key\" で設定するか、スクリプト内を直接編集してください。"
   exit 1
 fi
 

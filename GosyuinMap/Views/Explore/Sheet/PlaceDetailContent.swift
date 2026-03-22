@@ -177,7 +177,7 @@ struct PlaceDetailContent: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: DS.Spacing.sm) {
                         ForEach(shrine.imageURLs, id: \.self) { urlString in
-                            if let url = URL(string: urlString) {
+                            if let url = URL(string: urlString), url.scheme == "https" {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
                                     case .success(let image):

@@ -160,7 +160,7 @@ struct ExploreBottomSheet: View {
         HStack(spacing: DS.Spacing.md) {
             // Thumbnail
             Group {
-                if let urlString = shrine.imageURLs.first, let url = URL(string: urlString) {
+                if let urlString = shrine.imageURLs.first, let url = URL(string: urlString), url.scheme == "https" {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .success(let image):

@@ -203,6 +203,7 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
         if !Task.isCancelled {
             if !googleResults.isEmpty {
                 self.results = googleResults
+                self.searchError = nil
             } else {
                 // Fallback to MKLocalSearch
                 await mkLocalSearch(query: query, in: searchRegion)

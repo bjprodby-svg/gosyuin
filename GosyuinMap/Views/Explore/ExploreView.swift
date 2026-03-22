@@ -540,6 +540,7 @@ struct ExploreView: View {
     }
 
     private func collectStamp(for shrine: Shrine) {
+        guard !collectedIds.contains(shrine.stampSlotId) else { return }
         let stamp = CollectedStamp(slotId: shrine.stampSlotId)
         modelContext.insert(stamp)
         syncCollectedIds()
@@ -547,7 +548,7 @@ struct ExploreView: View {
 
     private func isDuplicateOfSample(_ item: MKMapItem) -> Bool {
         guard let name = item.name else { return false }
-        return Shrine.samples.contains { name.contains($0.name) }
+        return Shrine.samples.contains { $0.name == name }
     }
 }
 

@@ -225,7 +225,7 @@ struct ExploreSearchContent: View {
 
     private func matchingShrine(for item: MKMapItem) -> Shrine? {
         guard let name = item.name else { return nil }
-        return Shrine.samples.first { name.contains($0.name) }
+        return Shrine.samples.first { $0.name == name }
     }
 
     // MARK: - Idle / Loading / Empty
