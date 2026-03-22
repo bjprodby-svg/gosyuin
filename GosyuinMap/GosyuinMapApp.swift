@@ -6,6 +6,10 @@ struct GosyuinMapApp: App {
     @State private var hasCompletedOnboarding = false
     @State private var showSplash = true
 
+    init() {
+        GooglePlacesService.configure(apiKey: Secrets.googlePlacesAPIKey)
+    }
+
     var body: some Scene {
         WindowGroup {
             if !hasCompletedOnboarding {

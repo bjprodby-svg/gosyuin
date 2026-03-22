@@ -21,6 +21,11 @@ struct ExploreSearchContent: View {
         searchService.queryFragment.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
+    /// Google Places suggestions, falling back to MKLocalSearch completions
+    private var hasSuggestions: Bool {
+        !searchService.suggestions.isEmpty || !searchService.fallbackCompletions.isEmpty
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             headerBar
@@ -30,8 +35,8 @@ struct ExploreSearchContent: View {
                 loadingView
             } else if !searchService.results.isEmpty {
                 confirmedResultsList
-            } else if !searchService.completions.isEmpty {
-                completionsList
+            } else if hasSuggestions {
+                suggestionsList
             } else if searchService.isCompleting {
                 loadingView
             } else if isQueryEmpty {
@@ -100,46 +105,68 @@ struct ExploreSearchContent: View {
         .padding(.vertical, DS.Spacing.sm)
     }
 
-    // MARK: - Completions
+    // MARK: - Suggestions (Google Places primary, MKLocalSearch fallback)
 
-    private var completionsList: some View {
+    private var suggestionsList: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(searchService.completions, id: \.self) { completion in
+                // Google Places suggestions (primary)
+                ForEach(searchService.suggestions) { suggestion in
                     Button {
-                        searchService.search(completion: completion)
+                        searchService.search(suggestion: suggestion)
                         searchSubmitted.toggle()
                         isFocused = false
                     } label: {
-                        HStack(spacing: DS.Spacing.md) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                                .frame(width: 24)
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(completion.title)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.primary)
-                                if !completion.subtitle.isEmpty {
-                                    Text(completion.subtitle)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-
-                            Spacer()
-                        }
-                        .padding(.horizontal, DS.Spacing.lg)
-                        .padding(.vertical, 10)
+                        suggestionRow(title: suggestion.title, subtitle: suggestion.subtitle)
                     }
                     .buttonStyle(.pressable)
 
                     Divider()
                         .padding(.leading, 56)
                 }
+
+                // MKLocalSearch fallback (only if Google returned nothing)
+                if searchService.suggestions.isEmpty {
+                    ForEach(searchService.fallbackCompletions, id: \.self) { completion in
+                        Button {
+                            searchService.search(completion: completion)
+                            searchSubmitted.toggle()
+                            isFocused = false
+                        } label: {
+                            suggestionRow(title: completion.title, subtitle: completion.subtitle)
+                        }
+                        .buttonStyle(.pressable)
+
+                        Divider()
+                            .padding(.leading, 56)
+                    }
+                }
             }
         }
+    }
+
+    private func suggestionRow(title: String, subtitle: String) -> some View {
+        HStack(spacing: DS.Spacing.md) {
+            Image(systemName: "magnifyingglass")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal, DS.Spacing.lg)
+        .padding(.vertical, 10)
     }
 
     // MARK: - Confirmed Results

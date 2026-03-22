@@ -6,7 +6,7 @@ A location-based shrine stamp collecting app for iOS.
 
 - **Bundle ID**: `com.bjprodby.gosyuinmap`
 - **Deployment Target**: iOS 18.0
-- **Frameworks**: SwiftUI + SwiftData + MapKit + ActivityKit
+- **Frameworks**: SwiftUI + SwiftData + MapKit + ActivityKit + Google Places Swift SDK
 - **Swift Version**: 6.0
 - **Xcode**: 16.0+ (Liquid Glass requires Xcode 26 + iOS 26 SDK)
 
@@ -15,7 +15,8 @@ A location-based shrine stamp collecting app for iOS.
 ```
 GosyuinMap.xcodeproj/
 GosyuinMap/
-├── GosyuinMapApp.swift         # @main entry point (onboarding gate + splash)
+├── GosyuinMapApp.swift         # @main entry point (onboarding gate + splash + Places SDK init)
+├── Secrets.swift               # API key configuration (Google Places)
 ├── ContentView.swift           # TabView (3 tabs)
 ├── Views/
 │   ├── OnboardingView.swift    # First-launch onboarding (3 pages)
@@ -40,7 +41,8 @@ GosyuinMap/
 ├── Services/
 │   ├── LocationService.swift           # Location + proximity detection (~100m)
 │   ├── WorshipSessionManager.swift     # ProximityActivityManager (Live Activity)
-│   └── ShrineSearchService.swift       # MKLocalSearch shrine search
+│   ├── GooglePlacesService.swift       # Google Places Swift SDK wrapper
+│   └── ShrineSearchService.swift       # Google Places + MKLocalSearch (fallback)
 ├── Extensions/
 │   ├── GlassEffect+Adaptive.swift      # Liquid Glass helper
 │   └── Color+Theme.swift               # Theme colors + DS constants
@@ -92,7 +94,10 @@ GosyuinMap/
 - When adding files, update `.xcodeproj/project.pbxproj` Sources/Resources build phases
 - Custom colors require explicit `Color.` prefix in `.foregroundStyle()` and `.tint()` (iOS 26 SDK)
 - `seedSampleDataIfNeeded` is `#if DEBUG` only
-- Search categories: English display names, Japanese queries for MKLocalSearch
+- Search uses Google Places Swift SDK (primary) with MKLocalSearch fallback
+- Google Places types: `shinto_shrine`, `buddhist_temple` for Nearby Search
+- API key configured in `Secrets.swift` (via Info.plist build setting or hardcoded)
+- SPM package: `https://github.com/googlemaps/ios-places-sdk`
 
 ## Build & Run
 

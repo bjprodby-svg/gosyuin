@@ -6,29 +6,40 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
 
     // MARK: - Published State
 
-    private(set) var completions: [MKLocalSearchCompletion] = []
+    private(set) var suggestions: [GooglePlacesService.Suggestion] = []
     private(set) var results: [MKMapItem] = []
     private(set) var isSearching = false
     private(set) var isCompleting = false
+
+    /// For MKLocalSearch fallback completions (used when Google Places fails)
+    private(set) var fallbackCompletions: [MKLocalSearchCompletion] = []
 
     var queryFragment: String = "" {
         didSet {
             guard queryFragment != oldValue else { return }
             if queryFragment.isEmpty {
                 completer.cancel()
-                completions = []
+                autocompleteTask?.cancel()
+                suggestions = []
+                fallbackCompletions = []
                 isCompleting = false
             } else {
-                completer.queryFragment = queryFragment
                 isCompleting = true
+                // Primary: Google Places autocomplete
+                startGoogleAutocomplete(queryFragment)
+                // Fallback: MKLocalSearchCompleter (runs in parallel)
+                completer.queryFragment = queryFragment
             }
         }
     }
 
     // MARK: - Private
 
+    private let googlePlaces = GooglePlacesService()
     private let completer = MKLocalSearchCompleter()
     private var searchTask: Task<Void, Never>?
+    private var autocompleteTask: Task<Void, Never>?
+    private var searchRegion: MKCoordinateRegion?
 
     override init() {
         super.init()
@@ -36,32 +47,70 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
         completer.resultTypes = .pointOfInterest
     }
 
-    // MARK: - Completer Delegate
+    // MARK: - Google Places Autocomplete
+
+    private func startGoogleAutocomplete(_ query: String) {
+        autocompleteTask?.cancel()
+        autocompleteTask = Task {
+            let results = await googlePlaces.autocomplete(query: query)
+            if !Task.isCancelled {
+                self.suggestions = results
+                if !results.isEmpty {
+                    self.isCompleting = false
+                }
+            }
+        }
+    }
+
+    // MARK: - MKLocalSearchCompleter Delegate (Fallback)
 
     nonisolated func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         let newResults = completer.results
         Task { @MainActor [weak self] in
-            self?.completions = newResults
-            self?.isCompleting = false
+            guard let self else { return }
+            self.fallbackCompletions = newResults
+            // Only use fallback if Google Places returned nothing
+            if self.suggestions.isEmpty {
+                self.isCompleting = false
+            }
         }
     }
 
     nonisolated func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         Task { @MainActor [weak self] in
-            self?.completions = []
-            self?.isCompleting = false
+            self?.fallbackCompletions = []
         }
     }
 
     // MARK: - Region
 
     func updateRegion(_ region: MKCoordinateRegion) {
+        searchRegion = region
         completer.region = region
     }
 
     // MARK: - Search (確定検索)
 
-    /// 補完候補から確定検索を実行する
+    /// Google Places のサジェスト候補から場所を取得して確定検索
+    func search(suggestion: GooglePlacesService.Suggestion) {
+        searchTask?.cancel()
+        isSearching = true
+
+        searchTask = Task {
+            // Fetch place details by ID to get coordinates
+            if let item = await googlePlaces.fetchPlace(placeID: suggestion.placeID) {
+                if !Task.isCancelled {
+                    self.results = [item]
+                }
+            } else {
+                // Fallback: use suggestion title as text search
+                await searchWithFallback(query: suggestion.title)
+            }
+            self.isSearching = false
+        }
+    }
+
+    /// MKLocalSearchCompletion から確定検索を実行する (fallback)
     func search(completion: MKLocalSearchCompletion) {
         searchTask?.cancel()
         isSearching = true
@@ -97,40 +146,87 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
         isSearching = true
 
         searchTask = Task {
-            let request = MKLocalSearch.Request()
-            request.naturalLanguageQuery = query
-            request.region = region
-            request.resultTypes = .pointOfInterest
+            await searchWithFallback(query: query)
+            self.isSearching = false
+        }
+    }
 
-            do {
-                let search = MKLocalSearch(request: request)
-                let response = try await search.start()
-                if !Task.isCancelled {
-                    self.results = response.mapItems
-                }
-            } catch {
-                if !Task.isCancelled {
-                    self.results = []
+    /// 現在の地図リージョン内の神社仏閣を検索する
+    func searchNearby(in region: MKCoordinateRegion) {
+        searchTask?.cancel()
+        isSearching = true
+
+        searchTask = Task {
+            // Primary: Google Places Nearby Search
+            let googleResults = await googlePlaces.searchNearby(
+                center: region.center,
+                radius: regionToRadius(region)
+            )
+
+            if !Task.isCancelled {
+                if !googleResults.isEmpty {
+                    self.results = googleResults
+                } else {
+                    // Fallback: MKLocalSearch
+                    await mkLocalSearch(query: "神社 寺", in: region)
                 }
             }
             self.isSearching = false
         }
     }
 
-    /// 現在の地図リージョン内の神社仏閣を自動検索する
-    func searchNearby(in region: MKCoordinateRegion) {
-        search(query: "神社 寺", in: region)
-    }
-
     // MARK: - Clear
 
     func clear() {
         searchTask?.cancel()
+        autocompleteTask?.cancel()
         completer.cancel()
         queryFragment = ""
-        completions = []
+        suggestions = []
+        fallbackCompletions = []
         results = []
         isSearching = false
         isCompleting = false
+    }
+
+    // MARK: - Private Helpers
+
+    /// Google Places Text Search → MKLocalSearch fallback
+    private func searchWithFallback(query: String) async {
+        let googleResults = await googlePlaces.textSearch(query: query)
+
+        if !Task.isCancelled {
+            if !googleResults.isEmpty {
+                self.results = googleResults
+            } else {
+                // Fallback to MKLocalSearch
+                await mkLocalSearch(query: query, in: searchRegion)
+            }
+        }
+    }
+
+    private func mkLocalSearch(query: String, in region: MKCoordinateRegion?) async {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = query
+        if let region { request.region = region }
+        request.resultTypes = .pointOfInterest
+
+        do {
+            let search = MKLocalSearch(request: request)
+            let response = try await search.start()
+            if !Task.isCancelled {
+                self.results = response.mapItems
+            }
+        } catch {
+            if !Task.isCancelled {
+                self.results = []
+            }
+        }
+    }
+
+    private func regionToRadius(_ region: MKCoordinateRegion) -> Double {
+        let latMeters = region.span.latitudeDelta * 111_000
+        let lonMeters = region.span.longitudeDelta * 111_000 * cos(region.center.latitude * .pi / 180)
+        return min(max(latMeters, lonMeters) / 2, 50_000)
     }
 }
