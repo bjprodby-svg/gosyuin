@@ -1,6 +1,9 @@
 import ActivityKit
 import Foundation
 import Observation
+import OSLog
+
+private let logger = Logger(subsystem: "com.bjprodby.gosyuinmap", category: "ProximityActivity")
 
 @MainActor
 @Observable
@@ -27,7 +30,7 @@ final class ProximityActivityManager {
                 pushType: nil
             )
         } catch {
-            print("Failed to start Live Activity: \(error)")
+            logger.error("Failed to start Live Activity: \(error.localizedDescription)")
             isActive = false
         }
     }

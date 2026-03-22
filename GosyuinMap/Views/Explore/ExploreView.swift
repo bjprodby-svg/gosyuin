@@ -352,6 +352,8 @@ struct ExploreView: View {
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
             .padding(.horizontal, DS.Spacing.lg)
         }
+        .accessibilityLabel("Location access disabled")
+        .accessibilityHint("Tap to open Settings and enable location")
     }
 
     // MARK: - Pins

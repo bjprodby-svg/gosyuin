@@ -62,6 +62,8 @@ struct ShrinePinView: View {
             .animation(.spring(duration: 0.3, bounce: 0.4), value: isSelected)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(shrine.name), \(shrine.category.displayName)")
+        .accessibilityHint(isCollected ? "Collected" : "Double tap to view details")
         .onAppear { appeared = true }
     }
 }

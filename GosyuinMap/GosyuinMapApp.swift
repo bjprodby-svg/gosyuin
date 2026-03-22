@@ -32,6 +32,9 @@ struct GosyuinMapApp: App {
                 }
             }
         }
-        .modelContainer(for: [CollectedStamp.self])
+        .modelContainer(
+            for: [CollectedStamp.self],
+            migrationPlan: CollectedStampMigrationPlan.self
+        )
     }
 }

@@ -5,6 +5,6 @@
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>御朱印マップで現在地周辺の神社仏閣を表示するために位置情報を使用します。</string>
+	<string>GosyuinMap uses your location to find nearby shrines and temples, and to collect stamps when you visit them.</string>
 </dict>
 </plist>

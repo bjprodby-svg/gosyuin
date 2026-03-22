@@ -33,6 +33,8 @@ struct ExploreSearchContent: View {
 
             if searchService.isSearching {
                 loadingView
+            } else if let error = searchService.searchError {
+                errorState(message: error)
             } else if !searchService.results.isEmpty {
                 confirmedResultsList
             } else if hasSuggestions {
@@ -270,5 +272,31 @@ struct ExploreSearchContent: View {
                 .foregroundStyle(.tertiary)
             Spacer()
         }
+    }
+
+    private func errorState(message: String) -> some View {
+        VStack(spacing: DS.Spacing.md) {
+            Spacer()
+            Image(systemName: "wifi.exclamationmark")
+                .font(.system(size: 40))
+                .foregroundStyle(Color.vermillion.opacity(0.6))
+            Text("Search Unavailable")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            Text(message)
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+            Button {
+                searchService.search(query: searchService.queryFragment, in: region)
+            } label: {
+                Text("Try Again")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.vermillion)
+            }
+            .padding(.top, DS.Spacing.sm)
+            Spacer()
+        }
+        .padding(.horizontal, DS.Spacing.xl)
     }
 }

@@ -1,4 +1,7 @@
 @preconcurrency import MapKit
+import OSLog
+
+private let logger = Logger(subsystem: "com.bjprodby.gosyuinmap", category: "Search")
 
 @MainActor
 @Observable
@@ -10,6 +13,7 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
     private(set) var results: [MKMapItem] = []
     private(set) var isSearching = false
     private(set) var isCompleting = false
+    private(set) var searchError: String?
 
     /// For MKLocalSearch fallback completions (used when Google Places fails)
     private(set) var fallbackCompletions: [MKLocalSearchCompletion] = []
@@ -187,6 +191,7 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
         results = []
         isSearching = false
         isCompleting = false
+        searchError = nil
     }
 
     // MARK: - Private Helpers
@@ -218,8 +223,10 @@ final class ShrineSearchService: NSObject, @unchecked Sendable, MKLocalSearchCom
                 self.results = response.mapItems
             }
         } catch {
+            logger.error("MKLocalSearch failed: \(error.localizedDescription)")
             if !Task.isCancelled {
                 self.results = []
+                self.searchError = "Search failed. Check your connection."
             }
         }
     }

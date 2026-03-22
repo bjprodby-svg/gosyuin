@@ -91,6 +91,19 @@ struct OnboardingView: View {
                         .font(.headline)
                         .foregroundStyle(Color.matcha)
                         .transition(.scale.combined(with: .opacity))
+                } else if locationService.authorizationStatus == .denied
+                            || locationService.authorizationStatus == .restricted
+                {
+                    VStack(spacing: DS.Spacing.sm) {
+                        Label("Location Denied", systemImage: "location.slash.fill")
+                            .font(.headline)
+                            .foregroundStyle(Color.vermillion)
+                        Text("Stamp collection requires location access. You can enable it in Settings later.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .transition(.scale.combined(with: .opacity))
                 }
 
                 Button {

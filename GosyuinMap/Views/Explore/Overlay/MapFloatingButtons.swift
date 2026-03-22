@@ -24,6 +24,7 @@ struct MapFloatingButtons: View {
                     .background(.regularMaterial, in: Circle())
                     .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
             }
+            .accessibilityLabel("Map style: \(mapStyleOption.label)")
 
             // Location re-center
             Button(action: onRecenterTapped) {
@@ -35,6 +36,7 @@ struct MapFloatingButtons: View {
                     .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
             }
             .buttonStyle(AppleMapButtonStyle())
+            .accessibilityLabel("Center on current location")
         }
     }
 }

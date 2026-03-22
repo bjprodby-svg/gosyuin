@@ -12,4 +12,8 @@ enum Secrets {
         // 2. Hardcoded fallback (replace with your key for development)
         return "YOUR_API_KEY_HERE"
     }()
+
+    static var isGooglePlacesConfigured: Bool {
+        googlePlacesAPIKey != "YOUR_API_KEY_HERE" && !googlePlacesAPIKey.isEmpty
+    }
 }

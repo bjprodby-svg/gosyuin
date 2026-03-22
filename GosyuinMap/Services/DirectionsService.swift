@@ -1,5 +1,8 @@
 import MapKit
 import ActivityKit
+import OSLog
+
+private let logger = Logger(subsystem: "com.bjprodby.gosyuinmap", category: "Directions")
 
 // MARK: - Transport Mode
 
@@ -268,7 +271,7 @@ final class DirectionsService {
                 pushType: nil
             )
         } catch {
-            print("Failed to start navigation Live Activity: \(error)")
+            logger.error("Failed to start navigation Live Activity: \(error.localizedDescription)")
         }
     }
 

@@ -56,6 +56,10 @@ struct CollectView: View {
                     // Unified level + achievements + next goal
                     levelCard
 
+                    if collectedStamps.isEmpty {
+                        emptyCollectionHint
+                    }
+
                     // Category filter
                     categoryFilter
 
@@ -350,10 +354,32 @@ struct CollectView: View {
                         .aspectRatio(1, contentMode: .fit)
                     }
                     .buttonStyle(.stamp)
+                    .accessibilityLabel(collectedIds.contains(stamp.id) ? "\(stamp.name), collected" : "\(stamp.name), not collected")
+                    .accessibilityHint("View stamp details")
                 }
             }
         }
         .padding(DS.Spacing.lg)
+        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(color: .black.opacity(0.04), radius: 3, y: 1)
+    }
+
+    // MARK: - Empty State
+
+    private var emptyCollectionHint: some View {
+        VStack(spacing: DS.Spacing.md) {
+            Image(systemName: "mappin.and.ellipse")
+                .font(.system(size: 32))
+                .foregroundStyle(Color.vermillion.opacity(0.5))
+            Text("No stamps yet")
+                .font(.subheadline.weight(.semibold))
+            Text("Visit a shrine or temple to collect your first stamp. Use the Explore tab to find nearby locations.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(DS.Spacing.xl)
+        .frame(maxWidth: .infinity)
         .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .shadow(color: .black.opacity(0.04), radius: 3, y: 1)
     }

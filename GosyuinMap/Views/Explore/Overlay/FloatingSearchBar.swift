@@ -23,6 +23,8 @@ struct FloatingSearchBar: View {
             .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
         }
         .buttonStyle(AppleMapButtonStyle())
+        .accessibilityLabel("Search shrines and temples")
+        .accessibilityHint("Opens search")
         .padding(.horizontal, DS.Spacing.lg)
     }
 }
