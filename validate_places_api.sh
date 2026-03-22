@@ -87,7 +87,7 @@ curl -s -X POST \
   -H "X-Goog-Api-Key: ${API_KEY}" \
   -H "X-Goog-FieldMask: places.id,places.displayName,places.formattedAddress,places.types,places.primaryType" \
   -d '{
-    "includedTypes": ["place_of_worship"],
+    "includedTypes": ["shinto_shrine", "buddhist_temple"],
     "locationRestriction": {
       "circle": {
         "center": { "latitude": 35.7148, "longitude": 139.7967 },
