@@ -22,16 +22,26 @@ struct GosyuinArtworkView: View {
 
             // Content
             VStack(spacing: DS.Spacing.sm) {
+                if let imageName = stamp.artworkImageName {
+                    // Artwork image when available
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .padding(DS.Spacing.md)
+                } else {
+                    // SF Symbol when no artwork available
+                    Image(systemName: stamp.icon)
+                        .font(.system(size: 48))
+                        .foregroundStyle(stamp.color)
+                }
+
                 Text(stamp.name)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(stamp.color)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
-
-                Image(systemName: stamp.icon)
-                    .font(.system(size: 48))
-                    .foregroundStyle(stamp.color)
 
                 Text(stamp.subtitle)
                     .font(.system(size: 12, weight: .medium))
