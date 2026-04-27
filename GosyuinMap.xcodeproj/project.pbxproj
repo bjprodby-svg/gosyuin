@@ -74,6 +74,11 @@
 		FA3D0001293AF1B0007B3F21 /* CollectorLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */; };
 		FA4D000000000002293AF1B0 /* EtiquetteIllustrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */; };
 		EE0000020000000000000002 /* LevelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000010000000000000002 /* LevelDetailView.swift */; };
+		FF0000020000000000000001 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000001 /* confetti.json */; };
+		FF0000020000000000000002 /* level_up.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* level_up.json */; };
+		FF0000020000000000000003 /* badge_unlock.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000003 /* badge_unlock.json */; };
+		FF0000020000000000000004 /* sparkle.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* sparkle.json */; };
+		FF0000020000000000000005 /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000005 /* success.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +177,11 @@
 		FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectorLevel.swift; sourceTree = "<group>"; };
 		FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EtiquetteIllustrations.swift; sourceTree = "<group>"; };
 		EE0000010000000000000002 /* LevelDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDetailView.swift; sourceTree = "<group>"; };
+		FF0000010000000000000001 /* confetti.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
+		FF0000010000000000000002 /* level_up.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = level_up.json; sourceTree = "<group>"; };
+		FF0000010000000000000003 /* badge_unlock.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = badge_unlock.json; sourceTree = "<group>"; };
+		FF0000010000000000000004 /* sparkle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sparkle.json; sourceTree = "<group>"; };
+		FF0000010000000000000005 /* success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = success.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,8 +402,21 @@
 			children = (
 				AB1234567890ABCDEF000001 /* shrine_images.json */,
 				CC0000010000000000000006 /* Tips.storekit */,
+				FF0000030000000000000001 /* Animations */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		FF0000030000000000000001 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				FF0000010000000000000001 /* confetti.json */,
+				FF0000010000000000000002 /* level_up.json */,
+				FF0000010000000000000003 /* badge_unlock.json */,
+				FF0000010000000000000004 /* sparkle.json */,
+				FF0000010000000000000005 /* success.json */,
+			);
+			path = Animations;
 			sourceTree = "<group>";
 		};
 		CC0000030000000000000001 /* Settings */ = {
@@ -496,6 +519,11 @@
 				089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */,
 				089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */,
 				AB1234567890ABCDEF000002 /* shrine_images.json in Resources */,
+				FF0000020000000000000001 /* confetti.json in Resources */,
+				FF0000020000000000000002 /* level_up.json in Resources */,
+				FF0000020000000000000003 /* badge_unlock.json in Resources */,
+				FF0000020000000000000004 /* sparkle.json in Resources */,
+				FF0000020000000000000005 /* success.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
