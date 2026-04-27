@@ -199,37 +199,70 @@ These hit Style B. Screen layout is specified in `docs/design-rework-brief.md` S
 
 ### 5. Achievement Badges (Flat Illustration Style)
 
-> **Direction confirmed in Wave 2A:** Takumi approved DALL-E's spontaneous output style — green/red/blue ring border + flat central illustration + bottom banner with kanji or English text. NOT minimal kanji-only seal — that direction was rejected as too plain.
+> **Direction confirmed in Wave 2A:** Takumi approved DALL-E's spontaneous output style — colored ring border + flat central illustration + bottom banner with kanji or number + small subtitle. NOT minimal kanji-only seal — that direction was rejected as too plain.
 
-**Reference badge:** `wave2a_badge_torii_shrine_v1.png` — green ring + torii + shrine building + "25" + "神社参拝" banner. This is the canonical template.
+**Reference badge:** `wave2a_badge_torii_shrine_v1.png` (green ring + torii + shrine + "25 神社参拝" banner). Canonical template — all badges follow this composition.
 
-**Current state:** `Achievement` / `AchievementCategory` already defined in `CollectorLevel.swift`, rendered via `IconBadge` with SF Symbols as a fallback. No original art yet.
+**Source of truth:** `GosyuinMap/Models/CollectorLevel.swift` — the `Achievement` struct list. Do NOT invent new achievements; only generate art for what's defined in code.
 
-**Scope:** ~50 unique badges spanning five axes.
+**Total: 38 badges across 3 categories** (per `Achievement.all` in code):
 
-**Categories:**
+#### 5a. Milestone (8 badges)
 
-1. **Milestones (8):** `hatsumairi` (1) / `gosan` (5) / `jussan` (10) / `nijugosan` (25) / `gojussan` (50) / `hyakusan` (100) / `nihyakusan` (200) / `gohyakusan` (500)
-2. **Category completions (8):** one per existing `CategoryIcons` key — `jinja_kaiden` / `inari_kaiden` / `tenmangu_kaiden` / etc.
-3. **Regional (10):** 9 regions + national — `hokkaido_meguri` / `tohoku` / `kanto` / `chubu` / `kinki` / `chugoku` / `shikoku` / `kyushu` / `okinawa` / `zenkoku_angya`
-4. **Seasonal (10):** `hatsumode` / `setsubun` / `haru_mairi` / `nagoshi_harae` / `tanabata` / `obon` / `aki_mairi` / `shichigosan` / `oharae` / `toshikoshi`
-5. **Special (~14):** `akatsuki_mairi` / `yoi_mairi` / `tsuki_mairi` / `u-chu_mairi` / `sekchu_mairi` / `enro_mairi` / `senri_mairi` / `renshichi` / `rensanju` / `shichifukujin` / `shikoku_henro` / `hikyo_mairi` / `kamuy_mairi` / etc.
+Stamp-count progression. ID corresponds to `Achievement.id`:
 
-**Shape exploration (Wave 2 of MVP decides):**
-| Candidate | Feel | Pros | Cons |
-|---|---|---|---|
-| 朱印 square seal | Most tonally aligned with stamps | Natural kanji baking, consistent with gosyuin world | Can look uniform at scale |
-| 絵馬 pentagon tablet | Familiar, friendly | Easy color variants | Less room for kanji detail |
-| お守り pouch | Charming, variety-friendly | Great for color-coded axes | Kanji becomes tag-like |
-| Circular medallion | Readable, balanced | Scales well | Drifts toward Western badge feel |
+| ID | Title | kanji (banner) | Description | Center illustration |
+|---|---|---|---|---|
+| `hatsumoude` | Hatsumoude | 初 | Collect your first stamp | Single torii on stone path, one petal floating |
+| `gosha` | Gosha Mairi | 五 | Collect 5 stamps | 5 stamps fanned out / small shrine cluster |
+| `jusha` | Jusha Meguri | 十 | Collect 10 stamps | Map with 10 pins / walking pilgrim |
+| `nijugosha` | Silver Pilgrim | 廿五 | Collect 25 stamps | Silver-toned shrine bell or seal |
+| `gojusha` | Gold Pilgrim | 五十 | Collect 50 stamps | Golden shrine torii at sunset |
+| `hyakusha` | Hyakusha Mairi | 百 | Collect 100 stamps | Trophy / 100-pillar shrine |
+| `nihyakusha` | Grand Pilgrim | 二百 | Collect 200 stamps | Crown / sacred mountain |
+| `zensha` | Zensha Seiha | 全 | Collect every stamp | Sparkles / all-stamps visualization |
 
-**Spec (regardless of shape):**
-- 1024×1024 PNG with transparency (Retina master; export 512×512 too)
-- Locked state: 25% opacity grayscale silhouette
-- Unlocked state: full color, kanji title baked in (calligraphic, not typeset)
-- Title kanji legible at the badge's display size in `CollectView` (~40pt)
+#### 5b. Category Mastery (24 badges = 8 categories × 3 tiers)
 
-**Placement:** `GosyuinMap/Assets.xcassets/Badges/badge_{category}_{key}.imageset/`
+For each `ShrineCategory` (jinja, tera, jingu, taisha, tenmangu, inari, hachimangu, daishi), 3 tier badges:
+
+| Tier | ID suffix | Title | kanji | Description |
+|---|---|---|---|---|
+| 1 | `_1` | {Cat} Initiate | 初 | Visit your first {category} |
+| 2 | `_5` | {Cat} Regular | 五 | Collect 5 {category} stamps |
+| 3 | `_all` | {Cat} Master | 皆 | Collect every {category} stamp |
+
+Center illustration uses the existing `CategoryIcons/icon_{category}.svg` motif (torii for jinja, fox for inari, plum for tenmangu, etc.).
+
+**Color coding by category** (matches `CollectorLevel.swift` definitions):
+- `jinja` — vermillion / `tera` — indigo / `jingu` — kincha / `taisha` — matcha
+- `tenmangu` — purple-magenta / `inari` — orange-red / `hachimangu` — deep red / `daishi` — burnt orange
+
+#### 5c. Exploration (6 badges)
+
+| ID | Title | kanji | Description | Center illustration |
+|---|---|---|---|---|
+| `first_journey` | First Journey | 旅 | Visit shrines in 2 different regions | Compass / two-region map |
+| `east_west` | East Meets West | 東西 | Visit Kanto and Kansai | Map split east/west, two markers |
+| `variety_5` | Variety Seeker | 五 | Collect from 5 different categories | 5 different shrine icons in a circle |
+| `all_categories` | Complete Explorer | 全 | Collect from every category | Compass star / 8-pointed mandala |
+| `tokyo_10` | Tokyo Explorer | 都 | Collect 10 stamps in Tokyo | Tokyo skyline / Tokyo Tower silhouette |
+| `kansai_10` | Kansai Wanderer | 西 | Collect 10 stamps in Kansai | Kyoto pagoda / Osaka castle silhouette |
+
+**Out of scope (not implemented in code):**
+- Seasonal badges (hatsumode, sakura mairi, momiji etc.) — not in `Achievement.all`
+- Special timing badges (akatsuki, yoi, tsuki) — not in `Achievement.all`
+- Streak / consecutive-day badges — no streak tracking in app
+
+If new achievements are added to `CollectorLevel.swift`, update this brief and generate matching art.
+
+**Spec:**
+- 1024×1024 PNG (Retina master)
+- Composition: outer ring (axis color) + pale interior + central flat illustration + bottom banner ("kanji + small subtitle")
+- All badges share the same composition skeleton — only the center illustration and banner text vary
+- Locked state: rendered at 0% saturation + 25% opacity at SwiftUI layer (NOT baked into asset)
+- File: `GosyuinMap/Assets.xcassets/Badges/badge_{achievementId}.imageset/badge.svg`
+- ID convention matches `Achievement.id` from `CollectorLevel.swift` (e.g. `badge_hatsumoude.svg`, `badge_jinja_5.svg`, `badge_first_journey.svg`)
 
 ---
 
@@ -373,7 +406,7 @@ ABSOLUTELY NO: gold, no laurel wreath, no ribbons, no Western achievement-badge 
 - App icons: `AppIcon.appiconset/` + `AppIconSakura.appiconset/` (one imageset per variant)
 - Category icons: `CategoryIcons/icon_{key}.imageset/icon.svg`
 - Gosyuin stamps: `ArtworkStamps/stamp_{romaji}.imageset/stamp_{romaji}.png`
-- Badges: `Badges/badge_{category}_{key}.imageset/` — category ∈ {milestone, category, region, seasonal, special}
+- Badges: `Badges/badge_{achievementId}.imageset/badge.svg` — `achievementId` matches `Achievement.id` from `CollectorLevel.swift` exactly (e.g. `badge_hatsumoude`, `badge_jinja_5`, `badge_first_journey`)
 - Tip cards: `TipCards/tip_{variant}.imageset/`
 - Passport-screen assets: `PassportAssets/{name}.imageset/`
 
@@ -407,7 +440,12 @@ ABSOLUTELY NO: gold, no laurel wreath, no ribbons, no Western achievement-badge 
 
 ## Next Actions
 
-**Wave 2A (immediate):** Generate 3 badge shape candidates of the "百参" milestone — 朱印 (red square seal) / 絵馬 (pentagonal wood tablet) / 円形 medallion. Pick the winner, then produce 10 seed milestones + first region.
+**Wave 2A (in progress):** 38 achievement badges aligned with `Achievement.all` in `CollectorLevel.swift`:
+- 5a Milestone (8): `hatsumoude` / `gosha` / `jusha` / `nijugosha` / `gojusha` / `hyakusha` / `nihyakusha` / `zensha`
+- 5b Category Mastery (24): each of jinja/tera/jingu/taisha/tenmangu/inari/hachimangu/daishi × 3 tiers (`_1` / `_5` / `_all`)
+- 5c Exploration (6): `first_journey` / `east_west` / `variety_5` / `all_categories` / `tokyo_10` / `kansai_10`
+
+Generate raster via ChatGPT (multi-badge grid prompts work well — Wave 2A pilot produced 9 badges in one image with consistent style), then bulk-vectorize via Recraft.
 
 **Wave 2B (next):** Produce remaining 5 category icons in raw silhouette form for Figma tracing — `gongen` / `sengen` / `konpira` / `ebisu` / `benzaiten`.
 
