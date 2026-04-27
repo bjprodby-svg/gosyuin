@@ -134,9 +134,8 @@ struct CollectView: View {
             .onAppear {
                 withAnimation(.spring(duration: 0.5)) { appeared = true }
             }
-            #if DEBUG
-            .onAppear(perform: seedSampleDataIfNeeded)
-            #endif
+            // Seed removed — use Settings > Debug to add stamps
+
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: collectedStamps.count)
     }
