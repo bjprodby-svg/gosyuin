@@ -4,7 +4,7 @@ import StoreKit
 
 @main
 struct GosyuinMapApp: App {
-    @State private var hasCompletedOnboarding = false
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @State private var showSplash = true
 
     var body: some Scene {
