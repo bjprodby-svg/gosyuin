@@ -66,6 +66,11 @@
 		089C1AA1293DF1B0007B3F21 /* GosyuinArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */; };
 		089C1AA3293DF1B0007B3F21 /* GosyuinBookSpreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */; };
 		AB1234567890ABCDEF000002 /* shrine_images.json in Resources */ = {isa = PBXBuildFile; fileRef = AB1234567890ABCDEF000001 /* shrine_images.json */; };
+		CC0000020000000000000001 /* TipStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000001 /* TipStore.swift */; };
+		CC0000020000000000000002 /* TipPromptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000002 /* TipPromptController.swift */; };
+		CC0000020000000000000003 /* TipJarCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000003 /* TipJarCard.swift */; };
+		CC0000020000000000000004 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000004 /* SettingsView.swift */; };
+		CC0000020000000000000005 /* TipJarFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000005 /* TipJarFullView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -156,6 +161,12 @@
 		089C19A2293DF1B0007B3F21 /* MapFloatingButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapFloatingButtons.swift; sourceTree = "<group>"; };
 		089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinArtworkView.swift; sourceTree = "<group>"; };
 		089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinBookSpreadView.swift; sourceTree = "<group>"; };
+		CC0000010000000000000001 /* TipStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipStore.swift; sourceTree = "<group>"; };
+		CC0000010000000000000002 /* TipPromptController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipPromptController.swift; sourceTree = "<group>"; };
+		CC0000010000000000000003 /* TipJarCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarCard.swift; sourceTree = "<group>"; };
+		CC0000010000000000000004 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		CC0000010000000000000005 /* TipJarFullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarFullView.swift; sourceTree = "<group>"; };
+		CC0000010000000000000006 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,10 +229,20 @@
 				089C168A293AF1B0007B3F21 /* Explore */,
 				089C168B293AF1B0007B3F21 /* Collect */,
 				089C168C293AF1B0007B3F21 /* Learn */,
+				CC0000030000000000000001 /* Settings */,
 				089C16B1293AF1B0007B3F21 /* SplashView.swift */,
 				089C17A1293AF1B0007B3F21 /* OnboardingView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		CC0000030000000000000001 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				CC0000010000000000000004 /* SettingsView.swift */,
+				CC0000010000000000000005 /* TipJarFullView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		089C168A293AF1B0007B3F21 /* Explore */ = {
@@ -231,6 +252,7 @@
 				089C18A0293AF1B0007B3F21 /* ExploreState.swift */,
 				089C16A0293AF1B0007B3F21 /* ShrineDetailView.swift */,
 				089C17B1293AF1B0007B3F21 /* StampCollectionPrompt.swift */,
+				CC0000010000000000000003 /* TipJarCard.swift */,
 				089C18E0293DF1B0007B3F21 /* Sheet */,
 				089C18E1293DF1B0007B3F21 /* Navigation */,
 				089C18E2293DF1B0007B3F21 /* Annotations */,
@@ -310,6 +332,8 @@
 				089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */,
 				D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */,
 				089C18C0293DF1B0007B3F21 /* DirectionsService.swift */,
+				CC0000010000000000000001 /* TipStore.swift */,
+				CC0000010000000000000002 /* TipPromptController.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -368,6 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				AB1234567890ABCDEF000001 /* shrine_images.json */,
+				CC0000010000000000000006 /* Tips.storekit */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -526,6 +551,11 @@
 				089C200D293AF1B0007B3F21 /* ShrineData_EastJapan.swift in Sources */,
 				089C200F293AF1B0007B3F21 /* ShrineData_WestJapan.swift in Sources */,
 				FA000001293AF1B0007B3F21 /* ShrineData_Famous.swift in Sources */,
+				CC0000020000000000000001 /* TipStore.swift in Sources */,
+				CC0000020000000000000002 /* TipPromptController.swift in Sources */,
+				CC0000020000000000000003 /* TipJarCard.swift in Sources */,
+				CC0000020000000000000004 /* SettingsView.swift in Sources */,
+				CC0000020000000000000005 /* TipJarFullView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
