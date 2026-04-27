@@ -27,15 +27,15 @@ struct GosyuinMapApp: App {
                         showSplash = false
                     }
                 }
-            }
-        }
-        .modelContainer(for: [CollectedStamp.self])
-        .task {
-            for await result in Transaction.updates {
-                if case .verified(let transaction) = result {
-                    await transaction.finish()
+                .task {
+                    for await result in Transaction.updates {
+                        if case .verified(let transaction) = result {
+                            await transaction.finish()
+                        }
+                    }
                 }
             }
         }
+        .modelContainer(for: [CollectedStamp.self])
     }
 }
