@@ -72,7 +72,7 @@ struct SettingsView: View {
                 }
                 .presentationDetents([.medium])
             }
-            .sheet(isPresented: $showCollectionPrompt) {
+            .fullScreenCover(isPresented: $showCollectionPrompt) {
                 StampCollectionPrompt(
                     shrine: promptShrine,
                     onCollect: {
@@ -81,7 +81,6 @@ struct SettingsView: View {
                     },
                     onDismiss: { showCollectionPrompt = false }
                 )
-                .presentationDetents([.large])
             }
             #endif
         }

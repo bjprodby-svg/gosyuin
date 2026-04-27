@@ -10,32 +10,32 @@ struct StampCollectionPrompt: View {
     @Query private var collectedStamps: [CollectedStamp]
 
     // Phase states
-    @State private var phase: CollectPhase = .ready
+    @State private var collected = false
     @State private var showTipCard = false
     @State private var tipStore = TipStore()
     @State private var tipPromptController = TipPromptController()
 
     // Animation states
-    @State private var ringScale: CGFloat = 0.6
-    @State private var ringOpacity: Double = 0
-    @State private var stampScale: CGFloat = 2.0
-    @State private var stampRotation: Double = -15
+    @State private var readyRingScale: CGFloat = 0.7
+    @State private var readyRingOpacity: Double = 0
+    @State private var inkWaveScale: CGFloat = 0
+    @State private var inkWaveOpacity: Double = 0
+    @State private var stampScale: CGFloat = 2.5
+    @State private var stampRotation: Double = -20
     @State private var stampOpacity: Double = 0
     @State private var flashOpacity: Double = 0
     @State private var shakeOffset: CGFloat = 0
     @State private var titleScale: CGFloat = 0.5
     @State private var titleOpacity: Double = 0
-    @State private var showConfetti = false
+    @State private var showLottieConfetti = false
+    @State private var showSwiftUIConfetti = false
+    @State private var confettiPieces: [ConfettiPiece] = []
     @State private var showFireworks = false
     @State private var showShineRing = false
     @State private var showLevelUp = false
     @State private var levelKanjiScale: CGFloat = 0
     @State private var rewardRows: [Bool] = []
     @State private var doneButtonOpacity: Double = 0
-
-    private enum CollectPhase {
-        case ready, collecting, collected
-    }
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
@@ -59,20 +59,32 @@ struct StampCollectionPrompt: View {
             // Background
             Color.pageBackground.ignoresSafeArea()
 
+            // Ink wave (vermillion circle that expands on stamp press)
+            Circle()
+                .fill(Color.vermillion.opacity(0.15))
+                .scaleEffect(inkWaveScale)
+                .opacity(inkWaveOpacity)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+
             // Full-screen flash
             Color.white
                 .ignoresSafeArea()
                 .opacity(flashOpacity)
                 .allowsHitTesting(false)
 
-            // Full-screen confetti (behind content)
-            if showConfetti {
+            // Lottie confetti
+            if showLottieConfetti {
                 LottieView(animation: .named("confetti"))
                     .playing(loopMode: .playOnce)
                     .animationSpeed(0.7)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
-                    .transition(.opacity)
+            }
+
+            // SwiftUI confetti (denser, themed particles)
+            if showSwiftUIConfetti {
+                confettiCanvas
             }
 
             // Full-screen fireworks (for level up)
@@ -82,27 +94,23 @@ struct StampCollectionPrompt: View {
                     .animationSpeed(0.5)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
-                    .transition(.opacity)
             }
 
-            // Main content
-            VStack(spacing: 0) {
-                Spacer()
+            // Main content (single layout, animated visibility)
+            ScrollView {
+                VStack(spacing: DS.Spacing.xl) {
+                    Spacer(minLength: 60)
 
-                switch phase {
-                case .ready:
-                    readyContent
-                case .collecting, .collected:
-                    collectedContent
+                    mainContent
+
+                    Spacer(minLength: 40)
+
+                    buttonsArea
+                        .padding(.bottom, DS.Spacing.xxl)
                 }
-
-                Spacer()
-
-                // Buttons
-                buttonsArea
-                    .padding(.bottom, DS.Spacing.xxl)
+                .padding(.horizontal, DS.Spacing.xxl)
             }
-            .padding(.horizontal, DS.Spacing.xxl)
+            .scrollIndicators(.hidden)
             .offset(x: shakeOffset)
 
             // Level up overlay
@@ -110,109 +118,109 @@ struct StampCollectionPrompt: View {
                 levelUpOverlay
             }
         }
-        .sensoryFeedback(.impact(weight: .heavy), trigger: phase == .collecting)
-        .sensoryFeedback(.success, trigger: phase == .collected)
+        .sensoryFeedback(.impact(weight: .heavy), trigger: collected)
     }
 
-    // MARK: - Ready Content (before collection)
+    // MARK: - Main Content (unified, animated visibility)
 
-    private var readyContent: some View {
+    private var mainContent: some View {
         VStack(spacing: DS.Spacing.xl) {
-            // Shrine icon with pulsing ring
+            // Hero area — transitions from shrine icon to stamp artwork
             ZStack {
-                Circle()
-                    .stroke(shrine.category.color.opacity(0.15), lineWidth: 2)
-                    .frame(width: 160, height: 160)
-                    .scaleEffect(ringScale)
-                    .opacity(ringOpacity)
-                    .onAppear {
-                        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                            ringScale = 0.85
-                            ringOpacity = 0.6
+                // Pulsing ring (before collection)
+                if !collected {
+                    Circle()
+                        .stroke(shrine.category.color.opacity(0.15), lineWidth: 2)
+                        .frame(width: 160, height: 160)
+                        .scaleEffect(readyRingScale)
+                        .opacity(readyRingOpacity)
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                                readyRingScale = 0.85
+                                readyRingOpacity = 0.6
+                            }
                         }
-                    }
-
-                Circle()
-                    .fill(shrine.category.color.opacity(0.08))
-                    .frame(width: 120, height: 120)
-                Circle()
-                    .strokeBorder(shrine.category.color.opacity(0.2), lineWidth: 2)
-                    .frame(width: 120, height: 120)
-                CategoryIconView(category: shrine.category, size: 64, color: shrine.category.color)
-            }
-
-            VStack(spacing: DS.Spacing.sm) {
-                Text("You're at \(shrine.name)!")
-                    .font(.title2.bold())
-                    .foregroundStyle(Color.bodyText)
-                    .multilineTextAlignment(.center)
-
-                HStack(spacing: DS.Spacing.xs) {
-                    Image(systemName: shrine.category.icon)
-                        .font(.caption)
-                        .foregroundStyle(shrine.category.color)
-                    Text(shrine.category.displayName)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(Color.subtitleText)
                 }
 
-                Text("Collect your shrine stamp now.")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.subtitleText)
-            }
-        }
-    }
-
-    // MARK: - Collected Content (after collection)
-
-    private var collectedContent: some View {
-        VStack(spacing: DS.Spacing.xl) {
-            // Stamp artwork with shine ring
-            ZStack {
+                // Shine ring Lottie (after collection)
                 if showShineRing {
                     LottieView(animation: .named("shine_ring"))
                         .playing(loopMode: .playOnce)
                         .animationSpeed(0.8)
-                        .frame(width: 200, height: 200)
+                        .frame(width: 220, height: 220)
                         .allowsHitTesting(false)
                 }
 
-                let stampDef = StampDefinition.all.first { $0.id == shrine.stampSlotId }
-                if let stampDef {
-                    GosyuinStampView(
-                        stamp: stampDef,
-                        size: 140,
-                        showDate: false,
-                        collectedDate: .now
-                    )
-                    .scaleEffect(stampScale)
-                    .rotationEffect(.degrees(stampRotation))
-                    .opacity(stampOpacity)
-                } else {
-                    Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: 72))
-                        .foregroundStyle(Color.vermillion)
+                if collected {
+                    // Stamp artwork (slams in)
+                    let stampDef = StampDefinition.all.first { $0.id == shrine.stampSlotId }
+                    if let stampDef {
+                        GosyuinStampView(
+                            stamp: stampDef,
+                            size: 150,
+                            showDate: false,
+                            collectedDate: .now
+                        )
                         .scaleEffect(stampScale)
+                        .rotationEffect(.degrees(stampRotation))
                         .opacity(stampOpacity)
+                    } else {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 80))
+                            .foregroundStyle(Color.vermillion)
+                            .scaleEffect(stampScale)
+                            .opacity(stampOpacity)
+                    }
+                } else {
+                    // Shrine category icon (before collection)
+                    ZStack {
+                        Circle()
+                            .fill(shrine.category.color.opacity(0.08))
+                            .frame(width: 120, height: 120)
+                        Circle()
+                            .strokeBorder(shrine.category.color.opacity(0.2), lineWidth: 2)
+                            .frame(width: 120, height: 120)
+                        CategoryIconView(category: shrine.category, size: 64, color: shrine.category.color)
+                    }
                 }
             }
-            .frame(height: 200)
+            .frame(height: 220)
 
-            // "Stamp Collected!" title
+            // Title area
             VStack(spacing: DS.Spacing.sm) {
-                Text("Stamp Collected!")
-                    .font(.title.bold())
-                    .foregroundStyle(Color.vermillion)
-                    .scaleEffect(titleScale)
-                    .opacity(titleOpacity)
+                if collected {
+                    Text("Stamp Collected!")
+                        .font(.title.bold())
+                        .foregroundStyle(Color.vermillion)
+                        .scaleEffect(titleScale)
+                        .opacity(titleOpacity)
 
-                Text("A beautiful memory preserved.")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.subtitleText)
-                    .opacity(titleOpacity)
+                    Text("A beautiful memory preserved.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.subtitleText)
+                        .opacity(titleOpacity)
+                } else {
+                    Text("You're at \(shrine.name)!")
+                        .font(.title2.bold())
+                        .foregroundStyle(Color.bodyText)
+                        .multilineTextAlignment(.center)
+
+                    HStack(spacing: DS.Spacing.xs) {
+                        Image(systemName: shrine.category.icon)
+                            .font(.caption)
+                            .foregroundStyle(shrine.category.color)
+                        Text(shrine.category.displayName)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(Color.subtitleText)
+                    }
+
+                    Text("Collect your shrine stamp now.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.subtitleText)
+                }
             }
 
-            // Rewards
+            // Rewards cascade
             if !rewardRows.isEmpty {
                 VStack(spacing: DS.Spacing.sm) {
                     if didLevelUp && rewardRows.indices.contains(0) && rewardRows[0] {
@@ -258,12 +266,38 @@ struct StampCollectionPrompt: View {
         }
     }
 
+    // MARK: - SwiftUI Confetti Canvas (themed, dense)
+
+    private var confettiCanvas: some View {
+        GeometryReader { geo in
+            ForEach(confettiPieces.indices, id: \.self) { i in
+                let piece = confettiPieces[i]
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(piece.color)
+                    .frame(width: piece.size, height: piece.size * 0.5)
+                    .rotationEffect(.degrees(piece.rotation))
+                    .position(
+                        x: geo.size.width * piece.x,
+                        y: showSwiftUIConfetti
+                            ? geo.size.height * piece.endY
+                            : geo.size.height * piece.startY
+                    )
+                    .opacity(showSwiftUIConfetti ? 0 : 1)
+                    .animation(
+                        .easeOut(duration: piece.duration).delay(piece.delay),
+                        value: showSwiftUIConfetti
+                    )
+            }
+        }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
+    }
+
     // MARK: - Buttons
 
     private var buttonsArea: some View {
         Group {
-            switch phase {
-            case .ready:
+            if !collected {
                 VStack(spacing: DS.Spacing.md) {
                     Button {
                         collectStamp()
@@ -283,11 +317,7 @@ struct StampCollectionPrompt: View {
                             .foregroundStyle(Color.subtitleText)
                     }
                 }
-
-            case .collecting:
-                EmptyView()
-
-            case .collected:
+            } else {
                 Button { onDismiss() } label: {
                     Text("Done")
                         .vermillionButtonStyle()
@@ -342,71 +372,83 @@ struct StampCollectionPrompt: View {
         .transition(.opacity)
     }
 
-    // MARK: - Collect Animation (DispatchQueue for reliable timing)
+    // MARK: - Collect Animation
 
     private func collectStamp() {
         onCollect()
-        phase = .collecting
 
-        // === PHASE 1: Impact (0ms) — screen flash + stamp slam ===
-        withAnimation(.easeOut(duration: 0.1)) {
-            flashOpacity = 0.8
+        // === PHASE 1: Impact (0ms) — ink wave + flash + shake ===
+        // Ink wave expands from center
+        withAnimation(.easeOut(duration: 0.6)) {
+            inkWaveScale = 6
+            inkWaveOpacity = 1
         }
-        // Shake
-        withAnimation(.spring(duration: 0.08, bounce: 0)) {
-            shakeOffset = -8
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
-            withAnimation(.spring(duration: 0.08, bounce: 0)) {
-                shakeOffset = 8
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.16) {
-            withAnimation(.spring(duration: 0.1, bounce: 0)) {
-                shakeOffset = 0
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation(.easeOut(duration: 0.5)) {
+                inkWaveOpacity = 0
             }
         }
 
-        // Flash fade
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            withAnimation(.easeOut(duration: 0.4)) {
+        // Screen flash
+        withAnimation(.easeOut(duration: 0.08)) {
+            flashOpacity = 0.9
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.easeOut(duration: 0.3)) {
                 flashOpacity = 0
             }
         }
 
-        // === PHASE 2: Stamp reveal (200ms) — stamp slams in from big ===
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(DS.Anim.collect) {
+        // Screen shake (3 oscillations)
+        withAnimation(.spring(duration: 0.06, bounce: 0)) { shakeOffset = -12 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
+            withAnimation(.spring(duration: 0.06, bounce: 0)) { shakeOffset = 12 }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+            withAnimation(.spring(duration: 0.06, bounce: 0)) { shakeOffset = -6 }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            withAnimation(.spring(duration: 0.08, bounce: 0)) { shakeOffset = 0 }
+        }
+
+        // Switch to collected state (stamp + title areas change)
+        withAnimation(DS.Anim.collect) {
+            collected = true
+        }
+
+        // === PHASE 2: Stamp slam (100ms) — stamp slams in from 2.5x ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.spring(duration: 0.4, bounce: 0.35)) {
                 stampOpacity = 1
                 stampScale = 1.0
                 stampRotation = 0
             }
-            // Shine ring
             showShineRing = true
         }
 
-        // === PHASE 3: Title (500ms) ===
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation(.spring(duration: 0.4, bounce: 0.5)) {
+        // === PHASE 3: Title bounce (400ms) ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            withAnimation(.spring(duration: 0.5, bounce: 0.5)) {
                 titleScale = 1.0
                 titleOpacity = 1
             }
         }
 
-        // === PHASE 4: Confetti explosion (600ms) ===
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            withAnimation(DS.Anim.contentAppear) {
-                showConfetti = true
+        // === PHASE 4: Confetti explosion (500ms) — both Lottie + SwiftUI ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            showLottieConfetti = true
+            generateConfetti()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                showSwiftUIConfetti = true
             }
-            phase = .collected
         }
 
-        // === PHASE 5: Rewards cascade (1200ms) ===
+        // === PHASE 5: Rewards cascade (1000ms) ===
         let totalRewards = (didLevelUp ? 1 : 0) + newBadges.count
         if totalRewards > 0 {
             rewardRows = Array(repeating: false, count: totalRewards)
             for i in 0..<totalRewards {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2 + Double(i) * 0.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + Double(i) * 0.35) {
                     withAnimation(.spring(duration: 0.5, bounce: 0.4)) {
                         if rewardRows.indices.contains(i) {
                             rewardRows[i] = true
@@ -416,19 +458,17 @@ struct StampCollectionPrompt: View {
             }
         }
 
-        // === PHASE 6: Level Up overlay (1800ms) ===
+        // === PHASE 6: Level Up overlay (1600ms) ===
         if didLevelUp {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
                 withAnimation(DS.Anim.celebration) {
                     showLevelUp = true
                     showFireworks = true
                 }
-                // Kanji pop with spring
-                withAnimation(.spring(duration: 0.6, bounce: 0.5).delay(0.3)) {
+                withAnimation(.spring(duration: 0.7, bounce: 0.5).delay(0.2)) {
                     levelKanjiScale = 1.0
                 }
-                // Auto-dismiss
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                     withAnimation(DS.Anim.contentAppear) {
                         showLevelUp = false
                         showFireworks = false
@@ -437,8 +477,8 @@ struct StampCollectionPrompt: View {
             }
         }
 
-        // === PHASE 7: Tip card (3000ms) ===
-        let tipDelay = didLevelUp ? 5.0 : 2.5
+        // === PHASE 7: Tip card ===
+        let tipDelay = didLevelUp ? 5.5 : 2.5
         DispatchQueue.main.asyncAfter(deadline: .now() + tipDelay) {
             if tipPromptController.shouldShowTipPrompt(currentStampCount: postCollectCount) {
                 tipPromptController.recordShown(atStampCount: postCollectCount)
@@ -448,12 +488,28 @@ struct StampCollectionPrompt: View {
             }
         }
 
-        // === PHASE 8: Done button (1500ms or after level up) ===
-        let doneDelay = didLevelUp ? 5.5 : 1.8
+        // === PHASE 8: Done button ===
+        let doneDelay = didLevelUp ? 6.0 : 1.5
         DispatchQueue.main.asyncAfter(deadline: .now() + doneDelay) {
             withAnimation(DS.Anim.contentAppear) {
                 doneButtonOpacity = 1
             }
+        }
+    }
+
+    private func generateConfetti() {
+        let colors: [Color] = [.vermillion, shrine.category.color, .kincha, .matcha, .indigo, .white]
+        confettiPieces = (0..<40).map { _ in
+            ConfettiPiece(
+                x: CGFloat.random(in: 0.05...0.95),
+                startY: CGFloat.random(in: -0.15...0.2),
+                endY: CGFloat.random(in: 0.8...1.3),
+                size: CGFloat.random(in: 5...10),
+                color: colors.randomElement()!,
+                rotation: Double.random(in: 0...360),
+                delay: Double.random(in: 0...0.4),
+                duration: Double.random(in: 1.2...2.0)
+            )
         }
     }
 
@@ -496,6 +552,19 @@ struct StampCollectionPrompt: View {
                 .strokeBorder(color.opacity(0.15), lineWidth: 1)
         )
     }
+}
+
+// MARK: - Confetti Piece Model
+
+private struct ConfettiPiece {
+    let x: CGFloat
+    let startY: CGFloat
+    let endY: CGFloat
+    let size: CGFloat
+    let color: Color
+    let rotation: Double
+    let delay: Double
+    let duration: Double
 }
 
 #Preview {
