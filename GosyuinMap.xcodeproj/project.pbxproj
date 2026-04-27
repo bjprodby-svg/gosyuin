@@ -73,6 +73,7 @@
 		FA2D0002293DF1B0007B3F21 /* DirectionsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */; };
 		FA3D0001293AF1B0007B3F21 /* CollectorLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */; };
 		FA4D000000000002293AF1B0 /* EtiquetteIllustrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */; };
+		EE0000020000000000000002 /* LevelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000010000000000000002 /* LevelDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +171,7 @@
 		FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsSheet.swift; sourceTree = "<group>"; };
 		FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectorLevel.swift; sourceTree = "<group>"; };
 		FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EtiquetteIllustrations.swift; sourceTree = "<group>"; };
+		EE0000010000000000000002 /* LevelDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,6 +267,7 @@
 				089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */,
 				089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */,
 				AA0000000000000000000001 /* ShrinePassportView.swift */,
+				EE0000010000000000000002 /* LevelDetailView.swift */,
 			);
 			path = Collect;
 			sourceTree = "<group>";
@@ -569,6 +572,7 @@
 				CC0000020000000000000004 /* SettingsView.swift in Sources */,
 				CC0000020000000000000005 /* TipJarFullView.swift in Sources */,
 				DD0000020000000000000001 /* Animation+DS.swift in Sources */,
+				EE0000020000000000000002 /* LevelDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

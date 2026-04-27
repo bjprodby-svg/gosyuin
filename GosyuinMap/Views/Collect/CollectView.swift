@@ -9,7 +9,7 @@ struct CollectView: View {
     @State private var selectedCategory: ShrineCategory? = nil
     @State private var showPassport = false
     @State private var showSettings = false
-    @State private var showAllAchievements = false
+    @State private var showLevelDetail = false
     @State private var currentBookPage: Int = 0
 
     private let bookColumns = [
@@ -86,7 +86,6 @@ struct CollectView: View {
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
                     levelCard
-                    achievementsSummary
 
                     if collectedStamps.isEmpty {
                         emptyStateCard
@@ -123,9 +122,10 @@ struct CollectView: View {
             .sheet(isPresented: $showPassport) {
                 ShrinePassportView()
             }
-            .sheet(isPresented: $showAllAchievements) {
-                AchievementsDetailView(
+            .sheet(isPresented: $showLevelDetail) {
+                LevelDetailView(
                     collectedIds: collectedIds,
+                    stampCount: collectedStamps.count,
                     achievementsByCategory: achievementsByCategory
                 )
             }
@@ -186,115 +186,79 @@ struct CollectView: View {
     // MARK: - Level Card
 
     private var levelCard: some View {
-        HStack(spacing: DS.Spacing.lg) {
-            ZStack {
-                Circle()
-                    .fill(level.color.gradient)
-                    .frame(width: 64, height: 64)
-                VStack(spacing: 0) {
-                    Text(level.kanji)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(.white)
-                    Image(systemName: level.icon)
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.8))
-                }
-            }
-            .shadow(color: level.color.opacity(0.4), radius: 8, y: 3)
-
-            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                HStack(spacing: DS.Spacing.xs) {
-                    Text("Lv.\(level.rawValue)")
-                        .font(DS.Font.chipLabel)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(level.color, in: Capsule())
-                    Text(level.title)
-                        .font(.headline)
-                }
-                Text(level.subtitle)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(Color.subtitleText)
-
-                if level.next != nil {
-                    HStack(spacing: DS.Spacing.sm) {
-                        ProgressBar(
-                            progress: level.progressToNext(current: collectedStamps.count),
-                            color: level.color,
-                            height: 6
-                        )
-                        if let toNext = level.stampsToNext(current: collectedStamps.count) {
-                            Text("\(toNext) to go")
-                                .font(DS.Font.statCaption)
-                                .foregroundStyle(Color.captionText)
-                                .fixedSize()
-                        }
-                    }
-                } else {
-                    Text("Max level reached!")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(level.color)
-                }
-            }
-
-            Spacer()
-
-            VStack(spacing: 2) {
-                AnimatedCounter(
-                    value: collectedStamps.count,
-                    font: DS.Font.statMedium,
-                    color: level.color
-                )
-                Text("/ \(StampDefinition.all.count)")
-                    .font(.caption2)
-                    .foregroundStyle(Color.captionText)
-            }
-        }
-        .cardStyle()
-    }
-
-    // MARK: - Achievements Summary (compact, tappable)
-
-    private var achievementsSummary: some View {
-        Button { showAllAchievements = true } label: {
-            HStack(spacing: DS.Spacing.md) {
-                // Recent unlocked badges (show up to 3)
-                HStack(spacing: -8) {
-                    ForEach(unlockedAchievements.suffix(3)) { badge in
-                        IconBadge(icon: badge.icon, size: 32, color: badge.color)
-                            .background(Color.cardBackground, in: Circle())
+        Button { showLevelDetail = true } label: {
+            HStack(spacing: DS.Spacing.lg) {
+                ZStack {
+                    Circle()
+                        .fill(level.color.gradient)
+                        .frame(width: 64, height: 64)
+                    VStack(spacing: 0) {
+                        Text(level.kanji)
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundStyle(.white)
+                        Image(systemName: level.icon)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.8))
                     }
                 }
+                .shadow(color: level.color.opacity(0.4), radius: 8, y: 3)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("\(unlockedAchievements.count)/\(Achievement.all.count) Achievements")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.bodyText)
+                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                    HStack(spacing: DS.Spacing.xs) {
+                        Text("Lv.\(level.rawValue)")
+                            .font(DS.Font.chipLabel)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(level.color, in: Capsule())
+                        Text(level.title)
+                            .font(.headline)
+                            .foregroundStyle(Color.bodyText)
+                    }
+                    Text(level.subtitle)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(Color.subtitleText)
 
-                    if let nextLocked = lockedAchievements.first {
-                        HStack(spacing: DS.Spacing.xs) {
-                            Text("Next:")
-                                .font(.caption)
-                                .foregroundStyle(Color.captionText)
-                            Text(nextLocked.description)
-                                .font(.caption)
-                                .foregroundStyle(Color.subtitleText)
-                                .lineLimit(1)
+                    if level.next != nil {
+                        HStack(spacing: DS.Spacing.sm) {
+                            ProgressBar(
+                                progress: level.progressToNext(current: collectedStamps.count),
+                                color: level.color,
+                                height: 6
+                            )
+                            if let toNext = level.stampsToNext(current: collectedStamps.count) {
+                                Text("\(toNext) to go")
+                                    .font(DS.Font.statCaption)
+                                    .foregroundStyle(Color.captionText)
+                                    .fixedSize()
+                            }
                         }
+                    } else {
+                        Text("Max level reached!")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(level.color)
                     }
                 }
 
                 Spacer()
 
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.captionText)
+                VStack(spacing: 2) {
+                    AnimatedCounter(
+                        value: collectedStamps.count,
+                        font: DS.Font.statMedium,
+                        color: level.color
+                    )
+                    Text("/ \(StampDefinition.all.count)")
+                        .font(.caption2)
+                        .foregroundStyle(Color.captionText)
+                }
             }
             .cardStyle()
         }
         .buttonStyle(.pressable)
     }
+
+    // Achievement summary removed — accessible via Level Card tap
 
     // MARK: - Category Filter
 
