@@ -49,6 +49,13 @@ struct TipJarCard: View {
             if tipStore.isLoading {
                 ProgressView()
                     .frame(height: 60)
+            } else if tipStore.tips.isEmpty {
+                // Fallback when StoreKit products unavailable
+                HStack(spacing: DS.Spacing.sm) {
+                    fallbackButton(label: "賽銭", price: "$0.99")
+                    fallbackButton(label: "お守り", price: "$2.99")
+                    fallbackButton(label: "御朱印", price: "$4.99")
+                }
             } else {
                 HStack(spacing: DS.Spacing.sm) {
                     ForEach(tipStore.tips) { product in
@@ -110,6 +117,31 @@ struct TipJarCard: View {
         case "com.bjprodby.gosyuinmap.tip.large": "御朱印"
         default: product.displayName
         }
+    }
+
+    // MARK: - Fallback Button
+
+    private func fallbackButton(label: String, price: String) -> some View {
+        Button {
+            // StoreKit not available, open App Store page in future
+        } label: {
+            VStack(spacing: DS.Spacing.xs) {
+                Text(label)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Color.kincha)
+                Text(price)
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(Color.subtitleText)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, DS.Spacing.md)
+            .background(Color.kincha.opacity(0.08), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+            .overlay(
+                RoundedRectangle(cornerRadius: DS.Radius.md)
+                    .strokeBorder(Color.kincha.opacity(0.2), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.pressable)
     }
 
     // MARK: - Thank You

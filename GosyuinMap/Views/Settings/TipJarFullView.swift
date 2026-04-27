@@ -31,6 +31,18 @@ struct TipJarFullView: View {
                 } else if tipStore.isLoading {
                     ProgressView()
                         .frame(height: 200)
+                } else if tipStore.tips.isEmpty {
+                    VStack(spacing: DS.Spacing.md) {
+                        Text("Tip Jar is not available right now.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.subtitleText)
+                            .multilineTextAlignment(.center)
+                        Text("Tips will be available when the app is on the App Store.")
+                            .font(.caption)
+                            .foregroundStyle(Color.captionText)
+                            .multilineTextAlignment(.center)
+                    }
+                    .cardStyle()
                 } else {
                     // Tip options
                     VStack(spacing: DS.Spacing.md) {
