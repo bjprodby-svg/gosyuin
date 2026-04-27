@@ -6,13 +6,15 @@ import MapKit
 
 struct PlaceDetailContent: View {
     let shrine: Shrine
+    var isEnriching: Bool = false
     let onDirections: () -> Void
     let onBack: () -> Void
 
     @Query private var collectedStamps: [CollectedStamp]
 
     private var isCollected: Bool {
-        collectedStamps.contains { $0.slotId == shrine.stampSlotId }
+        let slotId = shrine.effectiveStampSlotId
+        return slotId > 0 && collectedStamps.contains { $0.slotId == slotId }
     }
 
     var body: some View {
@@ -22,24 +24,30 @@ struct PlaceDetailContent: View {
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
                     photoGallery
+
+                    // Collect prompt stays near the top so users see it immediately
+                    if !isCollected && shrine.effectiveStampSlotId > 0 {
+                        collectPrompt
+                    }
+
                     aboutSection
 
                     if !shrine.mustSee.isEmpty {
                         mustSeeCard
                     }
 
+                    infoCards
+
                     if !shrine.highlights.isEmpty {
                         highlightsSection
                     }
-
-                    infoCards
 
                     if !shrine.tips.isEmpty {
                         tipsSection
                     }
 
-                    if !isCollected {
-                        collectPrompt
+                    if let reviews = shrine.reviews, !reviews.isEmpty {
+                        reviewsSection(reviews)
                     }
 
                     heroMap
@@ -67,7 +75,28 @@ struct PlaceDetailContent: View {
                             .background(shrine.category.color, in: RoundedRectangle(cornerRadius: 4))
                         Text(shrine.category.displayName)
                             .font(.caption.weight(.medium))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
+
+                        if let rating = shrine.rating {
+                            HStack(spacing: 2) {
+                                Image(systemName: "star.fill")
+                                    .font(.system(size: 10))
+                                    .foregroundStyle(.orange)
+                                Text(String(format: "%.1f", rating))
+                                    .font(.caption.weight(.medium))
+                                if let count = shrine.userRatingCount {
+                                    Text("(\(count))")
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.captionText)
+                                }
+                            }
+                        }
+
+                        if let openNow = shrine.openNow {
+                            Text(openNow ? "Open" : "Closed")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(openNow ? .green : .red)
+                        }
                     }
                 }
 
@@ -93,15 +122,14 @@ struct PlaceDetailContent: View {
             if !shrine.tagline.isEmpty {
                 Text(shrine.tagline)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
                     .italic()
             } else {
                 Text(shrine.address)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
 
-            // Apple Maps-style action buttons (circular icons)
             actionButtons
         }
         .padding(DS.Spacing.lg)
@@ -112,12 +140,10 @@ struct PlaceDetailContent: View {
 
     private var actionButtons: some View {
         HStack(spacing: DS.Spacing.xl) {
-            // Directions — in-app route preview
             circleActionButton(icon: "arrow.triangle.turn.up.right.diamond.fill", label: "Directions", color: .blue) {
                 onDirections()
             }
 
-            // Share
             ShareLink(
                 item: "\(shrine.name)\n\(shrine.address)",
                 subject: Text(shrine.name),
@@ -131,7 +157,7 @@ struct PlaceDetailContent: View {
                         .background(Color.blue.opacity(0.12), in: Circle())
                     Text("Share")
                         .font(.caption2.weight(.medium))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.subtitleText)
                 }
             }
             .buttonStyle(AppleMapButtonStyle())
@@ -139,18 +165,6 @@ struct PlaceDetailContent: View {
             Spacer()
         }
         .padding(.top, DS.Spacing.sm)
-    }
-
-    private func openInMaps(mode: TransportMode) {
-        let placemark = MKPlacemark(coordinate: shrine.coordinate)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = shrine.name
-        let launchOptions: [String: Any] = switch mode {
-        case .walking: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking]
-        case .automobile: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-        case .transit: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeTransit]
-        }
-        mapItem.openInMaps(launchOptions: launchOptions)
     }
 
     private func circleActionButton(icon: String, label: String, color: Color, action: @escaping () -> Void) -> some View {
@@ -163,7 +177,7 @@ struct PlaceDetailContent: View {
                     .background(color.opacity(0.12), in: Circle())
                 Text(label)
                     .font(.caption2.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
         }
         .buttonStyle(AppleMapButtonStyle())
@@ -222,14 +236,18 @@ struct PlaceDetailContent: View {
     // MARK: - About
 
     private var aboutSection: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-            Text("About")
-                .font(.headline)
-            Text(shrine.description)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineSpacing(3)
+        Group {
+            if !shrine.description.isEmpty {
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    Text("About")
+                        .font(.headline)
+                    Text(shrine.description)
+                        .font(.subheadline)
+                        .foregroundStyle(Color.subtitleText)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineSpacing(3)
+                }
+            }
         }
     }
 
@@ -238,11 +256,7 @@ struct PlaceDetailContent: View {
     private var mustSeeCard: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
             HStack(spacing: DS.Spacing.sm) {
-                Image(systemName: "eye.fill")
-                    .font(.caption)
-                    .foregroundStyle(.white)
-                    .padding(6)
-                    .background(shrine.category.color, in: Circle())
+                IconBadge(icon: "eye.fill", size: 28, color: shrine.category.color, filled: true)
                 Text("Don't Miss")
                     .font(.subheadline.bold())
             }
@@ -292,7 +306,12 @@ struct PlaceDetailContent: View {
             if !shrine.hours.isEmpty {
                 infoRow(icon: "clock.fill", title: "Hours", detail: shrine.hours, color: .orange)
             }
-            infoRow(icon: "leaf.fill", title: "Best Season", detail: shrine.bestSeason, color: .matcha)
+            if let weekdays = shrine.weekdayHours, !weekdays.isEmpty {
+                weekdayHoursCard(weekdays)
+            }
+            if !shrine.bestSeason.isEmpty {
+                infoRow(icon: "leaf.fill", title: "Best Season", detail: shrine.bestSeason, color: .matcha)
+            }
         }
     }
 
@@ -305,7 +324,7 @@ struct PlaceDetailContent: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
                 Text(detail)
                     .font(.subheadline)
                     .foregroundStyle(Color.bodyText)
@@ -316,6 +335,69 @@ struct PlaceDetailContent: View {
         .padding(DS.Spacing.md)
         .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
         .shadow(color: .black.opacity(0.03), radius: 1, y: 1)
+    }
+
+    private func weekdayHoursCard(_ weekdays: [String]) -> some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+            HStack(spacing: DS.Spacing.sm) {
+                Image(systemName: "calendar")
+                    .font(.subheadline)
+                    .foregroundStyle(.orange)
+                    .frame(width: 28, height: 28)
+                Text("Opening Hours")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.subtitleText)
+            }
+            ForEach(weekdays, id: \.self) { day in
+                Text(day)
+                    .font(.caption)
+                    .foregroundStyle(Color.bodyText)
+            }
+        }
+        .padding(DS.Spacing.md)
+        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+        .shadow(color: .black.opacity(0.03), radius: 1, y: 1)
+    }
+
+    // MARK: - Reviews (Google)
+
+    private func reviewsSection(_ reviews: [PlaceReview]) -> some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            HStack(spacing: DS.Spacing.sm) {
+                Image(systemName: "text.quote")
+                    .font(.caption)
+                    .foregroundStyle(.blue)
+                Text("Reviews")
+                    .font(.headline)
+            }
+
+            ForEach(reviews.prefix(5)) { review in
+                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                    HStack(spacing: DS.Spacing.sm) {
+                        Text(review.authorName)
+                            .font(.caption.weight(.semibold))
+                        Spacer()
+                        HStack(spacing: 2) {
+                            ForEach(0..<5, id: \.self) { i in
+                                Image(systemName: i < review.rating ? "star.fill" : "star")
+                                    .font(.system(size: 9))
+                                    .foregroundStyle(i < review.rating ? Color.orange : Color.gray.opacity(0.3))
+                            }
+                        }
+                        Text(review.relativeTime)
+                            .font(.caption2)
+                            .foregroundStyle(Color.captionText)
+                    }
+                    Text(review.text)
+                        .font(.caption)
+                        .foregroundStyle(Color.bodyText)
+                        .lineLimit(4)
+                }
+                .padding(DS.Spacing.md)
+                .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                .shadow(color: .black.opacity(0.03), radius: 1, y: 1)
+            }
+        }
     }
 
     // MARK: - Tips
@@ -362,7 +444,7 @@ struct PlaceDetailContent: View {
                     .font(.subheadline.weight(.semibold))
                 Text("Get within 100m to collect your stamp")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
             Spacer()
         }
@@ -381,12 +463,17 @@ struct PlaceDetailContent: View {
                     Annotation(shrine.name, coordinate: shrine.coordinate) {
                         ZStack {
                             Circle()
-                                .fill(Color(.label))
+                                .fill(shrine.category.color)
                                 .frame(width: 36, height: 36)
-                                .shadow(color: .black.opacity(0.15), radius: 3)
-                            Text("\u{26E9}")
-                                .font(.system(size: 16))
-                                .foregroundStyle(Color(.systemBackground))
+                                .shadow(color: shrine.category.color.opacity(0.3), radius: 4, y: 2)
+                            Circle()
+                                .strokeBorder(.white, lineWidth: 2)
+                                .frame(width: 36, height: 36)
+                            CategoryIconView(
+                                category: shrine.category,
+                                size: 16,
+                                color: .white
+                            )
                         }
                     }
                 }
@@ -396,60 +483,12 @@ struct PlaceDetailContent: View {
 
                 Text(shrine.address)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
                     .padding(.horizontal, DS.Spacing.sm)
                     .padding(.vertical, DS.Spacing.xs)
                     .background(.ultraThinMaterial, in: Capsule())
                     .padding(DS.Spacing.sm)
             }
-        }
-    }
-}
-
-// MARK: - Map Item Detail (Apple Maps style)
-
-struct MapItemDetailContent: View {
-    let item: MKMapItem
-    let onDirections: () -> Void
-    let onBack: () -> Void
-
-    var body: some View {
-        VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: DS.Spacing.md) {
-                // Header
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                        Text(item.name ?? "Unknown")
-                            .font(.title2.bold())
-                        if let address = item.placemark.title {
-                            Text(address)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    Spacer()
-                    Button(action: onBack) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                // Action button — in-app directions
-                Button(action: onDirections) {
-                    Label("Directions", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, DS.Spacing.lg)
-                        .padding(.vertical, 10)
-                        .background(.blue, in: Capsule())
-                }
-                .buttonStyle(AppleMapButtonStyle())
-            }
-            .padding(DS.Spacing.lg)
-
-            Spacer()
         }
     }
 }

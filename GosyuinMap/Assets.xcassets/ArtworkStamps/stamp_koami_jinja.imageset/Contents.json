@@ -1,0 +1,13 @@
+{
+  "images": [
+    {
+      "filename": "stamp_koami_jinja.png",
+      "idiom": "universal",
+      "scale": "1x"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

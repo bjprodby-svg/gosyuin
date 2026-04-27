@@ -18,30 +18,40 @@ struct GosyuinStampView: View {
     private var isHexagon: Bool { stamp.id % 2 != 0 }
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: DS.Spacing.xs) {
             ZStack {
-                // Borders + content
-                if isHexagon {
-                    stampBorders(shape: HexagonShape())
+                if let imageName = stamp.imageName {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: size * 0.08))
                 } else {
-                    stampBorders(shape: Circle())
+                    // Geometric fallback
+                    if isHexagon {
+                        stampBorders(shape: HexagonShape())
+                    } else {
+                        stampBorders(shape: Circle())
+                    }
+                    stampContent
                 }
-
-                stampContent
             }
             .frame(width: size, height: size)
 
             if showDate, let date = collectedDate {
                 Text(date, format: .dateTime.year().month().day())
                     .font(.system(size: max(7, size * 0.07)))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
         }
     }
 
     private func stampBorders<S: InsettableShape>(shape: S) -> some View {
         ZStack {
+            // Subtle fill
+            shape.fill(stamp.color.opacity(0.04))
+            // Outer border
             shape.strokeBorder(stamp.color, lineWidth: 2.5)
+            // Inner border for double-line effect
             shape.strokeBorder(stamp.color.opacity(0.4), lineWidth: 0.8)
                 .padding(5)
         }

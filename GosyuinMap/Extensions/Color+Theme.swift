@@ -38,12 +38,39 @@ extension Color {
         }
     )
 
+    /// サブタイトル — 温かみのあるグレー（ダーク時は secondaryLabel）
+    static let subtitleText = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? .secondaryLabel
+                : UIColor(red: 0.50, green: 0.48, blue: 0.45, alpha: 1)
+        }
+    )
+
+    /// キャプション — さらに薄い温かみのあるグレー（ダーク時は tertiaryLabel）
+    static let captionText = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? .tertiaryLabel
+                : UIColor(red: 0.62, green: 0.60, blue: 0.56, alpha: 1)
+        }
+    )
+
     /// ピン背景 — 白（ダーク時は secondarySystemBackground）
     static let pinBackground = Color(
         uiColor: UIColor { traits in
             traits.userInterfaceStyle == .dark
                 ? .secondarySystemBackground
                 : .white
+        }
+    )
+
+    /// 区切り線 — subtle border
+    static let divider = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(white: 1, alpha: 0.08)
+                : UIColor(red: 0, green: 0, blue: 0, alpha: 0.06)
         }
     )
 
@@ -87,10 +114,27 @@ enum DS {
 
     // MARK: Shadow
     static func cardShadow(_ color: Color = .black.opacity(0.08)) -> some View {
-        // Use as .background modifier
         RoundedRectangle(cornerRadius: Radius.lg)
             .fill(.clear)
             .shadow(color: color, radius: 4, x: 0, y: 2)
+    }
+
+    // MARK: Typography Presets
+    enum Font {
+        /// Page section label: "ACHIEVEMENTS", "MY GOSYUIN JOURNEY"
+        static let sectionLabel = SwiftUI.Font.system(size: 11, weight: .bold, design: .monospaced)
+        /// Stat hero number (large)
+        static let statHero = SwiftUI.Font.system(size: 48, weight: .bold, design: .rounded)
+        /// Stat medium number
+        static let statMedium = SwiftUI.Font.system(size: 28, weight: .bold, design: .rounded)
+        /// Stat small number
+        static let statSmall = SwiftUI.Font.system(size: 22, weight: .bold, design: .rounded)
+        /// Stat caption label
+        static let statCaption = SwiftUI.Font.system(size: 10, weight: .medium)
+        /// Progress label (monospaced digits)
+        static let progressLabel = SwiftUI.Font.system(size: 10, weight: .bold, design: .monospaced)
+        /// Badge / chip label
+        static let chipLabel = SwiftUI.Font.system(size: 10, weight: .bold, design: .monospaced)
     }
 }
 
@@ -135,6 +179,83 @@ extension View {
                     }
                     .clipShape(RoundedRectangle(cornerRadius: DS.Radius.lg))
             }
+    }
+}
+
+// MARK: - Reusable Section Header
+
+/// Consistent section header across all views — monospaced label + icon + optional trailing
+struct SectionHeader: View {
+    let title: String
+    let icon: String
+    var iconColor: Color = .vermillion
+    var trailing: String? = nil
+
+    var body: some View {
+        HStack(spacing: DS.Spacing.sm) {
+            Image(systemName: icon)
+                .font(.system(size: 10))
+                .foregroundStyle(iconColor.opacity(0.6))
+            Text(title.uppercased())
+                .font(DS.Font.sectionLabel)
+                .foregroundStyle(Color.subtitleText)
+                .tracking(1.5)
+            Spacer()
+            if let trailing {
+                Text(trailing)
+                    .font(DS.Font.chipLabel)
+                    .foregroundStyle(Color.captionText)
+            }
+        }
+    }
+}
+
+// MARK: - Reusable Icon Badge
+
+/// Consistent circle icon badge used across all screens
+struct IconBadge: View {
+    let icon: String
+    var size: CGFloat = 36
+    var color: Color = .vermillion
+    var filled: Bool = false
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(filled ? color : color.opacity(0.1))
+                .frame(width: size, height: size)
+            if !filled {
+                Circle()
+                    .strokeBorder(color.opacity(0.15), lineWidth: 1)
+                    .frame(width: size, height: size)
+            }
+            Image(systemName: icon)
+                .font(.system(size: size * 0.38, weight: .medium))
+                .foregroundStyle(filled ? .white : color)
+        }
+    }
+}
+
+// MARK: - Reusable Progress Bar
+
+/// Standardized progress bar used everywhere
+struct ProgressBar: View {
+    let progress: Double
+    var color: Color = .vermillion
+    var height: CGFloat = 5
+    var useGradient: Bool = true
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.progressEmpty)
+                Capsule()
+                    .fill(useGradient ? AnyShapeStyle(color.gradient) : AnyShapeStyle(color))
+                    .frame(width: max(height, geo.size.width * min(1, progress)))
+                    .animation(.spring(duration: 0.5), value: progress)
+            }
+        }
+        .frame(height: height)
     }
 }
 

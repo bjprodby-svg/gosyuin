@@ -13,47 +13,48 @@ struct GosyuinArtworkView: View {
 
     var body: some View {
         ZStack {
-            // Shape borders
-            if isHexagon {
-                artworkBorders(shape: HexagonShape())
+            if let imageName = stamp.imageName {
+                Image(imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: DS.Radius.md))
             } else {
-                artworkBorders(shape: Circle())
-            }
-
-            // Content
-            VStack(spacing: DS.Spacing.sm) {
-                if let imageName = stamp.artworkImageName {
-                    // Artwork image when available
-                    Image(imageName)
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .padding(DS.Spacing.md)
+                // Shape borders with subtle fill
+                if isHexagon {
+                    artworkBorders(shape: HexagonShape())
                 } else {
-                    // SF Symbol when no artwork available
+                    artworkBorders(shape: Circle())
+                }
+
+                // Content
+                VStack(spacing: DS.Spacing.md) {
+                    Text(stamp.name)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(stamp.color)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
+
                     Image(systemName: stamp.icon)
                         .font(.system(size: 48))
                         .foregroundStyle(stamp.color)
-                }
 
-                Text(stamp.name)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(stamp.color)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
+                    Text(stamp.subtitle)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(stamp.color.opacity(0.6))
 
-                Text(stamp.subtitle)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(stamp.color.opacity(0.6))
-
-                if let date = collectedDate {
-                    Text(date, format: .dateTime.year().month().day())
+                    if let date = collectedDate {
+                        HStack(spacing: DS.Spacing.xs) {
+                            Image(systemName: "calendar")
+                                .font(.system(size: 9))
+                            Text(date, format: .dateTime.year().month().day())
+                        }
                         .font(.system(size: 11))
                         .foregroundStyle(stamp.color.opacity(0.5))
+                    }
                 }
+                .padding(DS.Spacing.xl)
             }
-            .padding(DS.Spacing.xl)
         }
         .aspectRatio(1, contentMode: .fit)
         .scaleEffect(stamped ? 1.0 : 0.3)
@@ -68,6 +69,7 @@ struct GosyuinArtworkView: View {
 
     private func artworkBorders<S: InsettableShape>(shape: S) -> some View {
         ZStack {
+            shape.fill(stamp.color.opacity(0.04))
             shape.strokeBorder(stamp.color, lineWidth: 3)
             shape.strokeBorder(stamp.color.opacity(0.4), lineWidth: 1)
                 .padding(6)
@@ -97,7 +99,7 @@ struct GosyuinArtworkView: View {
 
 #Preview("Multiple Stamps") {
     ScrollView(.horizontal) {
-        HStack(spacing: 16) {
+        HStack(spacing: DS.Spacing.lg) {
             ForEach(Array(StampDefinition.all.prefix(4))) { stamp in
                 GosyuinArtworkView(
                     stamp: stamp,

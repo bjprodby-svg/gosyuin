@@ -23,14 +23,14 @@ struct NavigationETABar: View {
                                 .font(.title2.bold().monospacedDigit())
                             Text("\u{00B7}")
                                 .font(.title3)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Color.subtitleText)
                             Text("\(directionsService.remainingMinutes) min")
                                 .font(.title3.monospacedDigit())
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Color.subtitleText)
                         }
                         Text("Arrive by \(directionsService.formattedETA)")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
                     }
                 }
 
@@ -39,7 +39,7 @@ struct NavigationETABar: View {
                 Button(action: onEndNavigation) {
                     Image(systemName: "xmark")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.subtitleText)
                         .frame(width: 28, height: 28)
                         .background(Color(.systemGray5), in: Circle())
                 }
@@ -47,40 +47,24 @@ struct NavigationETABar: View {
 
             // Progress bar
             if !directionsService.isArrived {
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Capsule()
-                            .fill(Color(.systemGray5))
-                            .frame(height: 5)
-                        Capsule()
-                            .fill(Color.vermillion)
-                            .frame(
-                                width: max(8, geo.size.width * directionsService.progress),
-                                height: 5
-                            )
-                            .animation(.easeInOut(duration: 0.5), value: directionsService.progress)
-                    }
-                }
-                .frame(height: 5)
+                ProgressBar(
+                    progress: directionsService.progress,
+                    color: .vermillion,
+                    height: 5
+                )
             }
 
             // Destination name row
             if let name = directionsService.destinationName {
                 HStack(spacing: DS.Spacing.sm) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.vermillion.opacity(0.12))
-                            .frame(width: 28, height: 28)
-                        Text("\u{26E9}")
-                            .font(.system(size: 13))
-                    }
+                    IconBadge(icon: "building.columns.fill", size: 28, color: .vermillion)
                     Text(name)
                         .font(.subheadline.weight(.medium))
                         .lineLimit(1)
                     Spacer()
                     Image(systemName: "figure.walk")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.subtitleText)
                 }
             }
         }

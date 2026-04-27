@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>御朱印マップ - 地図表示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --vermillion: #D14B2F;
+    --kincha: #C4972F;
+    --matcha: #5A7247;
+    --indigo: #264061;
+    --sumi: #1A1A1A;
+    --washi: #FAF7F2;
+    --safe-top: env(safe-area-inset-top, 44px);
+    --safe-bottom: env(safe-area-inset-bottom, 34px);
+  }
+
+  body {
+    font-family: -apple-system, 'Hiragino Sans', sans-serif;
+    background: #E8E0D4;
+    color: var(--sumi);
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ===== Map Background ===== */
+  .map-container {
+    position: absolute;
+    inset: 0;
+    background: #E8E0D4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .map-placeholder {
+    width: 100%;
+    height: 100%;
+    background:
+      linear-gradient(90deg, #D8D0C4 1px, transparent 1px),
+      linear-gradient(#D8D0C4 1px, transparent 1px),
+      linear-gradient(90deg, rgba(216,208,196,0.3) 1px, transparent 1px),
+      linear-gradient(rgba(216,208,196,0.3) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-color: #E8E0D4;
+    position: relative;
+  }
+
+  /* ===== Map Pins ===== */
+  .pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .pin:active { transform: scale(1.15); }
+  .pin-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 2.5px solid white;
+  }
+  .pin-icon.jinja { background: var(--vermillion); }
+  .pin-icon.tera { background: var(--indigo); }
+  .pin-icon.inari { background: var(--kincha); }
+  .pin-label {
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 2px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* ===== Floating Search Bar ===== */
+  .search-bar {
+    position: absolute;
+    top: calc(var(--safe-top) + 8px);
+    left: 16px;
+    right: 16px;
+    height: 48px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    z-index: 100;
+  }
+  .search-icon { font-size: 18px; color: #999; }
+  .search-text { font-size: 16px; color: #999; flex: 1; }
+
+  /* ===== Category Chips ===== */
+  .category-chips {
+    position: absolute;
+    top: calc(var(--safe-top) + 64px);
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    z-index: 100;
+  }
+  .category-chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chip.active {
+    background: var(--vermillion);
+    color: white;
+  }
+  .chip-icon { font-size: 16px; }
+
+  /* ===== Map Controls ===== */
+  .map-controls {
+    position: absolute;
+    right: 16px;
+    bottom: calc(280px + var(--safe-bottom) + 16px);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    z-index: 100;
+  }
+  .map-btn {
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+  }
+  .map-btn:first-child { border-radius: 12px 12px 0 0; }
+  .map-btn:last-child { border-radius: 0 0 12px 12px; }
+  .map-btn:only-child { border-radius: 12px; }
+
+  /* ===== Bottom Sheet ===== */
+  .bottom-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 16px calc(var(--safe-bottom) + 16px);
+    z-index: 200;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    max-height: 55dvh;
+    overflow-y: auto;
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 5px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 3px;
+    margin: 0 auto 16px;
+  }
+  .sheet-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .sheet-subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  /* ===== Nearby Shrines List ===== */
+  .nearby-header {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--vermillion);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .shrine-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(250,247,242,0.8);
+    border-radius: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .shrine-card:active { background: rgba(240,235,225,1); }
+  .shrine-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .shrine-thumb.jinja { background: rgba(209,75,47,0.12); color: var(--vermillion); }
+  .shrine-thumb.tera { background: rgba(38,64,97,0.12); color: var(--indigo); }
+  .shrine-thumb.inari { background: rgba(196,151,47,0.12); color: var(--kincha); }
+  .shrine-info { flex: 1; min-width: 0; }
+  .shrine-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .shrine-meta {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    gap: 8px;
+  }
+  .shrine-distance {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--matcha);
+    white-space: nowrap;
+  }
+  .shrine-arrow { color: #CCC; font-size: 16px; }
+
+  /* ===== Shrine Detail (shown on pin tap) ===== */
+  .detail-sheet {
+    display: none;
+  }
+  .detail-sheet.active {
+    display: block;
+  }
+  .detail-images {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin: 0 -16px;
+    padding: 0 16px 12px;
+    scrollbar-width: none;
+  }
+  .detail-images::-webkit-scrollbar { display: none; }
+  .detail-img {
+    width: 200px;
+    height: 140px;
+    border-radius: 14px;
+    flex-shrink: 0;
+    object-fit: cover;
+    background: #E8E0D4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+  }
+  .detail-tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .detail-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 10px;
+    background: rgba(209,75,47,0.1);
+    color: var(--vermillion);
+  }
+  .detail-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 16px;
+  }
+  .detail-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .action-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+  .action-btn.primary {
+    background: var(--vermillion);
+    color: white;
+  }
+  .action-btn.secondary {
+    background: rgba(0,0,0,0.06);
+    color: var(--sumi);
+  }
+
+  /* ===== Tab Bar ===== */
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(50px + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    border-top: 0.5px solid rgba(0,0,0,0.1);
+    z-index: 300;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 10px;
+    color: #999;
+    cursor: pointer;
+  }
+  .tab-item.active { color: var(--vermillion); }
+  .tab-icon { font-size: 22px; }
+</style>
+</head>
+<body>
+
+<!-- Map -->
+<div class="map-container">
+  <div class="map-placeholder">
+    <!-- Shrine Pins -->
+    <div class="pin" style="top: 30%; left: 25%;" onclick="showDetail('meiji')">
+      <div class="pin-icon jinja">⛩️</div>
+      <div class="pin-label">明治神宮</div>
+    </div>
+    <div class="pin" style="top: 45%; left: 55%;" onclick="showDetail('senso')">
+      <div class="pin-icon tera">🏯</div>
+      <div class="pin-label">浅草寺</div>
+    </div>
+    <div class="pin" style="top: 60%; left: 35%;" onclick="showDetail('fushimi')">
+      <div class="pin-icon inari">🦊</div>
+      <div class="pin-label">伏見稲荷大社</div>
+    </div>
+    <div class="pin" style="top: 25%; left: 70%;" onclick="showDetail('tsurugaoka')">
+      <div class="pin-icon jinja">⛩️</div>
+      <div class="pin-label">鶴岡八幡宮</div>
+    </div>
+    <div class="pin" style="top: 75%; left: 65%;" onclick="showDetail('kiyomizu')">
+      <div class="pin-icon tera">🏯</div>
+      <div class="pin-label">清水寺</div>
+    </div>
+  </div>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar">
+  <span class="search-icon">🔍</span>
+  <span class="search-text">神社・お寺を検索</span>
+</div>
+
+<!-- Category Chips -->
+<div class="category-chips">
+  <div class="chip active"><span class="chip-icon">📍</span> すべて</div>
+  <div class="chip"><span class="chip-icon">⛩️</span> 神社</div>
+  <div class="chip"><span class="chip-icon">🏯</span> 寺院</div>
+  <div class="chip"><span class="chip-icon">🦊</span> 稲荷</div>
+  <div class="chip"><span class="chip-icon">📿</span> 天満宮</div>
+  <div class="chip"><span class="chip-icon">🗻</span> 大社</div>
+</div>
+
+<!-- Map Controls -->
+<div class="map-controls">
+  <button class="map-btn">📍</button>
+  <button class="map-btn">＋</button>
+  <button class="map-btn">−</button>
+</div>
+
+<!-- Bottom Sheet: Nearby List (default) -->
+<div class="bottom-sheet" id="nearbySheet">
+  <div class="sheet-handle"></div>
+  <div class="nearby-header">📍 近くの神社・お寺</div>
+
+  <div class="shrine-card" onclick="showDetail('meiji')">
+    <div class="shrine-thumb jinja">⛩️</div>
+    <div class="shrine-info">
+      <div class="shrine-name">明治神宮</div>
+      <div class="shrine-meta">
+        <span>神社</span>
+        <span>渋谷区</span>
+      </div>
+    </div>
+    <div class="shrine-distance">350m</div>
+    <div class="shrine-arrow">›</div>
+  </div>
+
+  <div class="shrine-card" onclick="showDetail('senso')">
+    <div class="shrine-thumb tera">🏯</div>
+    <div class="shrine-info">
+      <div class="shrine-name">浅草寺</div>
+      <div class="shrine-meta">
+        <span>寺院</span>
+        <span>台東区</span>
+      </div>
+    </div>
+    <div class="shrine-distance">1.2km</div>
+    <div class="shrine-arrow">›</div>
+  </div>
+
+  <div class="shrine-card" onclick="showDetail('fushimi')">
+    <div class="shrine-thumb inari">🦊</div>
+    <div class="shrine-info">
+      <div class="shrine-name">伏見稲荷大社</div>
+      <div class="shrine-meta">
+        <span>稲荷</span>
+        <span>京都市</span>
+      </div>
+    </div>
+    <div class="shrine-distance">2.5km</div>
+    <div class="shrine-arrow">›</div>
+  </div>
+</div>
+
+<!-- Bottom Sheet: Detail (hidden by default) -->
+<div class="bottom-sheet detail-sheet" id="detailSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="detailName">明治神宮</div>
+  <div class="sheet-subtitle" id="detailAddress">東京都渋谷区代々木神園町1-1</div>
+
+  <div class="detail-images">
+    <div class="detail-img">🏛️</div>
+    <div class="detail-img">🌳</div>
+    <div class="detail-img">🎌</div>
+  </div>
+
+  <div class="detail-tags" id="detailTags">
+    <span class="detail-tag">⛩️ 神社</span>
+    <span class="detail-tag">🌸 初詣人気</span>
+    <span class="detail-tag">🌳 自然豊か</span>
+  </div>
+
+  <div class="detail-desc" id="detailDesc">
+    明治天皇と昭憲皇太后を祀る神社。都心にありながら豊かな森に囲まれた荘厳な空間。初詣の参拝者数は日本一。
+  </div>
+
+  <div class="detail-actions">
+    <button class="action-btn primary" onclick="alert('ナビゲーション開始')">🧭 ここへ行く</button>
+    <button class="action-btn secondary" onclick="hideDetail()">✕ 閉じる</button>
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <div class="tab-item active">
+    <span class="tab-icon">🗺️</span>
+    さがす
+  </div>
+  <div class="tab-item">
+    <span class="tab-icon">📖</span>
+    あつめる
+  </div>
+  <div class="tab-item">
+    <span class="tab-icon">📚</span>
+    まなぶ
+  </div>
+</div>
+
+<script>
+  const shrines = {
+    meiji: {
+      name: '明治神宮',
+      address: '東京都渋谷区代々木神園町1-1',
+      tags: ['⛩️ 神社', '🌸 初詣人気', '🌳 自然豊か'],
+      desc: '明治天皇と昭憲皇太后を祀る神社。都心にありながら豊かな森に囲まれた荘厳な空間。初詣の参拝者数は日本一。'
+    },
+    senso: {
+      name: '浅草寺',
+      address: '東京都台東区浅草2-3-1',
+      tags: ['🏯 寺院', '⚡ 雷門', '👘 下町情緒'],
+      desc: '東京最古の寺院。雷門の大提灯と仲見世通りで知られ、年間約3000万人が訪れる東京屈指の観光スポット。'
+    },
+    fushimi: {
+      name: '伏見稲荷大社',
+      address: '京都府京都市伏見区深草藪之内町68',
+      tags: ['🦊 稲荷', '⛩️ 千本鳥居', '🏔️ 稲荷山'],
+      desc: '全国約3万社ある稲荷神社の総本宮。千本鳥居のトンネルは圧巻で、海外からの観光客にも大人気。'
+    },
+    tsurugaoka: {
+      name: '鶴岡八幡宮',
+      address: '神奈川県鎌倉市雪ノ下2-1-31',
+      tags: ['⛩️ 八幡宮', '🏖️ 鎌倉', '🌸 桜名所'],
+      desc: '鎌倉幕府の守護神社として源頼朝が創建。若宮大路の段葛は桜の名所としても有名。'
+    },
+    kiyomizu: {
+      name: '清水寺',
+      address: '京都府京都市東山区清水1-294',
+      tags: ['🏯 寺院', '🍁 紅葉名所', '💧 音羽の滝'],
+      desc: '「清水の舞台」で有名な世界遺産。崖の上に建つ本堂からの眺望は京都を代表する絶景。'
+    }
+  };
+
+  function showDetail(id) {
+    const s = shrines[id];
+    document.getElementById('detailName').textContent = s.name;
+    document.getElementById('detailAddress').textContent = s.address;
+    document.getElementById('detailTags').innerHTML = s.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
+    document.getElementById('detailDesc').textContent = s.desc;
+    document.getElementById('nearbySheet').style.display = 'none';
+    document.getElementById('detailSheet').classList.add('active');
+  }
+
+  function hideDetail() {
+    document.getElementById('detailSheet').classList.remove('active');
+    document.getElementById('nearbySheet').style.display = 'block';
+  }
+
+  // Chip toggle
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

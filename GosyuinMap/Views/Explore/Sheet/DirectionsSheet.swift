@@ -159,7 +159,7 @@ struct DirectionsSheet: View {
                 Spacer()
                 Label(option.formattedDistance, systemImage: "arrow.triangle.swap")
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
             .padding(DS.Spacing.md)
             .background(Color(.quaternarySystemFill), in: RoundedRectangle(cornerRadius: 10))
@@ -185,7 +185,7 @@ struct DirectionsSheet: View {
                                 if step.distance > 0 {
                                     Text(formatDistance(step.distance))
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(Color.subtitleText)
                                 }
                             }
 
@@ -226,7 +226,7 @@ struct DirectionsSheet: View {
                 .foregroundStyle(.blue.opacity(0.6))
             Text("Transit directions available\nin Apple Maps")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)

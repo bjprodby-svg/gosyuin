@@ -50,7 +50,7 @@ struct OnboardingView: View {
         } text: {
             OnboardingText(
                 title: "Walk There, Earn a Stamp",
-                subtitle: "Simply visit a shrine in person. When you arrive, a unique stamp is automatically added to your collection."
+                subtitle: "Get within 100 meters of a shrine and a unique stamp is automatically added to your collection."
             )
         }
     }
@@ -118,7 +118,7 @@ struct OnboardingView: View {
                     } label: {
                         Text("Skip for Now")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
                     }
                 }
             }
@@ -155,7 +155,7 @@ private struct OnboardingText: View {
 
             Text(subtitle)
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, DS.Spacing.xl)
         }
@@ -189,29 +189,24 @@ private struct OnboardingPage<Animation: View, Text: View>: View {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MARK: - Scene 1: Discover
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//
-// Illustrated landscape with rolling hills, scattered trees,
-// and shrine pins "discovered" by a radar sweep from the user's
-// location. Micro-story: "Look — there are sacred places all
-// around you, and some are really close."
 
 private struct DiscoverScene: View {
     @State private var appeared = false
     @State private var radarPulse = false
     @State private var nearbyGlow = false
 
-    private let shrines: [(x: CGFloat, y: CGFloat, delay: Double, size: CGFloat, emoji: String)] = [
-        (0, -20, 0.1, 48, "\u{26E9}"),     // center — nearest
-        (-80, -60, 0.35, 34, "\u{26E9}"),
-        (75, -50, 0.50, 34, "\u{1F3EF}"),
-        (-55, 40, 0.65, 28, "\u{26E9}"),
-        (85, 30, 0.80, 28, "\u{26E9}"),
+    private let shrines: [(x: CGFloat, y: CGFloat, delay: Double, size: CGFloat, category: ShrineCategory)] = [
+        (0, -20, 0.1, 48, .jinja),       // center — nearest
+        (-80, -60, 0.35, 34, .jinja),
+        (75, -50, 0.50, 34, .tera),
+        (-55, 40, 0.65, 28, .inari),
+        (85, 30, 0.80, 28, .jingu),
     ]
 
     var body: some View {
         ZStack {
-            // ── Background: sky ──
-            RoundedRectangle(cornerRadius: 24)
+            // Background sky
+            RoundedRectangle(cornerRadius: DS.Radius.xl)
                 .fill(
                     LinearGradient(
                         colors: [
@@ -226,15 +221,15 @@ private struct DiscoverScene: View {
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeIn(duration: 0.4), value: appeared)
 
-            // ── Background: rolling hills ──
+            // Rolling hills
             hillLayer(width: 340, height: 70, yOffset: 85, color: Color.matcha.opacity(0.08))
             hillLayer(width: 280, height: 55, yOffset: 95, color: Color.matcha.opacity(0.06))
             hillLayer(width: 320, height: 45, yOffset: 110, color: Color.matcha.opacity(0.04))
 
-            // ── Decorative trees & buildings ──
+            // Decorative elements
             decorativeElements
 
-            // ── Radar pulse ──
+            // Radar pulse rings
             ForEach(0..<3, id: \.self) { i in
                 Circle()
                     .stroke(
@@ -252,7 +247,7 @@ private struct DiscoverScene: View {
                     )
             }
 
-            // ── "Nearby" range dashed circle ──
+            // Nearby range dashed circle
             Circle()
                 .strokeBorder(
                     Color.vermillion.opacity(0.2),
@@ -262,7 +257,7 @@ private struct DiscoverScene: View {
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeIn(duration: 0.5).delay(0.8), value: appeared)
 
-            // ── Shrine pins ──
+            // Shrine pins
             ForEach(0..<shrines.count, id: \.self) { i in
                 let s = shrines[i]
                 shrinePin(index: i, shrine: s)
@@ -275,10 +270,10 @@ private struct DiscoverScene: View {
                     )
             }
 
-            // ── Distance label on second pin ──
-            Text("350m")
+            // Distance label on second pin
+            Text("100m")
                 .font(.system(size: 9, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
                 .padding(.horizontal, 5)
                 .padding(.vertical, 2)
                 .background(Color.cardBackground.opacity(0.9), in: Capsule())
@@ -286,7 +281,7 @@ private struct DiscoverScene: View {
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeIn(duration: 0.3).delay(0.65), value: appeared)
 
-            // ── User location dot ──
+            // User location dot
             ZStack {
                 Circle()
                     .fill(.blue.opacity(0.15))
@@ -321,7 +316,6 @@ private struct DiscoverScene: View {
 
     private var decorativeElements: some View {
         Group {
-            // Trees
             Image(systemName: "tree.fill")
                 .font(.system(size: 16))
                 .foregroundStyle(Color.matcha.opacity(0.18))
@@ -337,13 +331,11 @@ private struct DiscoverScene: View {
                 .foregroundStyle(Color.matcha.opacity(0.10))
                 .offset(x: -100, y: 70)
 
-            // Buildings
             Image(systemName: "building.2.fill")
                 .font(.system(size: 11))
                 .foregroundStyle(Color(.systemGray4).opacity(0.2))
                 .offset(x: 100, y: -70)
 
-            // Cloud
             Image(systemName: "cloud.fill")
                 .font(.system(size: 14))
                 .foregroundStyle(Color(.systemGray5).opacity(0.4))
@@ -359,11 +351,10 @@ private struct DiscoverScene: View {
     }
 
     @ViewBuilder
-    private func shrinePin(index: Int, shrine: (x: CGFloat, y: CGFloat, delay: Double, size: CGFloat, emoji: String)) -> some View {
+    private func shrinePin(index: Int, shrine: (x: CGFloat, y: CGFloat, delay: Double, size: CGFloat, category: ShrineCategory)) -> some View {
         if index == 0 {
-            // ── Nearest shrine: badge style with distance ──
+            // Nearest shrine: badge style with distance
             ZStack {
-                // Glow pulse
                 RoundedRectangle(cornerRadius: DS.Radius.md)
                     .fill(Color.vermillion.opacity(0.15))
                     .frame(width: shrine.size + 30, height: shrine.size + 6)
@@ -379,23 +370,32 @@ private struct DiscoverScene: View {
                     .frame(width: shrine.size + 24, height: shrine.size)
                     .shadow(color: Color.vermillion.opacity(0.3), radius: 6, y: 3)
 
-                HStack(spacing: 4) {
-                    Text(shrine.emoji)
-                        .font(.system(size: 22))
+                HStack(spacing: DS.Spacing.xs) {
+                    CategoryIconView(
+                        category: shrine.category,
+                        size: 20,
+                        color: .white
+                    )
                     Text("120m")
                         .font(.system(size: 11, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
                 }
             }
         } else {
-            // ── Standard circle pin ──
+            // Standard circle pin
             ZStack {
                 Circle()
-                    .fill(Color(.label))
+                    .fill(shrine.category.color)
                     .frame(width: shrine.size, height: shrine.size)
-                    .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
-                Text(shrine.emoji)
-                    .font(.system(size: index <= 2 ? 15 : 12))
+                    .shadow(color: shrine.category.color.opacity(0.3), radius: 4, y: 2)
+                Circle()
+                    .strokeBorder(.white, lineWidth: 2)
+                    .frame(width: shrine.size, height: shrine.size)
+                CategoryIconView(
+                    category: shrine.category,
+                    size: index <= 2 ? 14 : 11,
+                    color: .white
+                )
             }
         }
     }
@@ -404,11 +404,6 @@ private struct DiscoverScene: View {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MARK: - Scene 2: Collect
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//
-// A journey illustration: a winding path through gentle hills
-// leads from the user to a shrine. The user walks the path,
-// arrives, and a stamp drops into the stamp book with celebration.
-// Micro-story: "Your feet take you there → stamp is yours."
 
 private struct CollectScene: View {
     @State private var phase = 0
@@ -420,11 +415,11 @@ private struct CollectScene: View {
     private let confettiColors: [Color] = [.vermillion, .kincha, .matcha, .indigo]
 
     var body: some View {
-        VStack(spacing: 16) {
-            // ── Journey scene ──
+        VStack(spacing: DS.Spacing.lg) {
+            // Journey scene
             ZStack {
                 // Sky + ground
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: DS.Radius.xl)
                     .fill(
                         LinearGradient(
                             colors: [
@@ -470,14 +465,20 @@ private struct CollectScene: View {
                     .frame(width: 220, height: 40)
                     .offset(y: 10)
 
-                // Shrine (destination)
+                // Shrine destination (Canvas-drawn icon)
                 ZStack {
                     Circle()
-                        .fill(Color(.label))
+                        .fill(Color.vermillion)
                         .frame(width: 44, height: 44)
-                        .shadow(color: .black.opacity(0.15), radius: 4, y: 3)
-                    Text("\u{26E9}")
-                        .font(.system(size: 20))
+                        .shadow(color: Color.vermillion.opacity(0.3), radius: 4, y: 3)
+                    Circle()
+                        .strokeBorder(.white, lineWidth: 2)
+                        .frame(width: 44, height: 44)
+                    CategoryIconView(
+                        category: .jinja,
+                        size: 20,
+                        color: .white
+                    )
                 }
                 .offset(x: 90, y: 5)
 
@@ -519,31 +520,31 @@ private struct CollectScene: View {
                 .opacity(phase >= 2 ? 0 : 1)
             }
             .frame(height: 140)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .clipShape(RoundedRectangle(cornerRadius: DS.Radius.xl))
 
-            // ── Stamp Book ──
-            VStack(spacing: 6) {
+            // Stamp Book
+            VStack(spacing: DS.Spacing.sm) {
                 Text("STAMP BOOK")
-                    .font(.system(size: 9, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(DS.Font.sectionLabel)
+                    .foregroundStyle(Color.subtitleText)
                     .tracking(2)
 
                 ZStack {
-                    RoundedRectangle(cornerRadius: 14)
+                    RoundedRectangle(cornerRadius: DS.Radius.lg)
                         .fill(Color.cardBackground)
                         .frame(width: 280, height: 84)
                         .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14)
+                            RoundedRectangle(cornerRadius: DS.Radius.lg)
                                 .strokeBorder(Color.vermillion.opacity(0.12), lineWidth: 1)
                         )
 
-                    HStack(spacing: 8) {
-                        stampSlot(filled: phase >= 3, symbol: "\u{26E9}", isHexagon: true)
-                        stampSlot(filled: false, symbol: "?", isHexagon: false)
-                        stampSlot(filled: false, symbol: "?", isHexagon: true)
-                        stampSlot(filled: false, symbol: "?", isHexagon: false)
-                        stampSlot(filled: false, symbol: "?", isHexagon: true)
+                    HStack(spacing: DS.Spacing.sm) {
+                        stampSlot(filled: phase >= 3, icon: "building.columns", isHexagon: true)
+                        stampSlot(filled: false, icon: nil, isHexagon: false)
+                        stampSlot(filled: false, icon: nil, isHexagon: true)
+                        stampSlot(filled: false, icon: nil, isHexagon: false)
+                        stampSlot(filled: false, icon: nil, isHexagon: true)
                     }
                 }
             }
@@ -579,7 +580,7 @@ private struct CollectScene: View {
     }
 
     @ViewBuilder
-    private func stampSlot(filled: Bool, symbol: String, isHexagon: Bool) -> some View {
+    private func stampSlot(filled: Bool, icon: String?, isHexagon: Bool) -> some View {
         ZStack {
             if isHexagon {
                 HexagonShape()
@@ -615,11 +616,18 @@ private struct CollectScene: View {
                 }
             }
 
-            Text(symbol)
-                .font(.system(size: filled ? 20 : 14))
-                .foregroundStyle(filled ? Color.vermillion : Color(.systemGray4))
-                .scaleEffect(filled ? 1.0 : 0.8)
-                .animation(.spring(duration: 0.4, bounce: 0.5), value: filled)
+            if let icon, filled {
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundStyle(Color.vermillion)
+                    .scaleEffect(filled ? 1.0 : 0.8)
+                    .animation(.spring(duration: 0.4, bounce: 0.5), value: filled)
+            } else {
+                Image(systemName: "questionmark")
+                    .font(.system(size: 14))
+                    .foregroundStyle(Color(.systemGray4))
+                    .scaleEffect(0.8)
+            }
         }
     }
 }
@@ -640,12 +648,6 @@ private struct WalkPath: Shape {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MARK: - Scene 3: Learn
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//
-// A "travel guide" card that progressively reveals content,
-// showing how the app turns strangers into fans. Stacked cards
-// behind give a "deck of knowledge" feel. A mini phone frame
-// makes it feel like a real app preview.
-// Micro-story: "Know nothing → read → discover highlights → love it."
 
 private struct LearnScene: View {
     @State private var appeared = false
@@ -653,8 +655,8 @@ private struct LearnScene: View {
 
     var body: some View {
         ZStack {
-            // ── Background depth cards (magazine stack feel) ──
-            RoundedRectangle(cornerRadius: 16)
+            // Background depth cards (magazine stack feel)
+            RoundedRectangle(cornerRadius: DS.Radius.lg)
                 .fill(Color.cardBackground)
                 .frame(width: 250, height: 200)
                 .shadow(color: .black.opacity(0.03), radius: 3, y: 1)
@@ -663,7 +665,7 @@ private struct LearnScene: View {
                 .opacity(appeared ? 0.4 : 0)
                 .animation(.easeIn(duration: 0.4).delay(0.1), value: appeared)
 
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: DS.Radius.lg)
                 .fill(Color.cardBackground)
                 .frame(width: 270, height: 215)
                 .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
@@ -672,7 +674,7 @@ private struct LearnScene: View {
                 .opacity(appeared ? 0.6 : 0)
                 .animation(.easeIn(duration: 0.4).delay(0.05), value: appeared)
 
-            // ── Main card ──
+            // Main card
             VStack(spacing: 0) {
                 // Mini phone status bar
                 HStack {
@@ -694,7 +696,7 @@ private struct LearnScene: View {
                 VStack(alignment: .leading, spacing: 9) {
                     // Phase 1: Hero photo placeholder
                     if phase >= 1 {
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: DS.Radius.sm)
                             .fill(
                                 LinearGradient(
                                     colors: [Color.vermillion.opacity(0.15), Color.kincha.opacity(0.12)],
@@ -716,13 +718,15 @@ private struct LearnScene: View {
                                                 .background(Color.vermillion, in: RoundedRectangle(cornerRadius: 3))
                                             Text("Shrine")
                                                 .font(.system(size: 9, weight: .medium))
-                                                .foregroundStyle(.secondary)
+                                                .foregroundStyle(Color.subtitleText)
                                         }
                                     }
                                     Spacer()
-                                    Text("\u{26E9}")
-                                        .font(.system(size: 28))
-                                        .opacity(0.3)
+                                    CategoryIconView(
+                                        category: .jinja,
+                                        size: 28,
+                                        color: Color.vermillion.opacity(0.25)
+                                    )
                                 }
                                 .padding(.horizontal, 10)
                             }
@@ -733,7 +737,7 @@ private struct LearnScene: View {
                     if phase >= 2 {
                         Text("A tranquil forest sanctuary where 100-year-old trees line the path to Japan\u{2019}s most visited shrine\u{2026}")
                             .font(.system(size: 10))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
                             .lineSpacing(2)
                             .lineLimit(3)
                             .transition(.opacity)
@@ -759,7 +763,7 @@ private struct LearnScene: View {
 
                     // Phase 4: Heart
                     if phase >= 4 {
-                        HStack(spacing: 4) {
+                        HStack(spacing: DS.Spacing.xs) {
                             Image(systemName: "heart.fill")
                                 .font(.system(size: 10))
                                 .foregroundStyle(Color.vermillion)
@@ -775,7 +779,7 @@ private struct LearnScene: View {
                 Spacer(minLength: 0)
             }
             .frame(width: 290, height: 250)
-            .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: 16))
+            .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
             .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
             .opacity(appeared ? 1 : 0)
             .animation(.easeIn(duration: 0.3), value: appeared)
@@ -802,11 +806,6 @@ private struct LearnScene: View {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MARK: - Scene 4: Start
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//
-// A dramatic gateway scene. A large torii gate rises against
-// a warm sunrise glow, with mountains behind, cherry blossom
-// petals floating, and a path of light leading through.
-// Emotional climax: "The gate is open — your journey begins."
 
 private struct StartScene: View {
     @State private var appeared = false
@@ -822,7 +821,7 @@ private struct StartScene: View {
 
     var body: some View {
         ZStack {
-            // ── Warm sunrise glow ──
+            // Warm sunrise glow
             Circle()
                 .fill(
                     RadialGradient(
@@ -842,14 +841,12 @@ private struct StartScene: View {
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeOut(duration: 1.2), value: appeared)
 
-            // ── Mountain silhouettes ──
+            // Mountain silhouettes
             ZStack {
-                // Far mountain
                 MountainShape()
                     .fill(Color.matcha.opacity(0.07))
                     .frame(width: 300, height: 80)
                     .offset(y: 50)
-                // Near hill
                 Ellipse()
                     .fill(Color.matcha.opacity(0.05))
                     .frame(width: 220, height: 45)
@@ -858,7 +855,7 @@ private struct StartScene: View {
             .opacity(appeared ? 1 : 0)
             .animation(.easeIn(duration: 0.8).delay(0.2), value: appeared)
 
-            // ── Light path through the gate ──
+            // Light path through the gate
             GatePath()
                 .fill(
                     LinearGradient(
@@ -875,7 +872,7 @@ private struct StartScene: View {
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeIn(duration: 0.6).delay(0.4), value: appeared)
 
-            // ── Cherry blossom petals ──
+            // Cherry blossom petals
             ForEach(0..<petals.count, id: \.self) { i in
                 let p = petals[i]
                 Circle()
@@ -892,15 +889,18 @@ private struct StartScene: View {
                     )
             }
 
-            // ── Torii gate ──
-            Text("\u{26E9}")
-                .font(.system(size: 140))
-                .offset(y: appeared ? 0 : 25)
-                .scaleEffect(appeared ? 1.0 : 0.35)
-                .opacity(appeared ? 1 : 0)
-                .animation(.spring(duration: 0.9, bounce: 0.25), value: appeared)
+            // Large torii gate (Canvas-drawn, not emoji)
+            CategoryIconView(
+                category: .jinja,
+                size: 120,
+                color: Color.vermillion
+            )
+            .offset(y: appeared ? 0 : 25)
+            .scaleEffect(appeared ? 1.0 : 0.35)
+            .opacity(appeared ? 1 : 0)
+            .animation(.spring(duration: 0.9, bounce: 0.25), value: appeared)
 
-            // ── Orbiting sparkles ──
+            // Orbiting sparkles
             ForEach(0..<8, id: \.self) { i in
                 Image(systemName: "sparkle")
                     .font(.system(size: [15, 10, 13, 8, 12, 9, 11, 7][i]))

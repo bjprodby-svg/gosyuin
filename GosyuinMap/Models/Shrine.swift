@@ -58,6 +58,20 @@ enum ShrineCategory: String, CaseIterable {
         case .daishi: Color(red: 0.80, green: 0.45, blue: 0.10)
         }
     }
+
+    /// Japanese search terms for this category
+    var japaneseQuery: String {
+        switch self {
+        case .jinja: "神社"
+        case .tera: "寺 お寺 temple"
+        case .jingu: "神宮"
+        case .taisha: "大社"
+        case .tenmangu: "天満宮 天神"
+        case .inari: "稲荷"
+        case .hachimangu: "八幡宮 八幡"
+        case .daishi: "大師"
+        }
+    }
 }
 
 // MARK: - Shrine
@@ -79,13 +93,26 @@ struct Shrine: Identifiable, Hashable {
     let hours: String
     var imageURLs: [String]
 
+    // Google Places fields
+    let placeId: String?
+    let rating: Double?
+    let userRatingCount: Int?
+    let openNow: Bool?
+    let weekdayHours: [String]?
+    let reviews: [PlaceReview]?
+    let photoReferences: [String]
+
     init(id: UUID = UUID(), name: String, address: String, description: String,
          coordinate: CLLocationCoordinate2D, stampSlotId: Int,
          category: ShrineCategory = .jinja, tagline: String = "",
          highlights: [String] = [], mustSee: String = "",
          tips: [String] = [], bestSeason: String = "Year-round",
          access: String = "", hours: String = "",
-         imageURLs: [String] = []) {
+         imageURLs: [String] = [],
+         placeId: String? = nil, rating: Double? = nil,
+         userRatingCount: Int? = nil, openNow: Bool? = nil,
+         weekdayHours: [String]? = nil, reviews: [PlaceReview]? = nil,
+         photoReferences: [String] = []) {
         self.id = id
         self.name = name
         self.address = address
@@ -101,6 +128,13 @@ struct Shrine: Identifiable, Hashable {
         self.access = access
         self.hours = hours
         self.imageURLs = imageURLs
+        self.placeId = placeId
+        self.rating = rating
+        self.userRatingCount = userRatingCount
+        self.openNow = openNow
+        self.weekdayHours = weekdayHours
+        self.reviews = reviews
+        self.photoReferences = photoReferences
     }
 
     func hash(into hasher: inout Hasher) {
@@ -150,5 +184,102 @@ extension Shrine {
         self.access = other.access
         self.hours = other.hours
         self.imageURLs = imageURLs
+        self.placeId = other.placeId
+        self.rating = other.rating
+        self.userRatingCount = other.userRatingCount
+        self.openNow = other.openNow
+        self.weekdayHours = other.weekdayHours
+        self.reviews = other.reviews
+        self.photoReferences = other.photoReferences
+    }
+
+    /// Initialize from a Google Places API response
+    init(from place: GooglePlaceResponse, placesService: GooglePlacesService) {
+        self.id = UUID()
+        self.name = place.displayName?.text ?? ""
+        self.address = place.formattedAddress ?? ""
+        self.description = place.editorialSummary?.text ?? ""
+        self.coordinate = CLLocationCoordinate2D(
+            latitude: place.location?.latitude ?? 0,
+            longitude: place.location?.longitude ?? 0
+        )
+        self.stampSlotId = 0
+        self.category = ShrineCategory.infer(from: place)
+        self.tagline = ""
+        self.highlights = []
+        self.mustSee = ""
+        self.tips = []
+        self.bestSeason = ""
+        self.access = ""
+        self.hours = place.currentOpeningHours?.weekdayDescriptions?.first
+            ?? place.regularOpeningHours?.weekdayDescriptions?.first
+            ?? ""
+        self.placeId = place.id
+        self.rating = place.rating
+        self.userRatingCount = place.userRatingCount
+        self.openNow = place.currentOpeningHours?.openNow
+        self.weekdayHours = place.currentOpeningHours?.weekdayDescriptions
+            ?? place.regularOpeningHours?.weekdayDescriptions
+        self.reviews = place.reviews?.compactMap { review in
+            guard let text = review.text?.text, !text.isEmpty else { return nil }
+            return PlaceReview(
+                id: UUID().uuidString,
+                authorName: review.authorAttribution?.displayName ?? "",
+                rating: review.rating ?? 0,
+                text: text,
+                relativeTime: review.relativePublishTimeDescription ?? ""
+            )
+        }
+        self.photoReferences = place.photos?.map(\.name) ?? []
+        self.imageURLs = photoReferences.compactMap {
+            placesService.photoURL(photoName: $0)?.absoluteString
+        }
+    }
+
+    /// Try to match this Google-sourced shrine to a known sample shrine (for stamp collection)
+    func matchedSample() -> Shrine? {
+        Shrine.samples.first { sample in
+            let nameLower = name.lowercased()
+            let sampleLower = sample.name.lowercased()
+            if nameLower.contains(sampleLower) || sampleLower.contains(nameLower) {
+                return true
+            }
+            let sampleLoc = CLLocation(latitude: sample.coordinate.latitude, longitude: sample.coordinate.longitude)
+            let thisLoc = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            return thisLoc.distance(from: sampleLoc) < 100
+        }
+    }
+
+    /// Whether this shrine has a stamp slot (either hardcoded or matched)
+    var hasStampSlot: Bool {
+        stampSlotId > 0 || matchedSample() != nil
+    }
+
+    /// The effective stamp slot ID (own or matched sample's)
+    var effectiveStampSlotId: Int {
+        if stampSlotId > 0 { return stampSlotId }
+        return matchedSample()?.stampSlotId ?? 0
+    }
+}
+
+// MARK: - Category inference from Google Place types
+
+extension ShrineCategory {
+    static func infer(from place: GooglePlaceResponse) -> ShrineCategory {
+        let types = place.types ?? []
+        let name = (place.displayName?.text ?? "").lowercased()
+
+        if name.contains("inari") || name.contains("稲荷") { return .inari }
+        if name.contains("tenmangu") || name.contains("天満宮") { return .tenmangu }
+        if name.contains("hachimangu") || name.contains("八幡宮") || name.contains("hachiman") { return .hachimangu }
+        if name.contains("taisha") || name.contains("大社") { return .taisha }
+        if name.contains("jingu") || name.contains("jingū") || name.contains("神宮") { return .jingu }
+        if name.contains("daishi") || name.contains("大師") { return .daishi }
+
+        // Check types for temple vs shrine
+        if types.contains("buddhist_temple") || name.contains("-ji") || name.contains("tera")
+            || name.contains("寺") || name.contains("temple") { return .tera }
+
+        return .jinja
     }
 }

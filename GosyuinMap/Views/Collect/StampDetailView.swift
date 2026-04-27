@@ -6,6 +6,7 @@ struct StampDetailView: View {
     let stamp: StampDefinition
     @Query private var collectedStamps: [CollectedStamp]
     @State private var showingMap = false
+    @State private var appeared = false
 
     private var collectedStamp: CollectedStamp? {
         collectedStamps.first { $0.slotId == stamp.id }
@@ -17,7 +18,7 @@ struct StampDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: DS.Spacing.xl) {
                 stampHeader
 
                 if let collected = collectedStamp {
@@ -28,14 +29,21 @@ struct StampDetailView: View {
                     unknownSection
                 }
             }
-            .padding()
+            .padding(DS.Spacing.lg)
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 12)
         }
-        .background(Color(.systemBackground))
+        .background(Color.pageBackground)
         .navigationTitle(stamp.name)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingMap) {
             if let shrine {
                 shrineMapSheet(shrine)
+            }
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.4)) {
+                appeared = true
             }
         }
     }
@@ -52,15 +60,16 @@ struct StampDetailView: View {
 
             Text(stamp.name)
                 .font(.title2.bold())
+                .foregroundStyle(Color.bodyText)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical)
+        .padding(.vertical, DS.Spacing.lg)
     }
 
     // MARK: - Collected
 
     private func collectedSection(_ collected: CollectedStamp) -> some View {
-        VStack(spacing: 16) {
+        VStack(spacing: DS.Spacing.md) {
             infoRow(
                 icon: "calendar",
                 label: "Collected on",
@@ -69,66 +78,83 @@ struct StampDetailView: View {
 
             if let shrine {
                 infoRow(icon: "mappin.circle.fill", label: shrine.name, value: shrine.address)
+
+                Button {
+                    showingMap = true
+                } label: {
+                    HStack(spacing: DS.Spacing.sm) {
+                        Image(systemName: "map.fill")
+                            .font(.subheadline)
+                        Text("View Location")
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(stamp.color)
+                    .frame(maxWidth: .infinity)
+                    .padding(DS.Spacing.md)
+                    .background(stamp.color.opacity(0.1), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                }
+                .buttonStyle(.pressable)
             }
         }
     }
 
     private func infoRow(icon: String, label: String, value: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(stamp.color)
-                .frame(width: 28)
+        HStack(spacing: DS.Spacing.md) {
+            IconBadge(icon: icon, size: 36, color: stamp.color)
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)
                     .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.bodyText)
                 Text(value)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
             Spacer()
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+        .cardStyle()
     }
 
     // MARK: - Uncollected (Known Shrine)
 
     private var uncollectedKnownSection: some View {
-        VStack(spacing: 16) {
-            Text("This stamp has not been collected yet")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        VStack(spacing: DS.Spacing.lg) {
+            VStack(spacing: DS.Spacing.sm) {
+                IconBadge(icon: "seal", size: 48, color: stamp.color)
+                Text("This stamp has not been collected yet")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.subtitleText)
+                    .multilineTextAlignment(.center)
+            }
 
             Button {
                 showingMap = true
             } label: {
-                Label("View on Map", systemImage: "map.fill")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(stamp.color, in: RoundedRectangle(cornerRadius: 14))
+                HStack(spacing: DS.Spacing.sm) {
+                    Image(systemName: "map.fill")
+                        .font(.headline)
+                    Text("View on Map")
+                }
+                .vermillionButtonStyle()
             }
+            .buttonStyle(.pressable)
         }
     }
 
     // MARK: - Unknown
 
     private var unknownSection: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "questionmark.circle")
-                .font(.system(size: 48))
-                .foregroundStyle(Color(.systemGray4))
+        VStack(spacing: DS.Spacing.md) {
+            IconBadge(icon: "questionmark.circle", size: 64, color: .placeholderIcon)
             Text("Not discovered yet")
                 .font(.headline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
             Text("Explore more shrines to discover this stamp")
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Color.captionText)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 32)
+        .padding(.vertical, DS.Spacing.xxl)
     }
 
     // MARK: - Map Sheet
@@ -138,10 +164,18 @@ struct StampDetailView: View {
             Map {
                 Annotation(shrine.name, coordinate: shrine.coordinate) {
                     ZStack {
-                        Circle().fill(Color(.label)).frame(width: 36, height: 36)
-                            .shadow(color: .black.opacity(0.15), radius: 3)
-                        Text("\u{26E9}").font(.system(size: 16))
-                            .foregroundStyle(Color(.systemBackground))
+                        Circle()
+                            .fill(shrine.category.color)
+                            .frame(width: 36, height: 36)
+                            .shadow(color: shrine.category.color.opacity(0.3), radius: 4, y: 2)
+                        Circle()
+                            .strokeBorder(.white, lineWidth: 2)
+                            .frame(width: 36, height: 36)
+                        CategoryIconView(
+                            category: shrine.category,
+                            size: 16,
+                            color: .white
+                        )
                     }
                 }
             }

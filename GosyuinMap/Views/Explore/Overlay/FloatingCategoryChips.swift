@@ -3,6 +3,7 @@ import MapKit
 import CoreLocation
 
 struct FloatingCategoryChips: View {
+    let shrines: [Shrine]
     let region: MKCoordinateRegion
     let selectedCategory: ShrineCategory?
     let onCategoryTapped: (_ category: ShrineCategory) -> Void
@@ -19,7 +20,7 @@ struct FloatingCategoryChips: View {
     ]
 
     private func nearbyCount(for category: ShrineCategory) -> Int {
-        Shrine.samples
+        shrines
             .filter { $0.category == category }
             .filter { region.contains($0.coordinate) }
             .count
@@ -73,7 +74,7 @@ struct FloatingCategoryChips: View {
 
 // MARK: - Helpers
 
-private extension MKCoordinateRegion {
+extension MKCoordinateRegion {
     func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
         let latMin = center.latitude - span.latitudeDelta / 2
         let latMax = center.latitude + span.latitudeDelta / 2

@@ -8,8 +8,15 @@ struct CollectView: View {
     @State private var locationService = LocationService()
     @State private var selectedCategory: ShrineCategory? = nil
     @State private var showPassport = false
+    @State private var showAllAchievements = false
+    @State private var currentBookPage: Int = 0
 
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: DS.Spacing.md), count: 3)
+    private let bookColumns = [
+        GridItem(.flexible(), spacing: DS.Spacing.md),
+        GridItem(.flexible(), spacing: DS.Spacing.md),
+        GridItem(.flexible(), spacing: DS.Spacing.md)
+    ]
+    private let stampsPerPage = 6
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
@@ -27,7 +34,20 @@ struct CollectView: View {
         Achievement.all.filter { !$0.requirement(collectedIds, Shrine.samples) }
     }
 
-    // Group stamps by ShrineCategory
+    private var achievementsByCategory: [(category: AchievementCategory, achievements: [Achievement])] {
+        AchievementCategory.allCases.compactMap { cat in
+            let items = Achievement.all.filter { $0.category == cat }
+            guard !items.isEmpty else { return nil }
+            let sorted = items.sorted { a, b in
+                let aUnlocked = a.requirement(collectedIds, Shrine.samples)
+                let bUnlocked = b.requirement(collectedIds, Shrine.samples)
+                if aUnlocked != bUnlocked { return aUnlocked }
+                return false
+            }
+            return (category: cat, achievements: sorted)
+        }
+    }
+
     private var stampsByCategory: [(category: ShrineCategory, stamps: [StampDefinition])] {
         let shrineMap = Dictionary(uniqueKeysWithValues: Shrine.samples.map { ($0.stampSlotId, $0) })
         var grouped: [ShrineCategory: [StampDefinition]] = [:]
@@ -42,27 +62,35 @@ struct CollectView: View {
             }
     }
 
-    private var filteredCategories: [(category: ShrineCategory, stamps: [StampDefinition])] {
+    /// All stamps for the current filter, used by the book
+    private var bookStamps: [StampDefinition] {
         if let selected = selectedCategory {
-            return stampsByCategory.filter { $0.category == selected }
+            return stampsByCategory.first { $0.category == selected }?.stamps ?? []
         }
-        return stampsByCategory
+        return stampsByCategory.flatMap(\.stamps)
+    }
+
+    private var bookPages: [[StampDefinition]] {
+        stride(from: 0, to: bookStamps.count, by: stampsPerPage).map {
+            Array(bookStamps[$0..<min($0 + stampsPerPage, bookStamps.count)])
+        }
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
-                    // Unified level + achievements + next goal
                     levelCard
+                    achievementsSummary
 
-                    // Category filter
+                    if collectedStamps.isEmpty {
+                        emptyStateCard
+                    }
+
                     categoryFilter
 
-                    // Stamp grids by category
-                    ForEach(filteredCategories, id: \.category) { section in
-                        categorySectionView(section.category, stamps: section.stamps)
-                    }
+                    // Gosyuin Book
+                    gosyuinBook
                 }
                 .padding(DS.Spacing.lg)
             }
@@ -80,6 +108,12 @@ struct CollectView: View {
             .sheet(isPresented: $showPassport) {
                 ShrinePassportView()
             }
+            .sheet(isPresented: $showAllAchievements) {
+                AchievementsDetailView(
+                    collectedIds: collectedIds,
+                    achievementsByCategory: achievementsByCategory
+                )
+            }
             .navigationDestination(for: StampDefinition.self) { stamp in
                 StampDetailView(stamp: stamp)
             }
@@ -93,154 +127,157 @@ struct CollectView: View {
         .sensoryFeedback(.impact(weight: .medium), trigger: collectedStamps.count)
     }
 
+    // MARK: - Empty State
+
+    private var emptyStateCard: some View {
+        VStack(spacing: DS.Spacing.lg) {
+            IconBadge(icon: "building.columns", size: 72, color: .vermillion)
+
+            VStack(spacing: DS.Spacing.xs) {
+                Text("Start Your Journey")
+                    .font(.title3.bold())
+                Text("Visit a shrine or temple and get within 100m to collect your first stamp.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.subtitleText)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                stepRow(number: "1", text: "Open the Explore tab")
+                stepRow(number: "2", text: "Find a shrine nearby on the map")
+                stepRow(number: "3", text: "Walk within 100m to collect your stamp")
+            }
+            .padding(DS.Spacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.vermillion.opacity(0.05), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+        }
+        .cardStyle()
+    }
+
+    private func stepRow(number: String, text: String) -> some View {
+        HStack(spacing: DS.Spacing.sm) {
+            Text(number)
+                .font(.caption.bold())
+                .foregroundStyle(.white)
+                .frame(width: 20, height: 20)
+                .background(Color.vermillion, in: Circle())
+            Text(text)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(Color.bodyText)
+            Spacer()
+        }
+    }
+
     // MARK: - Level Card
 
     private var levelCard: some View {
-        VStack(spacing: DS.Spacing.lg) {
-            // Level badge + title
-            HStack(spacing: DS.Spacing.md) {
-                ZStack {
-                    Circle()
-                        .fill(level.color.gradient)
-                        .frame(width: 56, height: 56)
-                    Image(systemName: level.icon)
-                        .font(.title2.weight(.bold))
+        HStack(spacing: DS.Spacing.lg) {
+            ZStack {
+                Circle()
+                    .fill(level.color.gradient)
+                    .frame(width: 64, height: 64)
+                VStack(spacing: 0) {
+                    Text(level.kanji)
+                        .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(.white)
+                    Image(systemName: level.icon)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.8))
                 }
-                .shadow(color: level.color.opacity(0.4), radius: 6, y: 2)
+            }
+            .shadow(color: level.color.opacity(0.4), radius: 8, y: 3)
 
-                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                    HStack(spacing: DS.Spacing.xs) {
-                        Text(level.kanji)
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(level.color)
-                        Text("Lv.\(level.rawValue)")
-                            .font(.caption2.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                HStack(spacing: DS.Spacing.xs) {
+                    Text("Lv.\(level.rawValue)")
+                        .font(DS.Font.chipLabel)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(level.color, in: Capsule())
                     Text(level.title)
-                        .font(.title3.bold())
-                    Text(level.subtitle)
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(.secondary)
+                        .font(.headline)
+                }
+                Text(level.subtitle)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Color.subtitleText)
+
+                if level.next != nil {
+                    HStack(spacing: DS.Spacing.sm) {
+                        ProgressBar(
+                            progress: level.progressToNext(current: collectedStamps.count),
+                            color: level.color,
+                            height: 6
+                        )
+                        if let toNext = level.stampsToNext(current: collectedStamps.count) {
+                            Text("\(toNext) to go")
+                                .font(DS.Font.statCaption)
+                                .foregroundStyle(Color.captionText)
+                                .fixedSize()
+                        }
+                    }
+                } else {
+                    Text("Max level reached!")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(level.color)
+                }
+            }
+
+            Spacer()
+
+            VStack(spacing: 2) {
+                Text("\(collectedStamps.count)")
+                    .font(DS.Font.statMedium)
+                    .foregroundStyle(level.color)
+                Text("/ \(StampDefinition.all.count)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.captionText)
+            }
+        }
+        .cardStyle()
+    }
+
+    // MARK: - Achievements Summary (compact, tappable)
+
+    private var achievementsSummary: some View {
+        Button { showAllAchievements = true } label: {
+            HStack(spacing: DS.Spacing.md) {
+                // Recent unlocked badges (show up to 3)
+                HStack(spacing: -8) {
+                    ForEach(unlockedAchievements.suffix(3)) { badge in
+                        IconBadge(icon: badge.icon, size: 32, color: badge.color)
+                            .background(Color.cardBackground, in: Circle())
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(unlockedAchievements.count)/\(Achievement.all.count) Achievements")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.bodyText)
+
+                    if let nextLocked = lockedAchievements.first {
+                        HStack(spacing: DS.Spacing.xs) {
+                            Text("Next:")
+                                .font(.caption)
+                                .foregroundStyle(Color.captionText)
+                            Text(nextLocked.description)
+                                .font(.caption)
+                                .foregroundStyle(Color.subtitleText)
+                                .lineLimit(1)
+                        }
+                    }
                 }
 
                 Spacer()
 
-                VStack(spacing: 2) {
-                    Text("\(collectedStamps.count)")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(level.color)
-                    Text("/ \(StampDefinition.all.count)")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-
-            // XP bar
-            if let next = level.next {
-                HStack(spacing: DS.Spacing.sm) {
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            Capsule().fill(Color.progressEmpty)
-                            Capsule()
-                                .fill(level.color.gradient)
-                                .frame(width: geo.size.width * level.progressToNext(current: collectedStamps.count))
-                                .animation(.spring(duration: 0.6), value: collectedStamps.count)
-                        }
-                    }
-                    .frame(height: 8)
-
-                    if let toNext = level.stampsToNext(current: collectedStamps.count) {
-                        Text("\(toNext) to \(next.title)")
-                            .font(.caption2.weight(.medium))
-                            .foregroundStyle(.secondary)
-                            .fixedSize()
-                    }
-                }
-            } else {
-                Text("Max level reached!")
+                Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(level.color)
+                    .foregroundStyle(Color.captionText)
             }
-
-            // Divider
-            Rectangle()
-                .fill(Color.primary.opacity(0.06))
-                .frame(height: 1)
-
-            // Achievements
-            VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-                HStack {
-                    Text("Achievements")
-                        .font(.subheadline.weight(.semibold))
-                    Spacer()
-                    Text("\(unlockedAchievements.count)/\(Achievement.all.count)")
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(.secondary)
-                }
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: DS.Spacing.sm) {
-                        ForEach(unlockedAchievements) { achievement in
-                            achievementBadge(achievement, unlocked: true)
-                        }
-                        ForEach(lockedAchievements) { achievement in
-                            achievementBadge(achievement, unlocked: false)
-                        }
-                    }
-                }
-            }
-
-            // Next goal
-            if let nextLocked = lockedAchievements.first {
-                HStack(spacing: DS.Spacing.sm) {
-                    Image(systemName: "target")
-                        .font(.callout)
-                        .foregroundStyle(Color.vermillion)
-
-                    Text(nextLocked.description)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(.secondary)
-
-                    Spacer()
-
-                    Image(systemName: nextLocked.icon)
-                        .font(.callout)
-                        .foregroundStyle(Color.placeholderIcon)
-                }
-                .padding(DS.Spacing.sm)
-                .background(Color.vermillion.opacity(0.06), in: RoundedRectangle(cornerRadius: DS.Radius.sm))
-            }
+            .cardStyle()
         }
-        .padding(DS.Spacing.lg)
-        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-        .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
-    }
-
-    private func achievementBadge(_ achievement: Achievement, unlocked: Bool) -> some View {
-        VStack(spacing: DS.Spacing.xs) {
-            ZStack {
-                Circle()
-                    .fill(unlocked ? achievement.color.opacity(0.15) : Color.progressEmpty)
-                    .frame(width: 44, height: 44)
-                if unlocked {
-                    Circle()
-                        .strokeBorder(achievement.color, lineWidth: 2)
-                        .frame(width: 44, height: 44)
-                }
-                Image(systemName: achievement.icon)
-                    .font(.body)
-                    .foregroundStyle(unlocked ? achievement.color : Color.placeholderIcon)
-            }
-
-            Text(achievement.title)
-                .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(unlocked ? .primary : .tertiary)
-                .lineLimit(1)
-                .frame(width: 56)
-                .multilineTextAlignment(.center)
-        }
+        .buttonStyle(.pressable)
     }
 
     // MARK: - Category Filter
@@ -249,7 +286,10 @@ struct CollectView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: DS.Spacing.sm) {
                 chipButton(label: "All", isSelected: selectedCategory == nil) {
-                    withAnimation(.spring(duration: 0.25)) { selectedCategory = nil }
+                    withAnimation(.spring(duration: 0.25)) {
+                        selectedCategory = nil
+                        currentBookPage = 0
+                    }
                 }
                 ForEach(stampsByCategory, id: \.category) { section in
                     let cat = section.category
@@ -261,6 +301,7 @@ struct CollectView: View {
                     ) {
                         withAnimation(.spring(duration: 0.25)) {
                             selectedCategory = selectedCategory == cat ? nil : cat
+                            currentBookPage = 0
                         }
                     }
                 }
@@ -280,56 +321,63 @@ struct CollectView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Category Section
+    // MARK: - Gosyuin Book (paginated, book-style)
 
-    private func categorySectionView(_ category: ShrineCategory, stamps: [StampDefinition]) -> some View {
-        let collected = stamps.filter { collectedIds.contains($0.id) }.count
-        let progress = Double(collected) / Double(stamps.count)
+    private var gosyuinBook: some View {
+        VStack(spacing: 0) {
+            // Book cover header
+            bookHeader
 
-        return VStack(alignment: .leading, spacing: DS.Spacing.md) {
-            HStack(spacing: DS.Spacing.md) {
-                // Progress ring
-                ZStack {
-                    Circle()
-                        .stroke(Color.progressEmpty, lineWidth: 3)
-                        .frame(width: 36, height: 36)
-                    Circle()
-                        .trim(from: 0, to: progress)
-                        .stroke(category.color, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                        .frame(width: 36, height: 36)
-                        .rotationEffect(.degrees(-90))
-                        .animation(.spring(duration: 0.5), value: collected)
-
-                    Image(systemName: category.icon)
-                        .font(.system(size: 12))
-                        .foregroundStyle(category.color)
-                }
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(category.displayName)
-                        .font(.subheadline.weight(.semibold))
-                    Text("\(collected)/\(stamps.count) collected")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                if collected == stamps.count {
-                    Label("Complete", systemImage: "checkmark.seal.fill")
-                        .font(.caption2.weight(.bold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(category.color, in: Capsule())
-                } else {
-                    Text("\(Int(progress * 100))%")
-                        .font(.caption.weight(.bold).monospacedDigit())
-                        .foregroundStyle(category.color)
+            // Paged stamp spreads
+            TabView(selection: $currentBookPage) {
+                ForEach(bookPages.indices, id: \.self) { pageIndex in
+                    bookPage(stamps: bookPages[pageIndex], pageNumber: pageIndex + 1)
+                        .tag(pageIndex)
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 340)
 
-            LazyVGrid(columns: columns, spacing: DS.Spacing.md) {
+            // Page indicator
+            bookFooter
+        }
+        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
+    }
+
+    private var bookHeader: some View {
+        HStack {
+            if let cat = selectedCategory {
+                Image(systemName: cat.icon)
+                    .font(.caption)
+                    .foregroundStyle(cat.color)
+                Text(cat.displayName)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.bodyText)
+            } else {
+                Image(systemName: "book.closed.fill")
+                    .font(.caption)
+                    .foregroundStyle(Color.vermillion)
+                Text("All Stamps")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.bodyText)
+            }
+            Spacer()
+            let total = bookStamps.count
+            let collected = bookStamps.filter { collectedIds.contains($0.id) }.count
+            Text("\(collected)/\(total)")
+                .font(DS.Font.chipLabel)
+                .foregroundStyle(Color.captionText)
+        }
+        .padding(.horizontal, DS.Spacing.lg)
+        .padding(.top, DS.Spacing.lg)
+        .padding(.bottom, DS.Spacing.sm)
+    }
+
+    private func bookPage(stamps: [StampDefinition], pageNumber: Int) -> some View {
+        VStack(spacing: 0) {
+            // Washi paper page
+            LazyVGrid(columns: bookColumns, spacing: DS.Spacing.md) {
                 ForEach(stamps) { stamp in
                     NavigationLink(value: stamp) {
                         GeometryReader { geo in
@@ -352,20 +400,89 @@ struct CollectView: View {
                     .buttonStyle(.stamp)
                 }
             }
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.md)
+
+            Spacer()
         }
-        .padding(DS.Spacing.lg)
-        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-        .shadow(color: .black.opacity(0.04), radius: 3, y: 1)
+        .background(
+            // Washi paper texture
+            ZStack {
+                Color(red: 0.98, green: 0.96, blue: 0.93)
+                // Subtle fiber lines
+                Canvas { context, size in
+                    for i in 0..<8 {
+                        let y = CGFloat(i) * size.height / 8 + CGFloat.random(in: -5...5)
+                        var path = Path()
+                        path.move(to: CGPoint(x: 0, y: y))
+                        path.addLine(to: CGPoint(x: size.width, y: y + CGFloat.random(in: -2...2)))
+                        context.stroke(path, with: .color(Color.black.opacity(0.02)), lineWidth: 0.5)
+                    }
+                }
+            }
+        )
+        // Book spine shadow on leading edge
+        .overlay(alignment: .leading) {
+            LinearGradient(
+                colors: [.black.opacity(0.06), .clear],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+            .frame(width: 8)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.sm))
+        .padding(.horizontal, DS.Spacing.sm)
+    }
+
+    private var bookFooter: some View {
+        HStack {
+            Button {
+                withAnimation(.spring(duration: 0.3)) {
+                    currentBookPage = max(0, currentBookPage - 1)
+                }
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(currentBookPage > 0 ? Color.bodyText : Color.captionText)
+            }
+            .disabled(currentBookPage == 0)
+
+            Spacer()
+
+            Text("Page \(currentBookPage + 1) of \(max(bookPages.count, 1))")
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(Color.captionText)
+
+            Spacer()
+
+            Button {
+                withAnimation(.spring(duration: 0.3)) {
+                    currentBookPage = min(bookPages.count - 1, currentBookPage + 1)
+                }
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(currentBookPage < bookPages.count - 1 ? Color.bodyText : Color.captionText)
+            }
+            .disabled(currentBookPage >= bookPages.count - 1)
+        }
+        .padding(.horizontal, DS.Spacing.lg)
+        .padding(.vertical, DS.Spacing.md)
     }
 
     // MARK: - Seed (Debug Only)
 
     #if DEBUG
     private func seedSampleDataIfNeeded() {
-        guard collectedStamps.isEmpty else { return }
         let calendar = Calendar.current
-        for slotId in 1...5 {
-            let daysAgo = (5 - slotId) * 7
+        let existingIds = Set(collectedStamps.map(\.slotId))
+        let designedStampIds = [
+            1, 2, 3, 19, 21, 27, 28, 29, 36, 41, 42, 46, 47, 48, 49, 82, 262,
+        ]
+        let missing = designedStampIds.filter { !existingIds.contains($0) }
+        guard !missing.isEmpty else { return }
+        for (index, slotId) in missing.enumerated() {
+            let daysAgo = (missing.count - index) * 3
             let date = calendar.date(byAdding: .day, value: -daysAgo, to: .now) ?? .now
             modelContext.insert(CollectedStamp(slotId: slotId, collectedDate: date))
         }
@@ -403,6 +520,111 @@ private struct UncollectedStampCard: View {
                 .foregroundStyle(Color.placeholderIcon)
         }
         .aspectRatio(1, contentMode: .fit)
+    }
+}
+
+// MARK: - Achievements Detail View (full list, shown in sheet)
+
+struct AchievementsDetailView: View {
+    let collectedIds: Set<Int>
+    let achievementsByCategory: [(category: AchievementCategory, achievements: [Achievement])]
+    @Environment(\.dismiss) private var dismiss
+
+    private var unlockedCount: Int {
+        Achievement.all.filter { $0.requirement(collectedIds, Shrine.samples) }.count
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: DS.Spacing.xl) {
+                    ForEach(achievementsByCategory, id: \.category) { section in
+                        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                            HStack(spacing: DS.Spacing.xs) {
+                                Image(systemName: section.category.icon)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Color.captionText)
+                                Text(section.category.displayName)
+                                    .font(.subheadline.weight(.semibold))
+                            }
+
+                            ForEach(section.achievements) { achievement in
+                                let unlocked = achievement.requirement(collectedIds, Shrine.samples)
+                                HStack(spacing: DS.Spacing.md) {
+                                    IconBadge(
+                                        icon: achievement.icon,
+                                        size: 40,
+                                        color: unlocked ? achievement.color : .placeholderIcon
+                                    )
+
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(achievement.title)
+                                            .font(.subheadline.weight(.medium))
+                                            .foregroundStyle(unlocked ? .primary : Color.captionText)
+                                        Text(achievement.description)
+                                            .font(.caption)
+                                            .foregroundStyle(Color.subtitleText)
+
+                                        if let progressLabel = achievement.progressLabel {
+                                            let label = progressLabel(collectedIds, Shrine.samples)
+                                            HStack(spacing: DS.Spacing.xs) {
+                                                ProgressBar(
+                                                    progress: progressFraction(label),
+                                                    color: unlocked ? achievement.color : .placeholderIcon,
+                                                    height: 4,
+                                                    useGradient: false
+                                                )
+                                                Text(label)
+                                                    .font(.caption2.weight(.medium).monospacedDigit())
+                                                    .foregroundStyle(Color.captionText)
+                                                    .fixedSize()
+                                            }
+                                        }
+                                    }
+                                    Spacer()
+
+                                    if unlocked {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.body)
+                                            .foregroundStyle(achievement.color)
+                                    }
+                                }
+                                .padding(.vertical, DS.Spacing.xs)
+                            }
+                        }
+                        .cardStyle()
+                    }
+                }
+                .padding(DS.Spacing.lg)
+            }
+            .background(Color.pageBackground)
+            .navigationTitle("Achievements")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Text("\(unlockedCount)/\(Achievement.all.count)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.captionText)
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(Color.subtitleText)
+                    }
+                }
+            }
+        }
+    }
+
+    private func progressFraction(_ label: String) -> CGFloat {
+        let parts = label.split(separator: "/")
+        guard parts.count == 2,
+              let current = Double(parts[0]),
+              let total = Double(parts[1]),
+              total > 0 else { return 0 }
+        return min(1.0, CGFloat(current / total))
     }
 }
 

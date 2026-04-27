@@ -46,20 +46,18 @@
 		089C16C7293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 089C16B8293AF1B0007B3F21 /* GosyuinMapWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */; };
 		089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */; };
+		96BC904C108141E3B9963B96 /* GooglePlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */; };
 		089C17A0293AF1B0007B3F21 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C17A1293AF1B0007B3F21 /* OnboardingView.swift */; };
 		089C17B0293AF1B0007B3F21 /* StampCollectionPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C17B1293AF1B0007B3F21 /* StampCollectionPrompt.swift */; };
 		089C18B0293AF1B0007B3F21 /* ExploreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18A0293AF1B0007B3F21 /* ExploreState.swift */; };
 		089C18D0293DF1B0007B3F21 /* DirectionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C0293DF1B0007B3F21 /* DirectionsService.swift */; };
 		089C18D1293DF1B0007B3F21 /* GosyuinStampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C1293DF1B0007B3F21 /* GosyuinStampView.swift */; };
-		089C18D2293DF1B0007B3F21 /* SearchResultPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C2293DF1B0007B3F21 /* SearchResultPinView.swift */; };
 		089C18D3293DF1B0007B3F21 /* ShrinePinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C3293DF1B0007B3F21 /* ShrinePinView.swift */; };
 		089C18D4293DF1B0007B3F21 /* NavigationETABar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C4293DF1B0007B3F21 /* NavigationETABar.swift */; };
 		089C18D5293DF1B0007B3F21 /* NavigationTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C5293DF1B0007B3F21 /* NavigationTopBar.swift */; };
 		089C18D6293DF1B0007B3F21 /* RecenterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C6293DF1B0007B3F21 /* RecenterButton.swift */; };
 		089C18D8293DF1B0007B3F21 /* ExploreSearchContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C8293DF1B0007B3F21 /* ExploreSearchContent.swift */; };
 		089C18D9293DF1B0007B3F21 /* PlaceDetailContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C9293DF1B0007B3F21 /* PlaceDetailContent.swift */; };
-		FA0B0002293DF1B0007B3F21 /* ExploreBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0B0001293DF1B0007B3F21 /* ExploreBottomSheet.swift */; };
-		FA1A0002293DF1B0007B3F21 /* DraggableSheetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1A0001293DF1B0007B3F21 /* DraggableSheetContainer.swift */; };
 		FA2D0002293DF1B0007B3F21 /* DirectionsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */; };
 		FA1A0004293DF1B0007B3F21 /* CategoryIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1A0003293DF1B0007B3F21 /* CategoryIconView.swift */; };
 		089C19B0293DF1B0007B3F21 /* FloatingSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C19A0293DF1B0007B3F21 /* FloatingSearchBar.swift */; };
@@ -138,20 +136,19 @@
 		AB1234567890ABCDEF000001 /* shrine_images.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shrine_images.json; sourceTree = "<group>"; };
 		089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineSearchService.swift; sourceTree = "<group>"; };
+		D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlacesService.swift; sourceTree = "<group>"; };
 		089C17A1293AF1B0007B3F21 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		089C17B1293AF1B0007B3F21 /* StampCollectionPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StampCollectionPrompt.swift; sourceTree = "<group>"; };
 		089C18A0293AF1B0007B3F21 /* ExploreState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreState.swift; sourceTree = "<group>"; };
 		089C18C0293DF1B0007B3F21 /* DirectionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsService.swift; sourceTree = "<group>"; };
 		089C18C1293DF1B0007B3F21 /* GosyuinStampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinStampView.swift; sourceTree = "<group>"; };
-		089C18C2293DF1B0007B3F21 /* SearchResultPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultPinView.swift; sourceTree = "<group>"; };
+
 		089C18C3293DF1B0007B3F21 /* ShrinePinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrinePinView.swift; sourceTree = "<group>"; };
 		089C18C4293DF1B0007B3F21 /* NavigationETABar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationETABar.swift; sourceTree = "<group>"; };
 		089C18C5293DF1B0007B3F21 /* NavigationTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTopBar.swift; sourceTree = "<group>"; };
 		089C18C6293DF1B0007B3F21 /* RecenterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecenterButton.swift; sourceTree = "<group>"; };
 		089C18C8293DF1B0007B3F21 /* ExploreSearchContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSearchContent.swift; sourceTree = "<group>"; };
 		089C18C9293DF1B0007B3F21 /* PlaceDetailContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailContent.swift; sourceTree = "<group>"; };
-		FA0B0001293DF1B0007B3F21 /* ExploreBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreBottomSheet.swift; sourceTree = "<group>"; };
-		FA1A0001293DF1B0007B3F21 /* DraggableSheetContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableSheetContainer.swift; sourceTree = "<group>"; };
 		FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsSheet.swift; sourceTree = "<group>"; };
 		FA1A0003293DF1B0007B3F21 /* CategoryIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryIconView.swift; sourceTree = "<group>"; };
 		089C19A0293DF1B0007B3F21 /* FloatingSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingSearchBar.swift; sourceTree = "<group>"; };
@@ -311,6 +308,7 @@
 				089C1694293AF1B0007B3F21 /* LocationService.swift */,
 				089C16B2293AF1B0007B3F21 /* WorshipSessionManager.swift */,
 				089C16F1293AF1B0007B3F21 /* ShrineSearchService.swift */,
+				D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */,
 				089C18C0293DF1B0007B3F21 /* DirectionsService.swift */,
 			);
 			path = Services;
@@ -330,10 +328,8 @@
 		089C18E0293DF1B0007B3F21 /* Sheet */ = {
 			isa = PBXGroup;
 			children = (
-				FA0B0001293DF1B0007B3F21 /* ExploreBottomSheet.swift */,
 				089C18C8293DF1B0007B3F21 /* ExploreSearchContent.swift */,
 				089C18C9293DF1B0007B3F21 /* PlaceDetailContent.swift */,
-				FA1A0001293DF1B0007B3F21 /* DraggableSheetContainer.swift */,
 				FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */,
 			);
 			path = Sheet;
@@ -352,7 +348,6 @@
 		089C18E2293DF1B0007B3F21 /* Annotations */ = {
 			isa = PBXGroup;
 			children = (
-				089C18C2293DF1B0007B3F21 /* SearchResultPinView.swift */,
 				089C18C3293DF1B0007B3F21 /* ShrinePinView.swift */,
 				FA1A0003293DF1B0007B3F21 /* CategoryIconView.swift */,
 			);
@@ -503,6 +498,7 @@
 				089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */,
 				089C16C2293AF1B0007B3F21 /* WorshipSessionManager.swift in Sources */,
 				089C16F0293AF1B0007B3F21 /* ShrineSearchService.swift in Sources */,
+				96BC904C108141E3B9963B96 /* GooglePlacesService.swift in Sources */,
 				089C17A0293AF1B0007B3F21 /* OnboardingView.swift in Sources */,
 				089C17B0293AF1B0007B3F21 /* StampCollectionPrompt.swift in Sources */,
 				089C18B0293AF1B0007B3F21 /* ExploreState.swift in Sources */,
@@ -510,15 +506,12 @@
 				089C18D1293DF1B0007B3F21 /* GosyuinStampView.swift in Sources */,
 				089C1AA1293DF1B0007B3F21 /* GosyuinArtworkView.swift in Sources */,
 				089C1AA3293DF1B0007B3F21 /* GosyuinBookSpreadView.swift in Sources */,
-				089C18D2293DF1B0007B3F21 /* SearchResultPinView.swift in Sources */,
 				089C18D3293DF1B0007B3F21 /* ShrinePinView.swift in Sources */,
 				089C18D4293DF1B0007B3F21 /* NavigationETABar.swift in Sources */,
 				089C18D5293DF1B0007B3F21 /* NavigationTopBar.swift in Sources */,
 				089C18D6293DF1B0007B3F21 /* RecenterButton.swift in Sources */,
 				089C18D8293DF1B0007B3F21 /* ExploreSearchContent.swift in Sources */,
 				089C18D9293DF1B0007B3F21 /* PlaceDetailContent.swift in Sources */,
-				FA0B0002293DF1B0007B3F21 /* ExploreBottomSheet.swift in Sources */,
-				FA1A0002293DF1B0007B3F21 /* DraggableSheetContainer.swift in Sources */,
 				FA2D0002293DF1B0007B3F21 /* DirectionsSheet.swift in Sources */,
 				FA1A0004293DF1B0007B3F21 /* CategoryIconView.swift in Sources */,
 				089C19B0293DF1B0007B3F21 /* FloatingSearchBar.swift in Sources */,

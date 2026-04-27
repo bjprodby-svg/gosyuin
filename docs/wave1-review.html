@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>GosyuinMap — Wave 1 Review</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', sans-serif;
+    background: #F7F2EB;
+    color: #2a2a2a;
+    margin: 0;
+    padding: 32px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .subhead {
+    font-size: 12px; color: #807B73; text-transform: uppercase;
+    letter-spacing: 1.5px; font-weight: 600;
+  }
+  .meta { color: #807B73; font-size: 13px; margin: 4px 0 32px; }
+  .card {
+    background: white; border-radius: 16px; padding: 24px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06); margin-bottom: 16px;
+  }
+  .card .label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    color: #C13B2A; text-transform: uppercase;
+    font-family: ui-monospace, monospace; margin-bottom: 4px;
+  }
+  .card h2 { font-size: 18px; margin: 0 0 4px; }
+  .card .sub { font-size: 13px; color: #807B73; margin-bottom: 12px; font-family: ui-monospace, monospace; }
+  .verdict {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; padding: 4px 10px; border-radius: 999px;
+    text-transform: uppercase; font-family: ui-monospace, monospace;
+    margin-bottom: 12px;
+  }
+  .verdict.pass { background: #338C4D; color: white; }
+  .verdict.tweak { background: #99662E; color: white; }
+  .verdict.review { background: #264C99; color: white; }
+  .notes {
+    background: #F7F2EB; border-radius: 8px; padding: 12px 14px;
+    font-size: 13px; border-left: 3px solid #C13B2A; line-height: 1.7;
+  }
+  .notes strong { color: #C13B2A; }
+  a.viewlink {
+    display: inline-block; background: #C13B2A; color: white;
+    padding: 8px 14px; border-radius: 8px; text-decoration: none;
+    font-weight: 600; font-size: 14px; margin-top: 8px;
+  }
+  a.viewlink:hover { background: #a02a1a; }
+  .decisions {
+    background: white; border-radius: 16px; padding: 24px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06); margin-top: 32px;
+  }
+  .decisions h3 { margin: 0 0 12px; font-size: 16px; }
+  .decisions ol { padding-left: 20px; margin: 0; }
+  .decisions li { margin-bottom: 10px; font-size: 14px; }
+  .decisions strong { color: #C13B2A; }
+  .info {
+    background: #FFF8E1; border-radius: 12px; padding: 14px 18px;
+    margin: 16px 0; font-size: 13px; color: #5d4e1a;
+    border-left: 3px solid #99662E;
+  }
+  code {
+    background: #F7F2EB; padding: 2px 6px; border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="subhead">CREATIVE ASSET MVP — WAVE 1</div>
+<h1>GosyuinMap — Wave 1 Review</h1>
+<div class="meta">2026-04-25 · 4 generated assets · ChatGPT Plus / DALL-E</div>
+
+<div class="info">
+画像本体は ChatGPT のチャット上にあります。下のリンクから直接見てください。data URI 埋込 HTML（5.7MB）の自動 download は Chrome の permission 制限でブロックされた可能性あり。
+</div>
+
+<!-- #1 Default v2 -->
+<div class="card">
+  <div class="label">#1 · APP ICON DEFAULT V2</div>
+  <h2>朱色 + 白鳥居 + 白い輪</h2>
+  <div class="sub">1024×1024 PNG · 3 generations · "Stylised torii gate icon"</div>
+  <span class="verdict pass">PASS — 採用決定</span>
+  <div class="notes">
+    <strong>所感:</strong> 3 回目で確定。ミニマル・ブランドマーク級。Apple HIG に沿ったフラットデザイン。<br>
+    <strong>次:</strong> <code>Assets.xcassets/AppIcon.appiconset/</code> に投入。washi grain 強化版は不要（home screen size で潰れる）。
+  </div>
+  <a class="viewlink" href="https://chatgpt.com/g/g-p-68a449232a608191a1cb02bcd85cdfc0/c/69eb3d7d-3384-83a1-a759-694a41e55a28" target="_blank">画像を ChatGPT で見る →</a>
+</div>
+
+<!-- #2 Sakura v2 -->
+<div class="card">
+  <div class="label">#2 · APP ICON SAKURA V2</div>
+  <h2>朱色 + 白鳥居 + 控えめ桜花びら</h2>
+  <div class="sub">1024×1024 PNG · 5 generations · "Minimalist torii gate with sakura petals"</div>
+  <span class="verdict pass">PASS — Alt icon 採用</span>
+  <div class="notes">
+    <strong>所感:</strong> 朱色維持成功 + 桜花びらが薄ピンクで控えめ。Brand mark を保ったまま春の雰囲気。60×60 home screen size で petals は溶けて消える設計。<br>
+    <strong>次:</strong> 新規 <code>AppIconSakura.appiconset/</code> + Info.plist <code>CFBundleIcons</code> 登録。<br>
+    <strong>学び:</strong> 季節バリアントは "keep base color" 明示必須（"spring" だけだとピンクに転倒）。
+  </div>
+  <a class="viewlink" href="https://chatgpt.com/g/g-p-68a449232a608191a1cb02bcd85cdfc0/c/69eb3d7d-3384-83a1-a759-694a41e55a28" target="_blank">画像を ChatGPT で見る →</a>
+</div>
+
+<!-- #3 Myojin -->
+<div class="card">
+  <div class="label">#3 · CATEGORY ICON · MYOJIN</div>
+  <h2>明神鳥居シルエット (raw)</h2>
+  <div class="sub">1024×1024 PNG · 1 generation · "Torii gate silhouette illustration"</div>
+  <span class="verdict tweak">TRACE NEEDED</span>
+  <div class="notes">
+    <strong>所感:</strong> 明神鳥居の形状（湾曲した笠木、島木、突き出た貫）は OK。中央に意図しない輪が混入（前のアプリアイコン文脈の漏れ）。<br>
+    <strong>次:</strong> Figma で輪削除 → SVG ベクタートレース → <code>CategoryIcons/icon_myojin.imageset/icon.svg</code> として配置。<br>
+    <strong>学び:</strong> 1 チャット = 1 アセットファミリー。文脈分離が重要（実際、新チャットで再生成試行したら pedestrian silhouette が出た）。
+  </div>
+  <a class="viewlink" href="https://chatgpt.com/g/g-p-68a449232a608191a1cb02bcd85cdfc0/c/69eb3d7d-3384-83a1-a759-694a41e55a28" target="_blank">画像を ChatGPT で見る →</a>
+</div>
+
+<!-- #5 Store Hero -->
+<div class="card">
+  <div class="label">#5 · STORE HERO · B2 DIRECTION</div>
+  <h2>App Store スクショ composite layout</h2>
+  <div class="sub">852×1846 PNG · 1 generation · "神社巡りを、もっと楽しく。"</div>
+  <span class="verdict review">B2 ADOPTED</span>
+  <div class="notes">
+    <strong>所感:</strong> Brief は B1 ミニマル水彩を指定していたが、DALL-E が自発的に B2（日本語コピー + デバイスモックアップ + 機能リスト + 御朱印帳の物体撮影）を生成。完成度が高く、B2 採用決定。<br>
+    <strong>判断理由:</strong> JP App Store browsers 向けに機能訴求型が conversion 強い。ブランドミニマルは AppIcon + アプリ内で担保。B1 watercolor は OG / LP / share-card に温存。<br>
+    <strong>次:</strong> Wave 2C で残り 4 枚（map / stamp book / collection moment / Learn）を同方向で生成。
+  </div>
+  <a class="viewlink" href="https://chatgpt.com/g/g-p-68a449232a608191a1cb02bcd85cdfc0/c/69eb3d7d-3384-83a1-a759-694a41e55a28" target="_blank">画像を ChatGPT で見る →</a>
+</div>
+
+<!-- Bonus: Wave 2A 朱印 -->
+<div class="card">
+  <div class="label">BONUS · WAVE 2A-1 · BADGE 朱印 SHAPE</div>
+  <h2>朱印形状バッジ（形状検証）</h2>
+  <div class="sub">1024×1024 PNG · 1 generation · 別チャット "Hanko 印章"</div>
+  <span class="verdict pass">SHAPE VALIDATED</span>
+  <div class="notes">
+    <strong>所感:</strong> 朱色四角印 + 篆書漢字 + washi paper + slight rotation、すべて motif 一致。漢字は別物（高橋之印が出た）だが、形状検証としては合格。<br>
+    <strong>本番化方針:</strong> DALL-E は特定漢字の生成不可と確定。<strong>形状を DALL-E で生成 → Figma で漢字を後乗せ</strong>する 2 段階フロー。
+  </div>
+  <a class="viewlink" href="https://chatgpt.com/c/69ec4bc9-8e48-839e-9ed2-54fb24809d19" target="_blank">画像を ChatGPT で見る →</a>
+</div>
+
+<div class="decisions">
+<h3>Wave 1 確定事項</h3>
+<ol>
+<li><strong>#1 default v2</strong>: そのまま採用 → <code>Assets.xcassets/AppIcon.appiconset/</code> に投入</li>
+<li><strong>#2 sakura v2</strong>: Alt icon として採用 → 新規 <code>AppIconSakura.appiconset/</code></li>
+<li><strong>#3 myojin</strong>: Figma で輪削除 + ベクタートレース → SVG 化</li>
+<li><strong>#5 store hero</strong>: <strong>B2 (composite) 採用</strong>。B1 watercolor は OG / LP に温存</li>
+<li><strong>御朱印スタンプ</strong>: 290 で打ち止め。新規生成は Gemini ワークフロー専用</li>
+</ol>
+<h3 style="margin-top:24px">Wave 2 スコープ</h3>
+<ol>
+<li><strong>2A</strong>: バッジ形状 3 候補 — 朱印 ✓ / 絵馬 進行中 / 円形メダリオン 未着手</li>
+<li><strong>2B</strong>: 残りカテゴリアイコン 5 種（gongen, sengen, konpira, ebisu, benzaiten）</li>
+<li><strong>2C</strong>: App Store スクショ #2-#5（B2 方向）+ OG image (B1 方向)</li>
+</ol>
+</div>
+
+</div>
+</body>
+</html>

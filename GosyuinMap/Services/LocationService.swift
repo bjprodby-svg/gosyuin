@@ -61,7 +61,6 @@ final class LocationService: NSObject, @unchecked Sendable, CLLocationManagerDel
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        // Skip stale locations (older than 10 seconds)
         guard abs(location.timestamp.timeIntervalSinceNow) < 10 else { return }
         Task { @MainActor [weak self] in
             self?.currentLocation = location

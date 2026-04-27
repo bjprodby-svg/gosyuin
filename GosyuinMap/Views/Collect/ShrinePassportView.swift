@@ -23,7 +23,7 @@ struct ShrinePassportView: View {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title2)
                             .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -31,7 +31,7 @@ struct ShrinePassportView: View {
                         Image(systemName: "square.and.arrow.up.circle.fill")
                             .font(.title2)
                             .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
                     }
                 }
             }
@@ -90,26 +90,43 @@ private struct JourneyCardContent: View {
         }
     }
 
+    private var unlockedBadgeCount: Int {
+        Achievement.all.filter { $0.requirement(collectedIds, Shrine.samples) }.count
+    }
+
     var body: some View {
-        VStack(spacing: 24) {
-            // Header
+        VStack(spacing: 0) {
             headerSection
+                .padding(.bottom, DS.Spacing.xl)
 
-            // Japan map
+            pilgrimageTrail
+                .padding(.bottom, DS.Spacing.xl)
+
             mapSection
+                .padding(.bottom, DS.Spacing.xl)
 
-            // Stats
-            statsSection
+            heroStat
+                .padding(.bottom, DS.Spacing.lg)
 
-            // Progress
+            supportingStats
+                .padding(.bottom, DS.Spacing.xl)
+
+            Divider()
+                .foregroundStyle(Color.divider)
+                .padding(.horizontal, DS.Spacing.xl)
+                .padding(.bottom, DS.Spacing.xl)
+
+            badgeSummary
+                .padding(.bottom, DS.Spacing.xl)
+
             progressSection
+                .padding(.bottom, DS.Spacing.lg)
 
-            // Branding
             brandingSection
         }
         .padding(.vertical, 28)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .background(Color.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.xl))
         .shadow(color: .black.opacity(0.08), radius: 16, y: 6)
     }
 
@@ -117,28 +134,122 @@ private struct JourneyCardContent: View {
 
     private var headerSection: some View {
         HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                 Text("MY GOSYUIN JOURNEY")
-                    .font(.system(size: 13, weight: .bold, design: .monospaced))
-                    .foregroundStyle(Color(red: 0.35, green: 0.32, blue: 0.28))
-                    .tracking(1.5)
-                Text(level.kanji + " " + level.title)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(level.color)
+                    .font(DS.Font.sectionLabel)
+                    .foregroundStyle(Color.subtitleText)
+                    .tracking(2.0)
+
+                HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.sm) {
+                    Text(level.kanji)
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(level.color)
+                    Text(level.title)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(level.color)
+                }
+
+                Text("Lv.\(level.rawValue) \u{2022} \(level.subtitle)")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.subtitleText)
             }
 
             Spacer()
 
-            ZStack {
-                Circle()
-                    .fill(level.color.opacity(0.1))
-                    .frame(width: 44, height: 44)
-                Image(systemName: level.icon)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(level.color)
+            IconBadge(icon: level.icon, size: 52, color: level.color)
+        }
+        .padding(.horizontal, DS.Spacing.xl)
+    }
+
+    // MARK: - Pilgrimage Trail (horizontal path metaphor)
+
+    private var pilgrimageTrail: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            GeometryReader { geo in
+                let totalWidth = geo.size.width
+                let nodeCount = CollectorLevel.allCases.count
+                let spacing = totalWidth / CGFloat(nodeCount - 1)
+
+                ZStack(alignment: .leading) {
+                    // Background track
+                    Capsule()
+                        .fill(Color.divider)
+                        .frame(height: 3)
+                        .padding(.vertical, 16)
+
+                    // Filled track
+                    let currentIndex = CGFloat(level.rawValue - 1) + level.progressToNext(current: stamps.count)
+                    let filledWidth = min(totalWidth, spacing * currentIndex)
+                    Capsule()
+                        .fill(level.color.gradient)
+                        .frame(width: filledWidth, height: 3)
+                        .padding(.vertical, 16)
+
+                    // Milestone nodes
+                    ForEach(CollectorLevel.allCases, id: \.rawValue) { lvl in
+                        let index = CGFloat(lvl.rawValue - 1)
+                        let x = spacing * index
+                        let reached = stamps.count >= lvl.threshold
+                        let isCurrent = lvl == level
+                        let isTerminal = lvl == .hatsumairi || lvl == .shinshi
+
+                        VStack(spacing: 2) {
+                            ZStack {
+                                if isCurrent {
+                                    Circle()
+                                        .fill(lvl.color.opacity(0.15))
+                                        .frame(width: 32, height: 32)
+                                    Circle()
+                                        .fill(lvl.color.gradient)
+                                        .frame(width: 24, height: 24)
+                                    Circle()
+                                        .strokeBorder(.white, lineWidth: 2.5)
+                                        .frame(width: 24, height: 24)
+                                    Image(systemName: lvl.icon)
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundStyle(.white)
+                                } else if reached {
+                                    Circle()
+                                        .fill(lvl.color)
+                                        .frame(width: 14, height: 14)
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 7, weight: .bold))
+                                        .foregroundStyle(.white)
+                                } else {
+                                    Circle()
+                                        .fill(Color.progressEmpty)
+                                        .frame(width: 10, height: 10)
+                                }
+                            }
+                            .frame(height: 34)
+
+                            if isCurrent || isTerminal {
+                                Text(lvl.kanji)
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(reached ? lvl.color : Color.captionText)
+                            }
+                        }
+                        .frame(width: 36)
+                        .position(x: x, y: 22)
+                    }
+                }
+            }
+            .frame(height: 52)
+
+            // Progress to next level
+            if let next = level.next, let toNext = level.stampsToNext(current: stamps.count) {
+                HStack {
+                    Text("\(toNext) stamps to \(next.kanji) \(next.title)")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Color.captionText)
+                    Spacer()
+                    Text("Lv.\(level.rawValue) \u{2192} Lv.\(next.rawValue)")
+                        .font(DS.Font.progressLabel)
+                        .foregroundStyle(level.color)
+                }
             }
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, DS.Spacing.xl)
     }
 
     // MARK: - Map
@@ -150,43 +261,113 @@ private struct JourneyCardContent: View {
             drawVisitedShrines(context: context, size: size)
         }
         .frame(height: 200)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DS.Spacing.xl)
         .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(Color(red: 0.97, green: 0.96, blue: 0.94))
-                .padding(.horizontal, 16)
+            RoundedRectangle(cornerRadius: DS.Radius.lg)
+                .fill(Color.pageBackground)
+                .padding(.horizontal, DS.Spacing.lg)
         )
     }
 
-    // MARK: - Stats (3 big numbers)
+    // MARK: - Hero Stat (Visited count, prominent)
 
-    private var statsSection: some View {
-        HStack(spacing: 0) {
-            statItem(value: "\(stamps.count)", label: "Visited", color: Color.vermillion)
-            statDivider
-            statItem(value: "\(categoriesVisited.count)", label: "Types", color: Color(red: 0.45, green: 0.30, blue: 0.60))
-            statDivider
-            statItem(value: "\(prefectures.count)", label: "Regions", color: Color(red: 0.20, green: 0.50, blue: 0.70))
+    private var heroStat: some View {
+        VStack(spacing: 2) {
+            Text("\(stamps.count)")
+                .font(DS.Font.statHero)
+                .foregroundStyle(Color.vermillion)
+            Text("Shrines Visited")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.subtitleText)
+                .tracking(0.5)
         }
-        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, DS.Spacing.xl)
     }
 
-    private func statItem(value: String, label: String, color: Color) -> some View {
-        VStack(spacing: 4) {
-            Text(value)
-                .font(.system(size: 36, weight: .bold, design: .rounded))
-                .foregroundStyle(color)
+    // MARK: - Supporting Stats (smaller row)
+
+    private var supportingStats: some View {
+        HStack(spacing: 0) {
+            supportingStat(value: "\(categoriesVisited.count)", label: "Types", icon: "square.grid.2x2", color: Color(red: 0.45, green: 0.30, blue: 0.60))
+            supportingDivider
+            supportingStat(value: "\(prefectures.count)", label: "Regions", icon: "map", color: Color(red: 0.20, green: 0.50, blue: 0.70))
+            supportingDivider
+            supportingStat(value: "\(unlockedBadgeCount)", label: "Badges", icon: "seal", color: Color(red: 0.80, green: 0.55, blue: 0.20))
+        }
+        .padding(.horizontal, DS.Spacing.xl)
+    }
+
+    private func supportingStat(value: String, label: String, icon: String, color: Color) -> some View {
+        VStack(spacing: DS.Spacing.xs) {
+            HStack(spacing: 3) {
+                Image(systemName: icon)
+                    .font(.system(size: 10))
+                    .foregroundStyle(color.opacity(0.6))
+                Text(value)
+                    .font(DS.Font.statSmall)
+                    .foregroundStyle(color)
+            }
             Text(label)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(Color(red: 0.5, green: 0.48, blue: 0.45))
+                .font(DS.Font.statCaption)
+                .foregroundStyle(Color.subtitleText)
         }
         .frame(maxWidth: .infinity)
     }
 
-    private var statDivider: some View {
+    private var supportingDivider: some View {
         Rectangle()
-            .fill(Color.black.opacity(0.06))
-            .frame(width: 1, height: 40)
+            .fill(Color.divider)
+            .frame(width: 1, height: 32)
+    }
+
+    // MARK: - Badge Summary
+
+    private var badgeSummary: some View {
+        VStack(spacing: DS.Spacing.md) {
+            SectionHeader(
+                title: "Achievements",
+                icon: "seal.fill",
+                iconColor: .vermillion,
+                trailing: "\(unlockedBadgeCount)/\(Achievement.all.count)"
+            )
+
+            VStack(spacing: DS.Spacing.sm) {
+                ForEach(AchievementCategory.allCases, id: \.rawValue) { cat in
+                    let badges = Achievement.all.filter { $0.category == cat }
+                    let unlocked = badges.filter { $0.requirement(collectedIds, Shrine.samples) }.count
+
+                    HStack(spacing: DS.Spacing.sm) {
+                        Image(systemName: cat.icon)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Color.captionText)
+                            .frame(width: 18)
+
+                        Text(cat.displayName)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Color.subtitleText)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
+
+                        Spacer()
+
+                        ProgressBar(
+                            progress: badges.isEmpty ? 0 : Double(unlocked) / Double(badges.count),
+                            color: .vermillion,
+                            height: 4,
+                            useGradient: false
+                        )
+                        .frame(width: 60)
+
+                        Text("\(unlocked)/\(badges.count)")
+                            .font(DS.Font.progressLabel)
+                            .foregroundStyle(Color.captionText)
+                            .frame(width: 32, alignment: .trailing)
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, DS.Spacing.xl)
     }
 
     // MARK: - Progress
@@ -196,39 +377,31 @@ private struct JourneyCardContent: View {
         let progress = Double(stamps.count) / Double(total)
 
         return VStack(spacing: 6) {
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(Color.black.opacity(0.05))
-                    Capsule()
-                        .fill(Color.vermillion.gradient)
-                        .frame(width: geo.size.width * progress)
-                }
-            }
-            .frame(height: 6)
+            ProgressBar(progress: progress, color: .vermillion, height: 6)
 
             HStack {
                 Text("\(Int(progress * 100))% complete")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(Color.black.opacity(0.3))
+                    .font(DS.Font.statCaption)
+                    .foregroundStyle(Color.captionText)
                 Spacer()
                 Text("\(stamps.count) / \(total)")
-                    .font(.system(size: 10, weight: .bold, design: .monospaced))
-                    .foregroundStyle(Color.black.opacity(0.3))
+                    .font(DS.Font.progressLabel)
+                    .foregroundStyle(Color.captionText)
             }
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, DS.Spacing.xl)
     }
 
     // MARK: - Branding
 
     private var brandingSection: some View {
-        HStack(spacing: 4) {
-            Text("⛩")
-                .font(.system(size: 10))
+        HStack(spacing: DS.Spacing.xs) {
+            Image(systemName: "building.columns")
+                .font(.system(size: 9))
+                .foregroundStyle(Color.captionText.opacity(0.5))
             Text("GosyuinMap")
-                .font(.system(size: 10, weight: .medium))
-                .foregroundStyle(Color.black.opacity(0.2))
+                .font(DS.Font.statCaption)
+                .foregroundStyle(Color.captionText.opacity(0.5))
         }
     }
 
@@ -283,8 +456,8 @@ private struct JourneyCardContent: View {
             var arc = Path()
             arc.move(to: p1)
             arc.addQuadCurve(to: p2, control: CGPoint(x: (p1.x + p2.x) / 2, y: midY))
-            context.stroke(arc, with: .color(Color.vermillion.opacity(0.15)),
-                           style: StrokeStyle(lineWidth: 0.8, lineCap: .round))
+            context.stroke(arc, with: .color(Color.vermillion.opacity(0.35)),
+                           style: StrokeStyle(lineWidth: 1.2, lineCap: .round, dash: [4, 3]))
         }
     }
 

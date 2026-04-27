@@ -26,7 +26,6 @@ struct ExploreView: View {
     @State private var showDetailSheet = false
     @State private var showSearchSheet = false
     @State private var directionsOriginShrine: Shrine?
-    @State private var directionsOriginMapItem: MapItemWrapper?
 
     @Query private var collectedStamps: [CollectedStamp]
     @Environment(\.modelContext) private var modelContext
@@ -44,9 +43,22 @@ struct ExploreView: View {
         Set(collectedStamps.map(\.slotId))
     }
 
+    /// Shrines visible in the current map region, filtered by category
     private var filteredShrines: [Shrine] {
-        guard let category = selectedCategory else { return Shrine.samples }
-        return Shrine.samples.filter { $0.category == category }
+        let region = currentRegion
+        let base: [Shrine]
+        if let category = selectedCategory {
+            base = Shrine.samples.filter { $0.category == category }
+        } else {
+            base = Shrine.samples
+        }
+        return base.filter { region.contains($0.coordinate) }
+    }
+
+    /// The shrine to show in detail: enriched version if available, otherwise original
+    private var detailShrine: Shrine? {
+        guard case .placeDetail(let shrine) = exploreMode else { return nil }
+        return searchService.enrichedShrine ?? shrine
     }
 
     private var isNavigating: Bool {
@@ -63,7 +75,7 @@ struct ExploreView: View {
 
     private var isShowingDetail: Bool {
         switch exploreMode {
-        case .placeDetail, .mapItemDetail, .directions, .navigating: return true
+        case .placeDetail, .directions, .navigating: return true
         default: return false
         }
     }
@@ -72,8 +84,6 @@ struct ExploreView: View {
         switch exploreMode {
         case .placeDetail:
             [.fraction(0.4), .large]
-        case .mapItemDetail:
-            [.fraction(0.3), .large]
         case .directions:
             [.fraction(0.45), .large]
         case .navigating:
@@ -89,7 +99,6 @@ struct ExploreView: View {
         ZStack {
             mapLayer
 
-            // Navigation top bar
             if isNavigating {
                 VStack {
                     if let step = directionsService.nextStep {
@@ -100,7 +109,6 @@ struct ExploreView: View {
                 .transition(.opacity)
             }
 
-            // Floating search bar + category chips (visible when exploring or searching)
             if !isNavigating && !isShowingDetail {
                 VStack(spacing: 0) {
                     FloatingSearchBar(onTap: {
@@ -112,6 +120,7 @@ struct ExploreView: View {
                     .padding(.top, DS.Spacing.sm)
 
                     FloatingCategoryChips(
+                        shrines: Shrine.samples,
                         region: currentRegion,
                         selectedCategory: selectedCategory,
                         onCategoryTapped: { category in
@@ -127,7 +136,6 @@ struct ExploreView: View {
                 .transition(.opacity)
             }
 
-            // Map controls
             if !isDirectionsOrNavigating && exploreMode != .searching {
                 VStack {
                     Spacer()
@@ -147,7 +155,6 @@ struct ExploreView: View {
                 }
             }
 
-            // Location denied
             if locationService.authorizationStatus == .denied && !isNavigating {
                 VStack {
                     locationDeniedBanner
@@ -155,7 +162,6 @@ struct ExploreView: View {
                 }
             }
         }
-        // Detail sheet (only for placeDetail / mapItemDetail / navigating)
         .sheet(isPresented: $showDetailSheet) {
             detailSheetContent
                 .presentationDetents(currentDetents, selection: $sheetDetent)
@@ -163,15 +169,10 @@ struct ExploreView: View {
                 .presentationDragIndicator(.visible)
                 .presentationCornerRadius(16)
         }
-        // Search sheet (full screen search)
         .sheet(isPresented: $showSearchSheet) {
             ExploreSearchContent(
                 searchService: searchService,
                 region: currentRegion,
-                onSelectMapItem: { item in
-                    showSearchSheet = false
-                    handleSelectMapItem(item)
-                },
                 onSelectShrine: { shrine in
                     showSearchSheet = false
                     handleSelectShrine(shrine)
@@ -239,7 +240,6 @@ struct ExploreView: View {
         switch exploreMode {
         case .exploring: 200
         case .placeDetail: 260
-        case .mapItemDetail: 200
         case .directions: 280
         default: 100
         }
@@ -250,22 +250,15 @@ struct ExploreView: View {
     @ViewBuilder
     private var detailSheetContent: some View {
         switch exploreMode {
-        case .placeDetail(let shrine):
-            PlaceDetailContent(
-                shrine: shrine,
-                onDirections: { startDirections(to: shrine.coordinate, name: shrine.name, shrine: shrine) },
-                onBack: { dismissDetailSheet() }
-            )
-        case .mapItemDetail(let wrapper):
-            MapItemDetailContent(
-                item: wrapper.item,
-                onDirections: {
-                    if let coord = wrapper.item.placemark.location?.coordinate {
-                        startDirections(to: coord, name: wrapper.item.name, mapItem: wrapper)
-                    }
-                },
-                onBack: { dismissDetailSheet() }
-            )
+        case .placeDetail:
+            if let shrine = detailShrine {
+                PlaceDetailContent(
+                    shrine: shrine,
+                    isEnriching: searchService.isEnriching,
+                    onDirections: { startDirections(to: shrine.coordinate, name: shrine.name, shrine: shrine) },
+                    onBack: { dismissDetailSheet() }
+                )
+            }
         case .directions:
             DirectionsSheet(
                 directionsService: directionsService,
@@ -289,18 +282,10 @@ struct ExploreView: View {
         Map(position: $position) {
             UserAnnotation()
 
+            // Hardcoded shrines (no API cost)
             ForEach(filteredShrines) { shrine in
                 Annotation(shrine.name, coordinate: shrine.coordinate, anchor: .bottom) {
                     shrinePin(for: shrine)
-                }
-            }
-
-            ForEach(searchService.results, id: \.self) { item in
-                if let coord = item.placemark.location?.coordinate,
-                   !isDuplicateOfSample(item) {
-                    Annotation(item.name ?? "", coordinate: coord, anchor: .bottom) {
-                        mapItemPin(for: item)
-                    }
                 }
             }
 
@@ -337,21 +322,39 @@ struct ExploreView: View {
                 UIApplication.shared.open(url)
             }
         } label: {
-            HStack(spacing: DS.Spacing.sm) {
+            HStack(alignment: .top, spacing: DS.Spacing.md) {
                 Image(systemName: "location.slash.fill")
-                    .font(.caption)
+                    .font(.title3)
                     .foregroundStyle(Color.vermillion)
-                Text("Enable location to collect stamps")
-                    .font(.caption.weight(.medium))
-                Spacer()
+                    .padding(.top, 2)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Location Access Needed")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.bodyText)
+                    Text("Stamps are collected when you're within 100m of a shrine. Tap to open Settings and enable location.")
+                        .font(.caption)
+                        .foregroundStyle(Color.subtitleText)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
+
                 Image(systemName: "chevron.right")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.captionText)
+                    .padding(.top, 4)
             }
             .padding(DS.Spacing.md)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+            .overlay(
+                RoundedRectangle(cornerRadius: DS.Radius.md)
+                    .strokeBorder(Color.vermillion.opacity(0.3), lineWidth: 1)
+            )
             .padding(.horizontal, DS.Spacing.lg)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Pins
@@ -366,18 +369,6 @@ struct ExploreView: View {
             isSelected: isSelected,
             isCollected: collectedIds.contains(shrine.stampSlotId),
             onTap: { handleSelectShrine(shrine) }
-        )
-    }
-
-    private func mapItemPin(for item: MKMapItem) -> some View {
-        let isSelected: Bool = {
-            if case .mapItemDetail(let w) = exploreMode { return w.item === item }
-            return false
-        }()
-        return SearchResultPinView(
-            item: item,
-            isSelected: isSelected,
-            onTap: { handleSelectMapItem(item) }
         )
     }
 
@@ -421,23 +412,8 @@ struct ExploreView: View {
                 span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
             ))
         }
-    }
-
-    private func handleSelectMapItem(_ item: MKMapItem) {
-        let wrapper = MapItemWrapper(item: item)
-        withAnimation(.spring(duration: 0.4, bounce: 0)) {
-            exploreMode = .mapItemDetail(wrapper)
-            sheetDetent = .fraction(0.3)
-            showDetailSheet = true
-        }
-        if let coord = item.placemark.location?.coordinate {
-            withAnimation(.spring(duration: 0.4, bounce: 0)) {
-                position = .region(MKCoordinateRegion(
-                    center: coord,
-                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                ))
-            }
-        }
+        // Fetch Google details in background (photos, rating, reviews, hours)
+        searchService.enrich(shrine: shrine)
     }
 
     private func endNavigation() {
@@ -450,10 +426,9 @@ struct ExploreView: View {
         }
     }
 
-    private func startDirections(to destination: CLLocationCoordinate2D, name: String?, shrine: Shrine? = nil, mapItem: MapItemWrapper? = nil) {
+    private func startDirections(to destination: CLLocationCoordinate2D, name: String?, shrine: Shrine? = nil) {
         guard let userCoord = locationService.currentLocation?.coordinate else { return }
         directionsOriginShrine = shrine
-        directionsOriginMapItem = mapItem
         directionsService.calculateAllRoutes(from: userCoord, to: destination, name: name)
 
         withAnimation(.spring(duration: 0.35, bounce: 0)) {
@@ -463,7 +438,6 @@ struct ExploreView: View {
             destinationPulse = true
         }
 
-        // Zoom to show both user and destination
         zoomToRoute(userCoord: userCoord, destCoord: destination)
     }
 
@@ -471,7 +445,6 @@ struct ExploreView: View {
         directionsService.clear()
         destinationPulse = false
 
-        // Go back to the place detail that started directions
         if let shrine = directionsOriginShrine {
             withAnimation(.spring(duration: 0.35, bounce: 0)) {
                 exploreMode = .placeDetail(shrine)
@@ -481,16 +454,10 @@ struct ExploreView: View {
                     span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                 ))
             }
-        } else if let wrapper = directionsOriginMapItem {
-            withAnimation(.spring(duration: 0.35, bounce: 0)) {
-                exploreMode = .mapItemDetail(wrapper)
-                sheetDetent = .fraction(0.3)
-            }
         } else {
             dismissDetailSheet()
         }
         directionsOriginShrine = nil
-        directionsOriginMapItem = nil
     }
 
     private func beginNavigation() {
@@ -502,7 +469,6 @@ struct ExploreView: View {
             sheetDetent = .fraction(0.25)
         }
 
-        // Zoom to show the route
         zoomToRoute()
     }
 
@@ -514,7 +480,6 @@ struct ExploreView: View {
                 position = .rect(padded)
             }
         } else if let u = userCoord, let d = destCoord {
-            // Before route is calculated, show both points
             let minLat = min(u.latitude, d.latitude)
             let maxLat = max(u.latitude, d.latitude)
             let minLon = min(u.longitude, d.longitude)
@@ -543,10 +508,6 @@ struct ExploreView: View {
         syncCollectedIds()
     }
 
-    private func isDuplicateOfSample(_ item: MKMapItem) -> Bool {
-        guard let name = item.name else { return false }
-        return Shrine.samples.contains { name.contains($0.name) }
-    }
 }
 
 // MARK: - Map Style Option

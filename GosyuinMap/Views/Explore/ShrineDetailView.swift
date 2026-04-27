@@ -107,12 +107,12 @@ struct ShrineDetailView: View {
                 Text(shrine.tagline)
                     .font(.title3.weight(.medium))
                     .italic()
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             }
 
             Label(shrine.address, systemImage: "mappin.circle.fill")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
 
             Text(shrine.description)
                 .font(.body)
@@ -128,11 +128,7 @@ struct ShrineDetailView: View {
     private var mustSeeCard: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
             HStack(spacing: DS.Spacing.sm) {
-                Image(systemName: "eye.fill")
-                    .font(.caption)
-                    .foregroundStyle(.white)
-                    .padding(6)
-                    .background(shrine.category.color, in: Circle())
+                IconBadge(icon: "eye.fill", size: 28, color: shrine.category.color, filled: true)
                 Text("Don't Miss")
                     .font(.subheadline.bold())
             }
@@ -197,7 +193,7 @@ struct ShrineDetailView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
                 Text(detail)
                     .font(.subheadline)
                     .foregroundStyle(Color.bodyText)
@@ -215,9 +211,7 @@ struct ShrineDetailView: View {
     private var tipsSection: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
             HStack(spacing: DS.Spacing.sm) {
-                Image(systemName: "lightbulb.fill")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
+                IconBadge(icon: "lightbulb.fill", size: 28, color: .orange, filled: true)
                 Text("Visitor Tips")
                     .font(.headline)
             }
@@ -254,7 +248,7 @@ struct ShrineDetailView: View {
         } else {
             Label("Visit this shrine to collect", systemImage: "mappin.and.ellipse")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
@@ -268,12 +262,17 @@ struct ShrineDetailView: View {
             Annotation(shrine.name, coordinate: shrine.coordinate) {
                 ZStack {
                     Circle()
-                        .fill(Color(.label))
+                        .fill(shrine.category.color)
                         .frame(width: 36, height: 36)
-                        .shadow(color: .black.opacity(0.15), radius: 3)
-                    Text("\u{26E9}")
-                        .font(.system(size: 16))
-                        .foregroundStyle(Color(.systemBackground))
+                        .shadow(color: shrine.category.color.opacity(0.3), radius: 4, y: 2)
+                    Circle()
+                        .strokeBorder(.white, lineWidth: 2)
+                        .frame(width: 36, height: 36)
+                    CategoryIconView(
+                        category: shrine.category,
+                        size: 16,
+                        color: .white
+                    )
                 }
             }
         }
@@ -296,7 +295,7 @@ struct ShrineDetailView: View {
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Color.captionText)
             }
             .cardStyle()
         }

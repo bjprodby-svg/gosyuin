@@ -8,18 +8,18 @@ struct FloatingSearchBar: View {
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(Color(.systemGray))
+                    .foregroundStyle(Color.subtitleText)
                 Text("Search shrines & temples")
                     .font(.system(size: 17))
-                    .foregroundStyle(Color(.placeholderText))
+                    .foregroundStyle(Color.subtitleText)
                 Spacer()
                 Image(systemName: "mic.fill")
                     .font(.system(size: 15))
-                    .foregroundStyle(Color(.systemGray))
+                    .foregroundStyle(Color.subtitleText)
             }
             .padding(.horizontal, 14)
             .frame(height: 48)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
             .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
         }
         .buttonStyle(AppleMapButtonStyle())

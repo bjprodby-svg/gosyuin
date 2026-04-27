@@ -5,13 +5,11 @@ import MapKit
 struct ExploreSearchContent: View {
     @Bindable var searchService: ShrineSearchService
     let region: MKCoordinateRegion
-    let onSelectMapItem: (MKMapItem) -> Void
     let onSelectShrine: (Shrine) -> Void
     let onBack: () -> Void
 
     @Query private var collectedStamps: [CollectedStamp]
     @FocusState private var isFocused: Bool
-    @State private var searchSubmitted = false
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
@@ -26,21 +24,14 @@ struct ExploreSearchContent: View {
             headerBar
             Divider()
 
-            if searchService.isSearching {
-                loadingView
-            } else if !searchService.results.isEmpty {
-                confirmedResultsList
-            } else if !searchService.completions.isEmpty {
-                completionsList
-            } else if searchService.isCompleting {
-                loadingView
+            if !searchService.completions.isEmpty {
+                resultsList
             } else if isQueryEmpty {
                 idleHint
             } else {
                 emptyState
             }
         }
-        .sensoryFeedback(.success, trigger: searchSubmitted)
         .onAppear { isFocused = true }
     }
 
@@ -61,22 +52,13 @@ struct ExploreSearchContent: View {
 
             HStack(spacing: DS.Spacing.sm) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
                     .font(.subheadline.weight(.medium))
 
-                TextField("Search shrines & temples", text: $searchService.queryFragment)
+                TextField("Search by name (English or 日本語)", text: $searchService.queryFragment)
                     .textFieldStyle(.plain)
                     .font(.subheadline)
                     .focused($isFocused)
-                    .onSubmit {
-                        if !searchService.queryFragment.isEmpty {
-                            searchService.search(
-                                query: searchService.queryFragment,
-                                in: region
-                            )
-                            searchSubmitted.toggle()
-                        }
-                    }
 
                 if !isQueryEmpty {
                     Button {
@@ -85,7 +67,7 @@ struct ExploreSearchContent: View {
                         }
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.subtitleText)
                             .frame(width: 36, height: 36)
                             .contentShape(Rectangle())
                     }
@@ -100,83 +82,44 @@ struct ExploreSearchContent: View {
         .padding(.vertical, DS.Spacing.sm)
     }
 
-    // MARK: - Completions
+    // MARK: - Results List (local Shrine.samples)
 
-    private var completionsList: some View {
+    private var resultsList: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(searchService.completions, id: \.self) { completion in
+                ForEach(searchService.completions) { shrine in
                     Button {
-                        searchService.search(completion: completion)
-                        searchSubmitted.toggle()
-                        isFocused = false
+                        onSelectShrine(shrine)
                     } label: {
                         HStack(spacing: DS.Spacing.md) {
-                            Image(systemName: "magnifyingglass")
+                            Image(systemName: shrine.category.icon)
                                 .font(.caption)
-                                .foregroundStyle(.tertiary)
-                                .frame(width: 24)
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(completion.title)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.primary)
-                                if !completion.subtitle.isEmpty {
-                                    Text(completion.subtitle)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-
-                            Spacer()
-                        }
-                        .padding(.horizontal, DS.Spacing.lg)
-                        .padding(.vertical, 10)
-                    }
-                    .buttonStyle(.pressable)
-
-                    Divider()
-                        .padding(.leading, 56)
-                }
-            }
-        }
-    }
-
-    // MARK: - Confirmed Results
-
-    private var confirmedResultsList: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(searchService.results, id: \.self) { item in
-                    Button {
-                        if let shrine = matchingShrine(for: item) {
-                            onSelectShrine(shrine)
-                        } else {
-                            onSelectMapItem(item)
-                        }
-                    } label: {
-                        HStack(spacing: DS.Spacing.md) {
-                            Image(systemName: "mappin.circle.fill")
-                                .font(.title3)
-                                .foregroundStyle(Color.vermillion)
+                                .foregroundStyle(.white)
                                 .frame(width: 32, height: 32)
+                                .background(shrine.category.color, in: RoundedRectangle(cornerRadius: 6))
 
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(item.name ?? "Unknown")
+                                Text(shrine.name)
                                     .font(.subheadline)
                                     .foregroundStyle(.primary)
-                                if let address = item.placemark.title {
-                                    Text(address)
+
+                                HStack(spacing: DS.Spacing.xs) {
+                                    Text(shrine.category.displayName)
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(Color.subtitleText)
+                                    Text("·")
+                                        .font(.caption)
+                                        .foregroundStyle(Color.captionText)
+                                    Text(shrine.address)
+                                        .font(.caption)
+                                        .foregroundStyle(Color.subtitleText)
                                         .lineLimit(1)
                                 }
                             }
 
                             Spacer()
 
-                            if let shrine = matchingShrine(for: item),
-                               collectedIds.contains(shrine.stampSlotId) {
+                            if collectedIds.contains(shrine.stampSlotId) {
                                 Image(systemName: "checkmark.seal.fill")
                                     .font(.caption2)
                                     .foregroundStyle(Color.vermillion)
@@ -194,12 +137,7 @@ struct ExploreSearchContent: View {
         }
     }
 
-    private func matchingShrine(for item: MKMapItem) -> Shrine? {
-        guard let name = item.name else { return nil }
-        return Shrine.samples.first { name.contains($0.name) }
-    }
-
-    // MARK: - Idle / Loading / Empty
+    // MARK: - Idle / Empty
 
     private var idleHint: some View {
         VStack(spacing: DS.Spacing.lg) {
@@ -207,23 +145,17 @@ struct ExploreSearchContent: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 36))
                 .foregroundStyle(Color.placeholderIcon)
-            Text("Search for shrines, temples, or places")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private var loadingView: some View {
-        VStack(spacing: DS.Spacing.md) {
-            Spacer()
-            ProgressView()
-                .controlSize(.regular)
-                .tint(Color.vermillion)
-            Text("Searching...")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            VStack(spacing: DS.Spacing.xs) {
+                Text("Find shrines & temples")
+                    .font(.subheadline.weight(.medium))
+                Text("Search by name in English or Japanese")
+                    .font(.caption)
+                    .foregroundStyle(Color.subtitleText)
+                Text("Try: \"Meiji\", \"金閣寺\", \"稲荷\", \"Kamakura\"")
+                    .font(.caption2)
+                    .foregroundStyle(Color.captionText)
+                    .padding(.top, DS.Spacing.xs)
+            }
             Spacer()
         }
         .frame(maxWidth: .infinity)
@@ -237,10 +169,10 @@ struct ExploreSearchContent: View {
                 .foregroundStyle(Color.placeholderIcon)
             Text("No Results")
                 .font(.headline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.subtitleText)
             Text("Try a different search term")
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Color.captionText)
             Spacer()
         }
     }

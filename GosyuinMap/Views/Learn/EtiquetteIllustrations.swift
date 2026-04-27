@@ -8,22 +8,27 @@ private struct IllustrationFrame<Content: View>: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 20)
+            // Consistent warm beige background (matches pageBackground)
+            // instead of per-article color tint for visual consistency
+            RoundedRectangle(cornerRadius: DS.Radius.lg)
                 .fill(
                     LinearGradient(
-                        colors: [color.opacity(0.08), color.opacity(0.03), Color(.systemBackground).opacity(0.5)],
+                        colors: [
+                            Color.pageBackground.opacity(0.9),
+                            Color.cardBackground,
+                        ],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(color.opacity(0.08), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: DS.Radius.lg)
+                        .strokeBorder(Color.divider, lineWidth: 0.5)
                 )
             content
         }
         .frame(height: 220)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.lg))
     }
 }
 

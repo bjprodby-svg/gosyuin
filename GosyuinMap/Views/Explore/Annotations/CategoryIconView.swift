@@ -35,7 +35,7 @@ struct CategoryIconView: View {
 
     // MARK: - Torii Gate (神社)
     private func drawTorii(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Top beam (kasagi) - curved
         var kasagi = Path()
         kasagi.move(to: p(6, 16, scale))
@@ -57,7 +57,7 @@ struct CategoryIconView: View {
 
     // MARK: - Pagoda (寺)
     private func drawPagoda(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Three-tier roofs
         ctx.fill(triangle(32, 6, 18, 20, 46, 20, scale), with: .color(color))
         ctx.fill(triangle(32, 18, 14, 32, 50, 32, scale), with: .color(color))
@@ -73,7 +73,7 @@ struct CategoryIconView: View {
 
     // MARK: - Grand Shrine (神宮)
     private func drawJingu(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Chigi (crossed beams)
         ctx.stroke(Path { p in
             p.move(to: self.p(22, 4, scale))
@@ -98,7 +98,7 @@ struct CategoryIconView: View {
 
     // MARK: - Taisha (大社)
     private func drawTaisha(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Roof (wide)
         ctx.fill(triangle(32, 10, 4, 38, 60, 38, scale), with: .color(color))
         // Shimenawa (rope)
@@ -117,7 +117,7 @@ struct CategoryIconView: View {
 
     // MARK: - Tenmangu (天満宮) - Plum blossom
     private func drawTenmangu(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // 5 petals of plum blossom
         let centers: [(CGFloat, CGFloat)] = [(32, 10), (24, 16), (40, 16), (26, 24), (38, 24)]
         for (cx, cy) in centers {
@@ -134,7 +134,7 @@ struct CategoryIconView: View {
 
     // MARK: - Inari (稲荷) - Fox
     private func drawInari(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Ears
         ctx.fill(triangle(14, 8, 10, 30, 26, 24, scale), with: .color(color))
         ctx.fill(triangle(50, 8, 54, 30, 38, 24, scale), with: .color(color))
@@ -146,7 +146,7 @@ struct CategoryIconView: View {
 
     // MARK: - Hachimangu (八幡宮) - Dove
     private func drawHachimangu(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Body
         ctx.fill(Path(ellipseIn: r(12, 26, 36, 26, scale)), with: .color(color))
         // Head
@@ -166,7 +166,7 @@ struct CategoryIconView: View {
 
     // MARK: - Daishi (大師) - Lotus
     private func drawDaishi(context: GraphicsContext, scale: CGFloat) {
-        var ctx = context
+        let ctx = context
         // Petals (rotated ellipses)
         for i in 0..<5 {
             let angle = Angle.degrees(Double(i) * 36)

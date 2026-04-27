@@ -1,0 +1,13 @@
+{
+  "images": [
+    {
+      "filename": "stamp_rinnoji.png",
+      "idiom": "universal",
+      "scale": "1x"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

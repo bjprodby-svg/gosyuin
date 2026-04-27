@@ -25,18 +25,13 @@ struct GosyuinBookSpreadView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            // Left page — latest collected
             leftPage
                 .frame(maxWidth: .infinity)
-
-            // Center spine / divider
             spine
-
-            // Right page — next to discover
             rightPage
                 .frame(maxWidth: .infinity)
         }
-        .frame(height: 160)
+        .frame(height: 170)
         .background(bookBackground)
         .clipShape(RoundedRectangle(cornerRadius: DS.Radius.lg))
         .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
@@ -49,10 +44,10 @@ struct GosyuinBookSpreadView: View {
             HStack {
                 Image(systemName: "chevron.left")
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Color.captionText)
                 Text("Latest")
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.subtitleText)
                 Spacer()
             }
 
@@ -71,7 +66,7 @@ struct GosyuinBookSpreadView: View {
 
                 Text(relativeDate(collected.collectedDate))
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Color.captionText)
             } else {
                 emptyPageContent
             }
@@ -86,11 +81,11 @@ struct GosyuinBookSpreadView: View {
             HStack {
                 Spacer()
                 Text("Next")
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.subtitleText)
                 Image(systemName: "chevron.right")
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Color.captionText)
             }
 
             if let next = nextUncollected {
@@ -117,20 +112,23 @@ struct GosyuinBookSpreadView: View {
                             .frame(width: 80, height: 80)
                     }
 
-                    Text("?")
-                        .font(.system(size: 28, weight: .light))
-                        .foregroundStyle(next.color.opacity(0.4))
+                    VStack(spacing: DS.Spacing.xs) {
+                        Image(systemName: "questionmark")
+                            .font(.system(size: 22, weight: .light))
+                            .foregroundStyle(next.color.opacity(0.4))
+                        Image(systemName: next.icon)
+                            .font(.system(size: 10))
+                            .foregroundStyle(next.color.opacity(0.25))
+                    }
                 }
 
                 Text("Discover more...")
                     .font(.system(size: 11, weight: .medium, design: .serif))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.subtitleText)
             } else {
                 // All collected!
-                VStack(spacing: DS.Spacing.xs) {
-                    Image(systemName: "star.fill")
-                        .font(.title2)
-                        .foregroundStyle(Color.vermillion)
+                VStack(spacing: DS.Spacing.sm) {
+                    IconBadge(icon: "star.fill", size: 52, color: .vermillion)
                     Text("Complete!")
                         .font(.system(size: 12, weight: .bold, design: .serif))
                         .foregroundStyle(Color.vermillion)
@@ -161,7 +159,7 @@ struct GosyuinBookSpreadView: View {
                 .frame(width: 8)
 
             Rectangle()
-                .fill(.black.opacity(0.1))
+                .fill(Color.divider)
                 .frame(width: 0.5)
         }
     }
@@ -180,7 +178,7 @@ struct GosyuinBookSpreadView: View {
                 endPoint: .bottom
             )
 
-            // Subtle page fold gradient on left edge
+            // Subtle page fold gradient on edges
             HStack {
                 LinearGradient(
                     colors: [.black.opacity(0.04), .clear],
@@ -202,13 +200,11 @@ struct GosyuinBookSpreadView: View {
     // MARK: - Empty State
 
     private var emptyPageContent: some View {
-        VStack(spacing: DS.Spacing.xs) {
-            Image(systemName: "book.closed")
-                .font(.title2)
-                .foregroundStyle(Color.placeholderIcon)
+        VStack(spacing: DS.Spacing.sm) {
+            IconBadge(icon: "book.closed", size: 52, color: .placeholderIcon)
             Text("Start exploring!")
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Color.captionText)
         }
         .frame(height: 80)
     }
