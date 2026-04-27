@@ -119,6 +119,42 @@ enum DS {
             .shadow(color: color, radius: 4, x: 0, y: 2)
     }
 
+    // MARK: Animation Tokens
+    enum Anim {
+        // Interactive feedback
+        static let press = SwiftUI.Animation.spring(duration: 0.2, bounce: 0.4)
+        static let stamp = SwiftUI.Animation.spring(duration: 0.25, bounce: 0.5)
+        static let select = SwiftUI.Animation.spring(duration: 0.25)
+
+        // Content reveals
+        static let reveal = SwiftUI.Animation.spring(duration: 0.4, bounce: 0.4)
+        static let collect = SwiftUI.Animation.spring(duration: 0.5, bounce: 0.3)
+        static let entrance = SwiftUI.Animation.spring(duration: 0.5, bounce: 0.25)
+        static let celebration = SwiftUI.Animation.spring(duration: 0.6, bounce: 0.3)
+
+        // Map / functional transitions
+        static let mapTransition = SwiftUI.Animation.spring(duration: 0.35, bounce: 0)
+        static let camera = SwiftUI.Animation.spring(duration: 0.6, bounce: 0)
+
+        // Easing curves
+        static let contentAppear = SwiftUI.Animation.easeOut(duration: 0.35)
+        static let pageTransition = SwiftUI.Animation.easeInOut(duration: 0.4)
+        static let ringFade = SwiftUI.Animation.easeOut(duration: 0.8)
+        static let drift = SwiftUI.Animation.easeOut(duration: 1.5)
+
+        // Looping
+        static let pulse = SwiftUI.Animation.easeOut(duration: 1.5)
+            .repeatForever(autoreverses: false)
+        static let orbit = SwiftUI.Animation.easeInOut(duration: 1.8)
+            .repeatForever(autoreverses: true)
+
+        // Stagger helpers
+        static let staggerInterval: Double = 0.08
+        static func stagger(_ index: Int, interval: Double = staggerInterval) -> Double {
+            Double(index) * interval
+        }
+    }
+
     // MARK: Typography Presets
     enum Font {
         /// Page section label: "ACHIEVEMENTS", "MY GOSYUIN JOURNEY"

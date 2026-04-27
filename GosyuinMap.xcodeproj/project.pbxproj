@@ -72,6 +72,7 @@
 		CC0000020000000000000003 /* TipJarCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000003 /* TipJarCard.swift */; };
 		CC0000020000000000000004 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000004 /* SettingsView.swift */; };
 		CC0000020000000000000005 /* TipJarFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000005 /* TipJarFullView.swift */; };
+		DD0000020000000000000001 /* Animation+DS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0000010000000000000001 /* Animation+DS.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,7 @@
 		CC0000010000000000000004 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CC0000010000000000000005 /* TipJarFullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarFullView.swift; sourceTree = "<group>"; };
 		CC0000010000000000000006 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
+		DD0000010000000000000001 /* Animation+DS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+DS.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -323,6 +325,7 @@
 			children = (
 				089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */,
 				089C16B0293AF1B0007B3F21 /* Color+Theme.swift */,
+				DD0000010000000000000001 /* Animation+DS.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -560,6 +563,7 @@
 				CC0000020000000000000003 /* TipJarCard.swift in Sources */,
 				CC0000020000000000000004 /* SettingsView.swift in Sources */,
 				CC0000020000000000000005 /* TipJarFullView.swift in Sources */,
+				DD0000020000000000000001 /* Animation+DS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
