@@ -52,6 +52,7 @@
 		089C18B0293AF1B0007B3F21 /* ExploreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18A0293AF1B0007B3F21 /* ExploreState.swift */; };
 		089C18D0293DF1B0007B3F21 /* DirectionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C0293DF1B0007B3F21 /* DirectionsService.swift */; };
 		089C18D1293DF1B0007B3F21 /* GosyuinStampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C1293DF1B0007B3F21 /* GosyuinStampView.swift */; };
+		A1B2C3D5293DF1B0007B3F21 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */; };
 		089C18D3293DF1B0007B3F21 /* ShrinePinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C3293DF1B0007B3F21 /* ShrinePinView.swift */; };
 		089C18D4293DF1B0007B3F21 /* NavigationETABar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C4293DF1B0007B3F21 /* NavigationETABar.swift */; };
 		089C18D5293DF1B0007B3F21 /* NavigationTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C18C5293DF1B0007B3F21 /* NavigationTopBar.swift */; };
@@ -147,6 +148,7 @@
 		089C18A0293AF1B0007B3F21 /* ExploreState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreState.swift; sourceTree = "<group>"; };
 		089C18C0293DF1B0007B3F21 /* DirectionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsService.swift; sourceTree = "<group>"; };
 		089C18C1293DF1B0007B3F21 /* GosyuinStampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinStampView.swift; sourceTree = "<group>"; };
+		A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 
 		089C18C3293DF1B0007B3F21 /* ShrinePinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrinePinView.swift; sourceTree = "<group>"; };
 		089C18C4293DF1B0007B3F21 /* NavigationETABar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationETABar.swift; sourceTree = "<group>"; };
@@ -267,6 +269,7 @@
 				089C167C293AF1B0007B3F21 /* CollectView.swift */,
 				089C16A2293AF1B0007B3F21 /* StampDetailView.swift */,
 				089C18C1293DF1B0007B3F21 /* GosyuinStampView.swift */,
+				A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */,
 				089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */,
 				089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */,
 				AA0000000000000000000001 /* ShrinePassportView.swift */,
@@ -529,6 +532,7 @@
 				089C18B0293AF1B0007B3F21 /* ExploreState.swift in Sources */,
 				089C18D0293DF1B0007B3F21 /* DirectionsService.swift in Sources */,
 				089C18D1293DF1B0007B3F21 /* GosyuinStampView.swift in Sources */,
+				A1B2C3D5293DF1B0007B3F21 /* BadgeView.swift in Sources */,
 				089C1AA1293DF1B0007B3F21 /* GosyuinArtworkView.swift in Sources */,
 				089C1AA3293DF1B0007B3F21 /* GosyuinBookSpreadView.swift in Sources */,
 				089C18D3293DF1B0007B3F21 /* ShrinePinView.swift in Sources */,
