@@ -49,7 +49,7 @@ struct CollectView: View {
         }
     }
 
-    private var stampsByCategory: [(category: ShrineCategory, stamps: [StampDefinition])] {
+    private static let cachedStampsByCategory: [(category: ShrineCategory, stamps: [StampDefinition])] = {
         let shrineMap = Dictionary(uniqueKeysWithValues: Shrine.samples.map { ($0.stampSlotId, $0) })
         var grouped: [ShrineCategory: [StampDefinition]] = [:]
         for stamp in StampDefinition.all {
@@ -61,6 +61,10 @@ struct CollectView: View {
                 guard let stamps = grouped[cat], !stamps.isEmpty else { return nil }
                 return (category: cat, stamps: stamps)
             }
+    }()
+
+    private var stampsByCategory: [(category: ShrineCategory, stamps: [StampDefinition])] {
+        Self.cachedStampsByCategory
     }
 
     /// All stamps for the current filter, used by the book
@@ -415,22 +419,7 @@ struct CollectView: View {
 
             Spacer()
         }
-        .background(
-            // Washi paper texture
-            ZStack {
-                Color(red: 0.98, green: 0.96, blue: 0.93)
-                // Subtle fiber lines
-                Canvas { context, size in
-                    for i in 0..<8 {
-                        let y = CGFloat(i) * size.height / 8 + CGFloat.random(in: -5...5)
-                        var path = Path()
-                        path.move(to: CGPoint(x: 0, y: y))
-                        path.addLine(to: CGPoint(x: size.width, y: y + CGFloat.random(in: -2...2)))
-                        context.stroke(path, with: .color(Color.black.opacity(0.02)), lineWidth: 0.5)
-                    }
-                }
-            }
-        )
+        .background(Color(red: 0.98, green: 0.96, blue: 0.93))
         // Book spine shadow on leading edge
         .overlay(alignment: .leading) {
             LinearGradient(
