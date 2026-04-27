@@ -79,6 +79,9 @@
 		FF0000020000000000000003 /* badge_unlock.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000003 /* badge_unlock.json */; };
 		FF0000020000000000000004 /* sparkle.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* sparkle.json */; };
 		FF0000020000000000000005 /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000005 /* success.json */; };
+		FF0000020000000000000006 /* fireworks.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000006 /* fireworks.json */; };
+		FF0000020000000000000007 /* shine_ring.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000007 /* shine_ring.json */; };
+		FF0000020000000000000008 /* success_particles.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000008 /* success_particles.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,6 +185,9 @@
 		FF0000010000000000000003 /* badge_unlock.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = badge_unlock.json; sourceTree = "<group>"; };
 		FF0000010000000000000004 /* sparkle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sparkle.json; sourceTree = "<group>"; };
 		FF0000010000000000000005 /* success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = success.json; sourceTree = "<group>"; };
+		FF0000010000000000000006 /* fireworks.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = fireworks.json; sourceTree = "<group>"; };
+		FF0000010000000000000007 /* shine_ring.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shine_ring.json; sourceTree = "<group>"; };
+		FF0000010000000000000008 /* success_particles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = success_particles.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -415,6 +421,9 @@
 				FF0000010000000000000003 /* badge_unlock.json */,
 				FF0000010000000000000004 /* sparkle.json */,
 				FF0000010000000000000005 /* success.json */,
+				FF0000010000000000000006 /* fireworks.json */,
+				FF0000010000000000000007 /* shine_ring.json */,
+				FF0000010000000000000008 /* success_particles.json */,
 			);
 			path = Animations;
 			sourceTree = "<group>";
@@ -524,6 +533,9 @@
 				FF0000020000000000000003 /* badge_unlock.json in Resources */,
 				FF0000020000000000000004 /* sparkle.json in Resources */,
 				FF0000020000000000000005 /* success.json in Resources */,
+				FF0000020000000000000006 /* fireworks.json in Resources */,
+				FF0000020000000000000007 /* shine_ring.json in Resources */,
+				FF0000020000000000000008 /* success_particles.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
