@@ -90,6 +90,7 @@ struct CollectView: View {
 
                     if collectedStamps.isEmpty {
                         emptyStateCard
+                            .transition(.scale(scale: 0.95).combined(with: .opacity))
                     }
 
                     categoryFilter
@@ -132,7 +133,7 @@ struct CollectView: View {
                 StampDetailView(stamp: stamp)
             }
             .onAppear {
-                withAnimation(.spring(duration: 0.5)) { appeared = true }
+                withAnimation(DS.Anim.collect) { appeared = true }
             }
             // Seed removed — use Settings > Debug to add stamps
 
@@ -240,9 +241,11 @@ struct CollectView: View {
             Spacer()
 
             VStack(spacing: 2) {
-                Text("\(collectedStamps.count)")
-                    .font(DS.Font.statMedium)
-                    .foregroundStyle(level.color)
+                AnimatedCounter(
+                    value: collectedStamps.count,
+                    font: DS.Font.statMedium,
+                    color: level.color
+                )
                 Text("/ \(StampDefinition.all.count)")
                     .font(.caption2)
                     .foregroundStyle(Color.captionText)
@@ -299,7 +302,7 @@ struct CollectView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: DS.Spacing.sm) {
                 chipButton(label: "All", isSelected: selectedCategory == nil) {
-                    withAnimation(.spring(duration: 0.25)) {
+                    withAnimation(DS.Anim.select) {
                         selectedCategory = nil
                         currentBookPage = 0
                     }
@@ -312,7 +315,7 @@ struct CollectView: View {
                         isSelected: selectedCategory == cat,
                         color: cat.color
                     ) {
-                        withAnimation(.spring(duration: 0.25)) {
+                        withAnimation(DS.Anim.select) {
                             selectedCategory = selectedCategory == cat ? nil : cat
                             currentBookPage = 0
                         }
@@ -395,18 +398,23 @@ struct CollectView: View {
                     NavigationLink(value: stamp) {
                         GeometryReader { geo in
                             let size = geo.size.width
-                            if collectedIds.contains(stamp.id) {
-                                GosyuinStampView(
-                                    stamp: stamp,
-                                    size: size,
-                                    showDate: false,
-                                    collectedDate: collectedStamps.first { $0.slotId == stamp.id }?.collectedDate
-                                )
-                                .frame(width: size, height: size)
-                            } else {
-                                UncollectedStampCard(stampId: stamp.id)
-                                    .frame(width: size, height: size)
+                            let isCollected = collectedIds.contains(stamp.id)
+                            Group {
+                                if isCollected {
+                                    GosyuinStampView(
+                                        stamp: stamp,
+                                        size: size,
+                                        showDate: false,
+                                        collectedDate: collectedStamps.first { $0.slotId == stamp.id }?.collectedDate
+                                    )
+                                    .transition(.scale(scale: 0.5).combined(with: .opacity))
+                                } else {
+                                    UncollectedStampCard(stampId: stamp.id)
+                                        .transition(.opacity)
+                                }
                             }
+                            .frame(width: size, height: size)
+                            .animation(DS.Anim.reveal, value: isCollected)
                         }
                         .aspectRatio(1, contentMode: .fit)
                     }
@@ -435,7 +443,7 @@ struct CollectView: View {
     private var bookFooter: some View {
         HStack {
             Button {
-                withAnimation(.spring(duration: 0.3)) {
+                withAnimation(DS.Anim.select) {
                     currentBookPage = max(0, currentBookPage - 1)
                 }
             } label: {
@@ -454,7 +462,7 @@ struct CollectView: View {
             Spacer()
 
             Button {
-                withAnimation(.spring(duration: 0.3)) {
+                withAnimation(DS.Anim.select) {
                     currentBookPage = min(bookPages.count - 1, currentBookPage + 1)
                 }
             } label: {
@@ -546,7 +554,7 @@ struct AchievementsDetailView: View {
                                     .font(.subheadline.weight(.semibold))
                             }
 
-                            ForEach(section.achievements) { achievement in
+                            ForEach(Array(section.achievements.enumerated()), id: \.element.id) { index, achievement in
                                 let unlocked = achievement.requirement(collectedIds, Shrine.samples)
                                 HStack(spacing: DS.Spacing.md) {
                                     IconBadge(
@@ -588,6 +596,7 @@ struct AchievementsDetailView: View {
                                     }
                                 }
                                 .padding(.vertical, DS.Spacing.xs)
+                                .appearAnimation(delay: DS.Anim.stagger(index))
                             }
                         }
                         .cardStyle()

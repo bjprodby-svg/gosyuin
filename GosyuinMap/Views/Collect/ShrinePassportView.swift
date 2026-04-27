@@ -56,6 +56,7 @@ struct ShrinePassportView: View {
 
 private struct JourneyCardContent: View {
     let stamps: [CollectedStamp]
+    @State private var trailAppeared = false
 
     private var collectedIds: Set<Int> {
         Set(stamps.map(\.slotId))
@@ -128,6 +129,7 @@ private struct JourneyCardContent: View {
         .background(Color.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: DS.Radius.xl))
         .shadow(color: .black.opacity(0.08), radius: 16, y: 6)
+        .onAppear { trailAppeared = true }
     }
 
     // MARK: - Header
@@ -177,13 +179,14 @@ private struct JourneyCardContent: View {
                         .frame(height: 3)
                         .padding(.vertical, 16)
 
-                    // Filled track
+                    // Filled track (animated)
                     let currentIndex = CGFloat(level.rawValue - 1) + level.progressToNext(current: stamps.count)
                     let filledWidth = min(totalWidth, spacing * currentIndex)
                     Capsule()
                         .fill(level.color.gradient)
-                        .frame(width: filledWidth, height: 3)
+                        .frame(width: trailAppeared ? filledWidth : 0, height: 3)
                         .padding(.vertical, 16)
+                        .animation(DS.Anim.collect.delay(0.2), value: trailAppeared)
 
                     // Milestone nodes
                     ForEach(CollectorLevel.allCases, id: \.rawValue) { lvl in
@@ -230,6 +233,8 @@ private struct JourneyCardContent: View {
                             }
                         }
                         .frame(width: 36)
+                        .scaleEffect(trailAppeared ? 1 : 0)
+                        .animation(DS.Anim.reveal.delay(DS.Anim.stagger(lvl.rawValue - 1, interval: 0.06)), value: trailAppeared)
                         .position(x: x, y: 22)
                     }
                 }
@@ -273,9 +278,11 @@ private struct JourneyCardContent: View {
 
     private var heroStat: some View {
         VStack(spacing: 2) {
-            Text("\(stamps.count)")
-                .font(DS.Font.statHero)
-                .foregroundStyle(Color.vermillion)
+            AnimatedCounter(
+                value: stamps.count,
+                font: DS.Font.statHero,
+                color: .vermillion
+            )
             Text("Shrines Visited")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Color.subtitleText)
