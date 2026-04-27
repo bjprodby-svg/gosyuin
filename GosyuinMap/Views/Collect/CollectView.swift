@@ -8,6 +8,7 @@ struct CollectView: View {
     @State private var locationService = LocationService()
     @State private var selectedCategory: ShrineCategory? = nil
     @State private var showPassport = false
+    @State private var showSettings = false
     @State private var showAllAchievements = false
     @State private var currentBookPage: Int = 0
 
@@ -98,12 +99,21 @@ struct CollectView: View {
             .navigationTitle("Stamp Book")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { showSettings = true } label: {
+                        Image(systemName: "gearshape")
+                            .font(.body.weight(.medium))
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showPassport = true } label: {
                         Image(systemName: "person.text.rectangle")
                             .font(.body.weight(.medium))
                     }
                 }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
             }
             .sheet(isPresented: $showPassport) {
                 ShrinePassportView()

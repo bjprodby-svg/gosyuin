@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import StoreKit
 
 @main
 struct GosyuinMapApp: App {
@@ -29,5 +30,12 @@ struct GosyuinMapApp: App {
             }
         }
         .modelContainer(for: [CollectedStamp.self])
+        .task {
+            for await result in Transaction.updates {
+                if case .verified(let transaction) = result {
+                    await transaction.finish()
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,71 @@
+{
+  "identifier" : "8B7E3A2F-4D1C-4E8B-9F3A-1B2C3D4E5F6A",
+  "type" : "Configuration",
+  "version" : 3,
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "tip_small",
+      "localizations" : [
+        {
+          "description" : "A small offering of gratitude",
+          "displayName" : "Saisen",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "ささやかなお賽銭",
+          "displayName" : "お賽銭",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "com.bjprodby.gosyuinmap.tip.small",
+      "referenceName" : "Saisen Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "tip_medium",
+      "localizations" : [
+        {
+          "description" : "A protective charm for the developer",
+          "displayName" : "Omamori",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "開発者へのお守り",
+          "displayName" : "お守り",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "com.bjprodby.gosyuinmap.tip.medium",
+      "referenceName" : "Omamori Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "tip_large",
+      "localizations" : [
+        {
+          "description" : "A generous goshuin offering",
+          "displayName" : "Goshuin",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "御朱印代",
+          "displayName" : "御朱印",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "com.bjprodby.gosyuinmap.tip.large",
+      "referenceName" : "Goshuin Tip",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "gosyuinmap",
+    "_developerTeamID" : ""
+  }
+}

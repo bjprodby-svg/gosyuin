@@ -18,6 +18,9 @@ struct StampCollectionPrompt: View {
     @State private var showStampArt = false
     @State private var confettiParticles: [ConfettiParticle] = []
     @State private var showConfetti = false
+    @State private var showTipCard = false
+    @State private var tipStore = TipStore()
+    @State private var tipPromptController = TipPromptController()
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
@@ -161,6 +164,16 @@ struct StampCollectionPrompt: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
 
+                // Tip jar card
+                if showTipCard {
+                    TipJarCard(
+                        tipStore: tipStore,
+                        onDismissForever: { tipPromptController.dismissForever() },
+                        onDismiss: { withAnimation { showTipCard = false } }
+                    )
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+
                 Spacer()
 
                 if collected {
@@ -244,6 +257,15 @@ struct StampCollectionPrompt: View {
 
         withAnimation(.spring(duration: 0.5).delay(1.0)) {
             showRewards = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+            if tipPromptController.shouldShowTipPrompt(currentStampCount: postCollectCount) {
+                tipPromptController.recordShown(atStampCount: postCollectCount)
+                withAnimation(.spring(duration: 0.5)) {
+                    showTipCard = true
+                }
+            }
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
