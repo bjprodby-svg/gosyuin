@@ -40,3 +40,15 @@ wave2d-output/
 stamps_gemini/
 prototype/
 scripts/
+
+# Dev-only planning docs
+creative-brief.md
+icon_prompts.md
+*_regen_plan.md
+docs/illustration-samples/
+docs/lottie-refs/
+docs/vendor/
+docs/stamp-images/
+docs/wave*.html
+docs/wave*.md
+docs/*.docx
