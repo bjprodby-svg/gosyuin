@@ -18,7 +18,6 @@ struct LevelDetailView: View {
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
                     levelProgressSection
-                    levelRoadmap
                     achievementsSection
                 }
                 .padding(DS.Spacing.lg)
@@ -48,20 +47,22 @@ struct LevelDetailView: View {
 
     private var levelProgressSection: some View {
         VStack(spacing: DS.Spacing.lg) {
-            ZStack {
-                Circle()
-                    .fill(level.color.gradient)
-                    .frame(width: 80, height: 80)
-                VStack(spacing: 0) {
-                    Text(level.kanji)
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(.white)
-                    Image(systemName: level.icon)
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.8))
-                }
+            // Flat-illustration avatar badge with a kanji chip overlay.
+            ZStack(alignment: .bottomTrailing) {
+                AvatarView(level: level, size: 110)
+                    .shadow(color: level.color.opacity(0.4), radius: 14, y: 4)
+                // Small kanji chip overlay — cultural marker
+                Text(level.kanji)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(level.color, in: Capsule())
+                    .overlay(
+                        Capsule().strokeBorder(.white, lineWidth: 1.5)
+                    )
+                    .offset(x: 6, y: 6)
             }
-            .shadow(color: level.color.opacity(0.4), radius: 12, y: 4)
             .popIn()
 
             VStack(spacing: DS.Spacing.xs) {
@@ -83,14 +84,14 @@ struct LevelDetailView: View {
                     ProgressBar(
                         progress: level.progressToNext(current: stampCount),
                         color: level.color,
-                        height: 8
+                        height: 12
                     )
                     HStack {
                         Text("\(stampCount) stamps")
                             .font(DS.Font.progressLabel)
                             .foregroundStyle(Color.captionText)
                         Spacer()
-                        Text("\(next.threshold) for Lv.\(next.rawValue) \(next.kanji)")
+                        Text("\(next.threshold) → Lv.\(next.rawValue) \(next.title)")
                             .font(DS.Font.progressLabel)
                             .foregroundStyle(level.color)
                     }
@@ -99,61 +100,6 @@ struct LevelDetailView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .cardStyle()
-    }
-
-    // MARK: - Level Roadmap
-
-    private var levelRoadmap: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.md) {
-            SectionHeader(title: "Level Roadmap", icon: "map")
-
-            ForEach(Array(CollectorLevel.allCases.enumerated()), id: \.element.rawValue) { index, lvl in
-                let reached = stampCount >= lvl.threshold
-                let isCurrent = lvl == level
-
-                HStack(spacing: DS.Spacing.md) {
-                    ZStack {
-                        Circle()
-                            .fill(reached ? lvl.color.gradient : Color.progressEmpty.gradient)
-                            .frame(width: 36, height: 36)
-                        if isCurrent {
-                            Circle()
-                                .strokeBorder(.white, lineWidth: 2)
-                                .frame(width: 36, height: 36)
-                        }
-                        Text(lvl.kanji)
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(reached ? .white : Color.captionText)
-                    }
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        HStack(spacing: DS.Spacing.xs) {
-                            Text("Lv.\(lvl.rawValue)")
-                                .font(DS.Font.chipLabel)
-                                .foregroundStyle(reached ? lvl.color : Color.captionText)
-                            Text(lvl.title)
-                                .font(.subheadline.weight(isCurrent ? .bold : .medium))
-                                .foregroundStyle(reached ? Color.bodyText : Color.captionText)
-                        }
-                        Text("\(lvl.threshold) stamps")
-                            .font(.caption)
-                            .foregroundStyle(Color.subtitleText)
-                    }
-
-                    Spacer()
-
-                    if reached {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.body)
-                            .foregroundStyle(lvl.color)
-                    }
-                }
-                .padding(.vertical, DS.Spacing.xs)
-                .opacity(reached ? 1 : 0.5)
-                .appearAnimation(delay: DS.Anim.stagger(index))
-            }
-        }
         .cardStyle()
     }
 

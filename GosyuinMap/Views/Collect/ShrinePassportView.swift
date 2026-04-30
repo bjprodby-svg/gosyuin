@@ -158,7 +158,15 @@ private struct JourneyCardContent: View {
 
             Spacer()
 
-            IconBadge(icon: level.icon, size: 52, color: level.color)
+            ZStack {
+                Circle()
+                    .fill(level.color.opacity(0.12))
+                    .frame(width: 64, height: 64)
+                Circle()
+                    .strokeBorder(level.color.opacity(0.4), lineWidth: 1.5)
+                    .frame(width: 64, height: 64)
+                AvatarView(level: level, size: 52)
+            }
         }
         .padding(.horizontal, DS.Spacing.xl)
     }

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Base steps (charcoal) -->
+  <rect x="256" y="724" width="512" height="28" fill="#2C2622"/>
+  <rect x="300" y="696" width="424" height="28" fill="#2C2622"/>
+  <!-- Pillars (vermilion) -->
+  <rect x="306" y="250" width="84" height="446" fill="#C0392B"/>
+  <rect x="634" y="250" width="84" height="446" fill="#C0392B"/>
+  <!-- Nuki (vermilion) -->
+  <rect x="260" y="360" width="504" height="64" fill="#C0392B"/>
+  <!-- Kasagi curved top (vermilion) -->
+  <path d="M188 252 C300 224 724 224 836 252 L806 320 C692 292 332 292 218 320 Z" fill="#C0392B"/>
+  <!-- Shimaki / kasagi underbeam (vermilion) -->
+  <rect x="224" y="300" width="576" height="58" fill="#C0392B"/>
+</svg>

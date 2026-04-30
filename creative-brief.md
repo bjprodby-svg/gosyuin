@@ -266,25 +266,44 @@ If new achievements are added to `CollectorLevel.swift`, update this brief and g
 
 ---
 
-### 6. Tip Gratitude Cards
+### 6. Tip Jar Tier Cards
 
-**Current state:** Not implemented. Placeholder section — StoreKit tip jar is not yet built.
+**Status (2026-04-27):** Tier icons committed in pixel sprite style (Wave 2A direction).
+StoreKit integration / paywall view is still pending — assets are ready to drop in when wired.
 
-**Generate (when StoreKit lands):**
-| # | Asset Name | Purpose |
+**Committed assets:**
+
+| Tier | Image | Asset path |
 |---|---|---|
-| 1 | `tip_card_arigato` | Basic thank you (washi + 謝 seal) |
-| 2 | `tip_card_omamori` | Omamori-style charm visual |
-| 3 | `tip_card_ema` | Ema tablet with handwritten thanks |
-| 4 | `tip_card_seasonal_sakura` | Spring variant |
-| 5 | `tip_card_seasonal_momiji` | Autumn variant |
+| 賽銭 ($0.99) | Pixel 5円玉 (square hole, gold, 五円 text) | `Assets.xcassets/TipCards/tip_saisen.imageset/card.png` |
+| お守り ($2.99) | Pixel red omamori (sakura pattern, white cord) | `Assets.xcassets/TipCards/tip_omamori.imageset/card.png` |
+| 御朱印 ($4.99) | Pixel open gosyuin-cho (red 朱印 stamp + brush strokes) | `Assets.xcassets/TipCards/tip_goshuin.imageset/card.png` |
 
-**Spec:**
-- 1080×1920 (vertical share) + 1080×1080 (square share) dual exports
-- Style A flat, with one Style C seal accent to keep brand link
-- Leave a 300×400 clear area for SwiftUI-rendered thanks copy (user name, amount, date) — don't bake copy in
+Each PNG is 724×724, master grid is `wave2a-output/tip_pixel_grid.png` (2172×724 horizontal 3-panel).
 
-**Placement:** `Assets.xcassets/TipCards/`
+**Style decision:** A (pixel sprite, 16-bit JRPG) over B (premium 3D-leaning) and C (rich flat washi + gold foil).
+Rationale: matches `AvatarView` aesthetic — paid donations stay in the "game layer" rather than introducing a
+second visual world. C variant kept in reserve at `wave2a-output/` for a possible "elegant theme" toggle.
+
+**SwiftUI integration:**
+```swift
+Image("tip_saisen")
+    .resizable()
+    .interpolation(.none)  // REQUIRED — preserves pixel-art crispness
+    .scaledToFit()
+    .frame(width: 64, height: 64)
+```
+
+`.interpolation(.none)` is mandatory; same rule as `AvatarView`. Kanji labels (賽銭 / お守り / 御朱印)
+are rendered via SwiftUI `Text`, NOT baked into the image. Future work: `TipJarCard` / `TipJarFullView`
+SwiftUI components + StoreKit hookup.
+
+**Placement:** `Assets.xcassets/TipCards/` (folder reference — no pbxproj edit needed).
+
+**Future deferred work** (share cards for received donations — not in MVP):
+- `tip_card_share_*.imageset/` for vertical/square share images (1080×1920 + 1080×1080)
+- Style A flat with Style C seal accent
+- 300×400 clear area for SwiftUI-rendered thanks copy
 
 ---
 

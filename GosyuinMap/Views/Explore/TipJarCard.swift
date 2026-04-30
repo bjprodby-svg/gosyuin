@@ -11,10 +11,10 @@ struct TipJarCard: View {
     @State private var purchasing = false
     @State private var appeared = false
 
-    private let tipMeta: [(id: String, kanji: String, label: String, icon: String, fallbackPrice: String)] = [
-        ("com.bjprodby.gosyuinmap.tip.small", "賽銭", "Saisen", "yensign.circle", "$0.99"),
-        ("com.bjprodby.gosyuinmap.tip.medium", "お守り", "Omamori", "shield.checkered", "$2.99"),
-        ("com.bjprodby.gosyuinmap.tip.large", "御朱印", "Goshuin", "seal.fill", "$4.99"),
+    private let tipMeta: [(id: String, image: String, label: String, fallbackPrice: String)] = [
+        ("com.bjprodby.gosyuinmap.tip.small", "tip_saisen", "Saisen", "$0.99"),
+        ("com.bjprodby.gosyuinmap.tip.medium", "tip_omamori", "Omamori", "$2.99"),
+        ("com.bjprodby.gosyuinmap.tip.large", "tip_goshuin", "Goshuin", "$4.99"),
     ]
 
     var body: some View {
@@ -25,8 +25,11 @@ struct TipJarCard: View {
                 tipContent
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.xl))
-        .shadow(color: Color.kincha.opacity(0.12), radius: 12, y: 4)
+        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .overlay(
+            RoundedRectangle(cornerRadius: DS.Radius.lg)
+                .strokeBorder(Color.divider, lineWidth: 0.5)
+        )
         .onChange(of: tipStore.thankYouTip) { _, newValue in
             if newValue != nil {
                 withAnimation(DS.Anim.celebration) {
@@ -45,64 +48,55 @@ struct TipJarCard: View {
 
     private var tipContent: some View {
         VStack(spacing: 0) {
-            // Header with gradient
-            VStack(spacing: DS.Spacing.sm) {
-                Image(systemName: "heart.circle.fill")
-                    .font(.system(size: 36))
-                    .foregroundStyle(.white)
-                    .shadow(color: .white.opacity(0.3), radius: 8)
-
+            // Minimal header
+            VStack(spacing: 4) {
                 Text("Enjoying GosyuinMap?")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-
-                Text("Your support helps keep this project alive.")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.bodyText)
+                Text("Your support keeps this project alive.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.8))
-                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.subtitleText)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, DS.Spacing.xl)
-            .padding(.horizontal, DS.Spacing.lg)
-            .background(
-                LinearGradient(
-                    colors: [Color.kincha, Color.kincha.opacity(0.8)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+            .padding(.top, DS.Spacing.lg)
+            .padding(.bottom, DS.Spacing.md)
 
-            // Tip buttons
-            VStack(spacing: DS.Spacing.sm) {
-                if tipStore.isLoading {
-                    ProgressView()
-                        .frame(height: 80)
-                } else {
+            Divider()
+
+            // Tip rows
+            if tipStore.isLoading {
+                ProgressView()
+                    .frame(height: 80)
+            } else {
+                VStack(spacing: 0) {
                     ForEach(Array(tipMeta.enumerated()), id: \.element.id) { index, meta in
                         let product = tipStore.tips.first { $0.id == meta.id }
                         tipRow(
-                            kanji: meta.kanji,
+                            image: meta.image,
                             label: meta.label,
-                            icon: meta.icon,
                             price: product?.displayPrice ?? meta.fallbackPrice,
                             product: product,
                             index: index
                         )
+                        if index < tipMeta.count - 1 {
+                            Divider()
+                                .padding(.leading, 56)
+                        }
                     }
                 }
-
-                Button {
-                    onDismissForever()
-                    onDismiss()
-                } label: {
-                    Text("Don't show again")
-                        .font(.caption2)
-                        .foregroundStyle(Color.captionText)
-                }
-                .padding(.top, DS.Spacing.xs)
             }
-            .padding(DS.Spacing.lg)
-            .background(Color.cardBackground)
+
+            Divider()
+
+            Button {
+                onDismissForever()
+                onDismiss()
+            } label: {
+                Text("Don't show again")
+                    .font(.caption2)
+                    .foregroundStyle(Color.captionText)
+            }
+            .padding(.vertical, DS.Spacing.md)
         }
         .task {
             await tipStore.loadProducts()
@@ -111,7 +105,7 @@ struct TipJarCard: View {
 
     // MARK: - Tip Row
 
-    private func tipRow(kanji: String, label: String, icon: String, price: String, product: Product?, index: Int) -> some View {
+    private func tipRow(image: String, label: String, price: String, product: Product?, index: Int) -> some View {
         Button {
             guard !purchasing, let product else { return }
             purchasing = true
@@ -121,53 +115,32 @@ struct TipJarCard: View {
             }
         } label: {
             HStack(spacing: DS.Spacing.md) {
-                // Kanji badge
-                ZStack {
-                    Circle()
-                        .fill(Color.kincha.opacity(0.1))
-                        .frame(width: 44, height: 44)
-                    Text(kanji)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(Color.kincha)
-                }
+                Image(image)
+                    .resizable()
+                    .interpolation(.none)
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(label)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.bodyText)
-                    Text(tipDescription(for: label))
-                        .font(.caption2)
-                        .foregroundStyle(Color.subtitleText)
-                        .lineLimit(1)
-                }
+                Text(label)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.bodyText)
 
                 Spacer()
 
                 Text(price)
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, DS.Spacing.md)
-                    .padding(.vertical, DS.Spacing.sm)
-                    .background(Color.kincha.gradient, in: Capsule())
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.kincha)
             }
-            .padding(DS.Spacing.md)
-            .background(Color.kincha.opacity(0.04), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.md)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.pressable)
         .disabled(purchasing || product == nil)
         .opacity(purchasing ? 0.6 : 1)
         .opacity(appeared ? 1 : 0)
-        .offset(y: appeared ? 0 : 10)
-        .animation(DS.Anim.entrance.delay(DS.Anim.stagger(index, interval: 0.1)), value: appeared)
-    }
-
-    private func tipDescription(for label: String) -> String {
-        switch label {
-        case "Saisen": "A small offering of gratitude"
-        case "Omamori": "A protective charm for the dev"
-        case "Goshuin": "A generous goshuin offering"
-        default: ""
-        }
+        .offset(y: appeared ? 0 : 8)
+        .animation(DS.Anim.entrance.delay(DS.Anim.stagger(index, interval: 0.08)), value: appeared)
     }
 
     // MARK: - Thank You
@@ -198,8 +171,7 @@ struct TipJarCard: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, DS.Spacing.xxl)
         .padding(.horizontal, DS.Spacing.lg)
-        .background(Color.cardBackground)
-        .transition(.scale(scale: 0.8).combined(with: .opacity))
+        .transition(.scale(scale: 0.9).combined(with: .opacity))
     }
 }
 

@@ -84,6 +84,25 @@ enum CollectorLevel: Int, CaseIterable {
         }
     }
 
+    /// Asset name in `Assets.xcassets/Avatars/` (without extension).
+    /// Wave 2D: ChatGPT-generated illustrative avatars (sunrise → crane).
+    var avatarAssetName: String {
+        switch self {
+        case .hatsumairi: "avatar_lv01_sunrise"
+        case .mairi:      "avatar_lv02_leaf"
+        case .meguri:     "avatar_lv03_footprints"
+        case .henro:      "avatar_lv04_torii"
+        case .tabibito:   "avatar_lv05_compass"
+        case .yamabushi:  "avatar_lv06_mountain"
+        case .sendatsu:   "avatar_lv07_lantern"
+        case .gyoja:      "avatar_lv08_bell"
+        case .nushi:      "avatar_lv09_seal"
+        case .daigongen:  "avatar_lv10_crown"
+        case .myojin:     "avatar_lv11_sunburst"
+        case .shinshi:    "avatar_lv12_crane"
+        }
+    }
+
     var color: Color {
         switch self {
         case .hatsumairi: Color(red: 0.60, green: 0.58, blue: 0.55)

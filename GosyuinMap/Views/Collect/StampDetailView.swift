@@ -6,6 +6,7 @@ struct StampDetailView: View {
     let stamp: StampDefinition
     @Query private var collectedStamps: [CollectedStamp]
     @State private var showingMap = false
+    @State private var showingShrine = false
     @State private var appeared = false
 
     private var collectedStamp: CollectedStamp? {
@@ -39,6 +40,18 @@ struct StampDetailView: View {
         .sheet(isPresented: $showingMap) {
             if let shrine {
                 shrineMapSheet(shrine)
+            }
+        }
+        .sheet(isPresented: $showingShrine) {
+            if let shrine {
+                NavigationStack {
+                    ShrineDetailView(shrine: shrine)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button("Close") { showingShrine = false }
+                            }
+                        }
+                }
             }
         }
         .onAppear {
@@ -79,21 +92,39 @@ struct StampDetailView: View {
             if let shrine {
                 infoRow(icon: "mappin.circle.fill", label: shrine.name, value: shrine.address)
 
-                Button {
-                    showingMap = true
-                } label: {
-                    HStack(spacing: DS.Spacing.sm) {
-                        Image(systemName: "map.fill")
-                            .font(.subheadline)
-                        Text("View Location")
+                HStack(spacing: DS.Spacing.sm) {
+                    Button {
+                        showingShrine = true
+                    } label: {
+                        HStack(spacing: DS.Spacing.xs) {
+                            Image(systemName: "info.circle.fill")
+                                .font(.subheadline)
+                            Text("Shrine Details")
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(DS.Spacing.md)
+                        .background(stamp.color, in: RoundedRectangle(cornerRadius: DS.Radius.md))
                     }
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(stamp.color)
-                    .frame(maxWidth: .infinity)
-                    .padding(DS.Spacing.md)
-                    .background(stamp.color.opacity(0.1), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                    .buttonStyle(.pressable)
+
+                    Button {
+                        showingMap = true
+                    } label: {
+                        HStack(spacing: DS.Spacing.xs) {
+                            Image(systemName: "map.fill")
+                                .font(.subheadline)
+                            Text("Map")
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(stamp.color)
+                        .frame(maxWidth: .infinity)
+                        .padding(DS.Spacing.md)
+                        .background(stamp.color.opacity(0.12), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+                    }
+                    .buttonStyle(.pressable)
                 }
-                .buttonStyle(.pressable)
             }
         }
     }

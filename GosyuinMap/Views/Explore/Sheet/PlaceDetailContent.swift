@@ -120,10 +120,19 @@ struct PlaceDetailContent: View {
             }
 
             if !shrine.tagline.isEmpty {
-                Text(shrine.tagline)
-                    .font(.subheadline)
-                    .foregroundStyle(Color.subtitleText)
-                    .italic()
+                HStack(spacing: 0) {
+                    RoundedRectangle(cornerRadius: 1.5)
+                        .fill(Color.vermillion)
+                        .frame(width: 3, height: 22)
+                    Text(shrine.tagline)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(Color.bodyText)
+                        .italic()
+                        .padding(.leading, DS.Spacing.sm)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.vertical, 2)
             } else {
                 Text(shrine.address)
                     .font(.subheadline)

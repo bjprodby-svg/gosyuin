@@ -26,7 +26,7 @@ struct LearnListView: View {
 
                     ForEach(Array(GuideArticle.allArticles.enumerated()), id: \.element.id) { index, article in
                         NavigationLink(value: article) {
-                            ArticleCard(article: article, index: index + 1)
+                            ArticleCard(article: article)
                         }
                         .buttonStyle(.pressable)
                         .opacity(appeared ? 1 : 0)
@@ -39,6 +39,7 @@ struct LearnListView: View {
                     }
                 }
                 .padding(DS.Spacing.lg)
+                .padding(.bottom, DS.Spacing.xxl)
             }
             .background(Color.pageBackground)
             .navigationTitle("Shrine Guide")
@@ -54,25 +55,21 @@ struct LearnListView: View {
 
 private struct ArticleCard: View {
     let article: GuideArticle
-    let index: Int
+
+    /// Article ids whose icons ship with their own colors (multi-tone SVGs).
+    /// These render in `.original` mode; everything else stays template-tinted to bodyText.
+    private static let originalColorIcons: Set<String> = ["sanpai", "temple"]
 
     var body: some View {
         HStack(spacing: DS.Spacing.lg) {
-            // Icon badge — consistent with the rest of the app
-            IconBadge(icon: article.icon, size: 52, color: article.color, filled: true)
-                .shadow(color: article.color.opacity(0.3), radius: 4, y: 2)
+            // Bare silhouette icon — no badge, no fill, lets the artwork speak for itself
+            iconImage
+                .frame(width: 44, height: 44)
 
             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                HStack(spacing: DS.Spacing.xs) {
-                    Text("\(index)")
-                        .font(DS.Font.chipLabel)
-                        .foregroundStyle(.white)
-                        .frame(width: 18, height: 18)
-                        .background(article.color.opacity(0.7), in: Circle())
-                    Text(article.title)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-                }
+                Text(article.title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
                 Text(article.subtitle)
                     .font(.caption)
                     .foregroundStyle(Color.subtitleText)
@@ -87,6 +84,22 @@ private struct ArticleCard: View {
                 .foregroundStyle(Color.captionText)
         }
         .cardStyle()
+    }
+
+    @ViewBuilder
+    private var iconImage: some View {
+        if Self.originalColorIcons.contains(article.id) {
+            Image(article.icon)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } else {
+            Image(article.icon)
+                .renderingMode(.template)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundStyle(Color.bodyText)
+        }
     }
 }
 

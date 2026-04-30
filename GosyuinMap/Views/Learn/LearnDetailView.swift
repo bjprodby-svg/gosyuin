@@ -1,5 +1,19 @@
 import SwiftUI
 
+/// Renders a Learn-tab illustration from `Assets.xcassets/LearnIllustrations/`.
+/// Replaces the legacy Canvas-drawn `XxxIllustration` views with pre-rendered
+/// flat-vector PNG assets (Wave 2D, 21 illustrations).
+struct LearnIllustration: View {
+    let name: String
+
+    var body: some View {
+        Image(name)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxHeight: 220)
+    }
+}
+
 struct LearnDetailView: View {
     let article: GuideArticle
     @State private var appeared = false
@@ -10,6 +24,7 @@ struct LearnDetailView: View {
                 content
             }
             .padding(DS.Spacing.lg)
+            .padding(.bottom, DS.Spacing.xxl)
         }
         .background(Color.pageBackground)
         .navigationTitle(article.title)
@@ -112,42 +127,42 @@ struct LearnDetailView: View {
 
             illustratedStep(
                 number: 1, total: totalSteps, title: "Approach & Bow at the Torii", subtitle: "鳥居をくぐる",
-                illustration: AnyView(ToriiGateIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_torii_bow")),
                 description: "Bow slightly before passing through the torii gate. Walk along the sides of the path (参道), not the center — the center is reserved for the kami.",
                 delay: 0
             )
 
             illustratedStep(
                 number: 2, total: totalSteps, title: "Toss a Coin (Osaisen)", subtitle: "お賽銭",
-                illustration: AnyView(CoinOfferingIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_coin_offering")),
                 description: "Toss a coin gently into the offering box. A 5-yen coin (五円 = ご縁, meaning 'good connection') is considered auspicious. The amount doesn't matter — it's a gesture of gratitude.",
                 delay: 0.08
             )
 
             illustratedStep(
                 number: 3, total: totalSteps, title: "Ring the Bell", subtitle: "鈴を鳴らす",
-                illustration: nil,
+                illustration: AnyView(LearnIllustration(name: "learn_bell_rope")),
                 description: "If there is a bell rope (鈴緒), ring it 2-3 times to announce your presence to the kami. Grip the rope firmly and shake.",
                 delay: 0.12
             )
 
             illustratedStep(
                 number: 4, total: totalSteps, title: "Two Deep Bows", subtitle: "二礼（にれい）",
-                illustration: AnyView(BowIllustration(color: article.color, bowCount: 2)),
+                illustration: AnyView(LearnIllustration(name: "learn_bow_twice")),
                 description: "Bow deeply twice at approximately 90 degrees with your hands at your sides. These bows express deep respect to the deity.",
                 delay: 0.16
             )
 
             illustratedStep(
                 number: 5, total: totalSteps, title: "Two Claps", subtitle: "二拍手（にはくしゅ）",
-                illustration: AnyView(ClapIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_clap_twice")),
                 description: "Bring your hands together at chest height, offset your right hand slightly below your left. Clap twice firmly to summon the kami's attention. Keep your hands pressed together and pray silently.",
                 delay: 0.20
             )
 
             illustratedStep(
                 number: 6, total: totalSteps, title: "One Final Bow", subtitle: "一礼（いちれい）",
-                illustration: AnyView(PrayerHandsIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_shrine_final_bow")),
                 description: "Lower your hands and bow deeply once more to complete the worship.",
                 delay: 0.24
             )
@@ -167,42 +182,42 @@ struct LearnDetailView: View {
 
             illustratedStep(
                 number: 1, total: totalSteps, title: "Bow at the Gate", subtitle: "山門で一礼",
-                illustration: nil,
+                illustration: AnyView(LearnIllustration(name: "learn_temple_bow_at_gate")),
                 description: "Bow once when passing through the temple gate (山門/sanmon). Step over the threshold with your left foot — avoid stepping on it.",
                 delay: 0
             )
 
             illustratedStep(
                 number: 2, total: totalSteps, title: "Incense (Optional)", subtitle: "お香・線香",
-                illustration: AnyView(IncenseIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_incense")),
                 description: "If there's an incense burner (常香炉), light incense and fan the smoke toward yourself — it's believed to have healing properties. Never light your incense from someone else's burning incense, as this is said to transfer their impurities.",
                 delay: 0.08
             )
 
             illustratedStep(
                 number: 3, total: totalSteps, title: "Toss a Coin", subtitle: "お賽銭を入れる",
-                illustration: AnyView(CoinOfferingIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_temple_coin")),
                 description: "Gently toss a coin into the offering box, just like at shrines.",
                 delay: 0.12
             )
 
             illustratedStep(
                 number: 4, total: totalSteps, title: "Ring the Bell", subtitle: "鰐口を鳴らす",
-                illustration: nil,
+                illustration: AnyView(LearnIllustration(name: "learn_temple_bell")),
                 description: "If available, ring the bell (鰐口/waniguchi) or strike the gong before praying.",
                 delay: 0.16
             )
 
             illustratedStep(
                 number: 5, total: totalSteps, title: "Press Palms Together & Pray", subtitle: "合掌して祈る",
-                illustration: AnyView(PrayerHandsIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_prayer_hands")),
                 description: "Place your palms together (合掌/gasshō) at chest level, close your eyes, and bow slightly while praying silently. Do NOT clap — this is the crucial difference from shrines.",
                 delay: 0.20
             )
 
             illustratedStep(
                 number: 6, total: totalSteps, title: "Bow Once", subtitle: "一礼",
-                illustration: nil,
+                illustration: AnyView(LearnIllustration(name: "learn_temple_bow_out")),
                 description: "Finish with a single bow and quietly step back.",
                 delay: 0.24
             )
@@ -222,42 +237,42 @@ struct LearnDetailView: View {
 
             illustratedStep(
                 number: 1, total: totalSteps, title: "Pick Up the Ladle", subtitle: "柄杓を持つ",
-                illustration: AnyView(TemizuIllustration(color: article.color, step: 1)),
+                illustration: AnyView(LearnIllustration(name: "learn_temizu_1")),
                 description: "Approach the temizuya (手水舎) and bow slightly. Hold the ladle (柄杓/hishaku) in your right hand and scoop a full ladle of water.",
                 delay: 0
             )
 
             illustratedStep(
                 number: 2, total: totalSteps, title: "Wash Left Hand", subtitle: "左手を洗う",
-                illustration: AnyView(TemizuIllustration(color: article.color, step: 1)),
+                illustration: AnyView(LearnIllustration(name: "learn_temizu_2")),
                 description: "Pour water over your left hand to purify it. The left hand is washed first as it is considered closer to the heart.",
                 delay: 0.07
             )
 
             illustratedStep(
                 number: 3, total: totalSteps, title: "Wash Right Hand", subtitle: "右手を洗う",
-                illustration: AnyView(TemizuIllustration(color: article.color, step: 2)),
+                illustration: AnyView(LearnIllustration(name: "learn_temizu_3")),
                 description: "Switch the ladle to your left hand and pour water over your right hand.",
                 delay: 0.14
             )
 
             illustratedStep(
                 number: 4, total: totalSteps, title: "Rinse Mouth", subtitle: "口をすすぐ",
-                illustration: AnyView(TemizuIllustration(color: article.color, step: 3)),
+                illustration: AnyView(LearnIllustration(name: "learn_temizu_4")),
                 description: "Switch back to your right hand. Pour a small amount of water into your cupped left palm. Use that water to rinse your mouth — do NOT drink from the ladle. Spit the water discreetly, covering your mouth.",
                 delay: 0.21
             )
 
             illustratedStep(
                 number: 5, total: totalSteps, title: "Rinse Left Hand Again", subtitle: "左手をもう一度",
-                illustration: AnyView(TemizuIllustration(color: article.color, step: 4)),
+                illustration: AnyView(LearnIllustration(name: "learn_temizu_2")),  // reuse "wash left hand"
                 description: "Rinse your left hand one more time to cleanse it after touching your mouth.",
                 delay: 0.28
             )
 
             illustratedStep(
                 number: 6, total: totalSteps, title: "Purify the Ladle", subtitle: "柄杓を清める",
-                illustration: AnyView(TemizuIllustration(color: article.color, step: 5)),
+                illustration: AnyView(LearnIllustration(name: "learn_temizu_5")),
                 description: "Tilt the ladle vertically so the remaining water runs down the handle, cleansing it for the next person. Return the ladle face-down on the rack.",
                 delay: 0.35
             )
@@ -277,35 +292,35 @@ struct LearnDetailView: View {
 
             illustratedStep(
                 number: 1, total: totalSteps, title: "Get a Proper Goshuincho", subtitle: "御朱印帳を用意する",
-                illustration: AnyView(GoshuinchoIllustration(color: article.color, step: 1)),
+                illustration: AnyView(LearnIllustration(name: "learn_gosyuin_buy_book")),
                 description: "Purchase a goshuincho (御朱印帳) — a special accordion-fold book. Many shrines/temples sell their own unique designs (¥1,000-¥3,000). Regular notebooks are not appropriate.",
                 delay: 0
             )
 
             illustratedStep(
                 number: 2, total: totalSteps, title: "Worship First", subtitle: "先にお参りをする",
-                illustration: AnyView(GoshuinchoIllustration(color: article.color, step: 2)),
+                illustration: AnyView(LearnIllustration(name: "learn_gosyuin_1")),
                 description: "Complete your prayers at the main hall before visiting the goshuin counter. At busy locations, you may drop off your book first and pick it up after praying.",
                 delay: 0.08
             )
 
             illustratedStep(
                 number: 3, total: totalSteps, title: "Request at the Counter", subtitle: "御朱印所で依頼する",
-                illustration: AnyView(GoshuinchoIllustration(color: article.color, step: 3)),
+                illustration: AnyView(LearnIllustration(name: "learn_gosyuin_2")),
                 description: "Go to the goshuin counter (御朱印所 or 授与所). Open your book to the correct page and say: 「御朱印をお願いします」(Goshuin o onegai shimasu). Do not rush or peek while the calligrapher is writing.",
                 delay: 0.16
             )
 
             illustratedStep(
                 number: 4, total: totalSteps, title: "Pay the Offering", subtitle: "初穂料・志納金を納める",
-                illustration: AnyView(GoshuinchoIllustration(color: article.color, step: 4)),
+                illustration: AnyView(LearnIllustration(name: "learn_gosyuin_3")),  // hand book + offering
                 description: "Standard fee: ¥300-¥500. Special/seasonal editions: ¥1,000-¥1,500. Have exact change ready — shrines/temples are often not equipped to make change.",
                 delay: 0.24
             )
 
             illustratedStep(
                 number: 5, total: totalSteps, title: "Receive with Gratitude", subtitle: "感謝を込めて受け取る",
-                illustration: AnyView(GoshuinchoIllustration(color: article.color, step: 5)),
+                illustration: AnyView(LearnIllustration(name: "learn_gosyuin_5")),
                 description: "Accept your book back with both hands and express gratitude. Treat your goshuincho as a sacred object — store it respectfully, not tossed in a bag.",
                 delay: 0.32
             )
@@ -325,28 +340,28 @@ struct LearnDetailView: View {
         return VStack(spacing: DS.Spacing.xxl) {
             illustratedStep(
                 number: 1, total: totalSteps, title: "Pay the Fee", subtitle: "代金を納める",
-                illustration: AnyView(CoinOfferingIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_omikuji_pay")),
                 description: "Pay the omikuji fee (usually ¥100-¥200). At some shrines you'll shake a cylindrical box and draw a numbered stick; at others you simply pick a folded paper.",
                 delay: 0
             )
 
             illustratedStep(
                 number: 2, total: totalSteps, title: "Draw with Sincerity", subtitle: "心を込めて引く",
-                illustration: nil,
+                illustration: AnyView(LearnIllustration(name: "learn_omikuji")),
                 description: "Hold your wish or question in your heart as you draw your fortune. Some say you should think of a specific question for a more meaningful reading.",
                 delay: 0.1
             )
 
             illustratedStep(
                 number: 3, total: totalSteps, title: "Read the Full Fortune", subtitle: "隅々まで読む",
-                illustration: AnyView(OmikujiIllustration(color: article.color)),
+                illustration: AnyView(LearnIllustration(name: "learn_omikuji_read")),
                 description: "Don't just check the overall blessing level — read the detailed predictions for health, relationships, business, travel, lost items, and more. The advice sections are often the most valuable part.",
                 delay: 0.2
             )
 
             illustratedStep(
                 number: 4, total: totalSteps, title: "Tie or Keep", subtitle: "結ぶか持ち帰るか",
-                illustration: nil,
+                illustration: AnyView(LearnIllustration(name: "learn_omikuji_tie_or_keep")),
                 description: "Bad fortunes: tie them at the designated rack (結び所) to leave the bad luck behind. Good fortunes: you may keep them as a lucky charm or tie them as an offering to the kami.",
                 delay: 0.3
             )
@@ -476,6 +491,19 @@ struct LearnDetailView: View {
                 }
                 Spacer()
             }
+            // Type illustration — only renders when a matching asset exists.
+            // Original Wave 2D realistic paintings were removed because their tone
+            // didn't match the rest of the Learn tab (flat watercolor anime style).
+            // Replacement assets in matching style will be re-added under the same
+            // `type_<category>` names; this conditional brings them back automatically.
+            if UIImage(named: "type_\(category.rawValue)") != nil {
+                Image("type_\(category.rawValue)")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: 200)
+                    .padding(.vertical, DS.Spacing.sm)
+            }
             Text(description)
                 .font(.subheadline).foregroundStyle(Color.subtitleText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -511,14 +539,12 @@ struct LearnDetailView: View {
             }
 
             if let illustration {
+                // Illustration assets are PNG with transparent background — let the card
+                // background show through naturally without an extra colored rectangle.
                 illustration
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 100)
                     .padding(.vertical, DS.Spacing.sm)
-                    .background(
-                        Color.pageBackground.opacity(0.8),
-                        in: RoundedRectangle(cornerRadius: DS.Radius.md)
-                    )
             }
 
             Text(description)

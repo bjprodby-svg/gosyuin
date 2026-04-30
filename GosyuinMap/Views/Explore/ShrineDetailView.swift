@@ -104,10 +104,19 @@ struct ShrineDetailView: View {
             }
 
             if !shrine.tagline.isEmpty {
-                Text(shrine.tagline)
-                    .font(.title3.weight(.medium))
-                    .italic()
-                    .foregroundStyle(Color.subtitleText)
+                HStack(spacing: 0) {
+                    RoundedRectangle(cornerRadius: 1.5)
+                        .fill(Color.vermillion)
+                        .frame(width: 3, height: 28)
+                    Text(shrine.tagline)
+                        .font(.title3.weight(.medium))
+                        .italic()
+                        .foregroundStyle(Color.bodyText)
+                        .padding(.leading, DS.Spacing.sm)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.vertical, 2)
             }
 
             Label(shrine.address, systemImage: "mappin.circle.fill")

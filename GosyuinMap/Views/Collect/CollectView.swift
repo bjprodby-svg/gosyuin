@@ -98,6 +98,7 @@ struct CollectView: View {
                     gosyuinBook
                 }
                 .padding(DS.Spacing.lg)
+                .padding(.bottom, DS.Spacing.xxl)
             }
             .background(Color.pageBackground)
             .navigationTitle("Stamp Book")
@@ -188,20 +189,9 @@ struct CollectView: View {
     private var levelCard: some View {
         Button { showLevelDetail = true } label: {
             HStack(spacing: DS.Spacing.lg) {
-                ZStack {
-                    Circle()
-                        .fill(level.color.gradient)
-                        .frame(width: 64, height: 64)
-                    VStack(spacing: 0) {
-                        Text(level.kanji)
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundStyle(.white)
-                        Image(systemName: level.icon)
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(.white.opacity(0.8))
-                    }
-                }
-                .shadow(color: level.color.opacity(0.4), radius: 8, y: 3)
+                // Flat-illustration avatar badge with a soft level-color glow.
+                AvatarView(level: level, size: 72)
+                    .shadow(color: level.color.opacity(0.35), radius: 10, y: 3)
 
                 VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                     HStack(spacing: DS.Spacing.xs) {
@@ -220,17 +210,16 @@ struct CollectView: View {
                         .foregroundStyle(Color.subtitleText)
 
                     if level.next != nil {
-                        HStack(spacing: DS.Spacing.sm) {
+                        VStack(alignment: .leading, spacing: 4) {
                             ProgressBar(
                                 progress: level.progressToNext(current: collectedStamps.count),
                                 color: level.color,
-                                height: 6
+                                height: 10
                             )
                             if let toNext = level.stampsToNext(current: collectedStamps.count) {
                                 Text("\(toNext) to go")
-                                    .font(DS.Font.statCaption)
-                                    .foregroundStyle(Color.captionText)
-                                    .fixedSize()
+                                    .font(DS.Font.statCaption.weight(.semibold))
+                                    .foregroundStyle(level.color)
                             }
                         }
                     } else {
@@ -265,6 +254,7 @@ struct CollectView: View {
     private var categoryFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: DS.Spacing.sm) {
+                // "All" — text-only since no category icon
                 chipButton(label: "All", isSelected: selectedCategory == nil) {
                     withAnimation(DS.Anim.select) {
                         selectedCategory = nil
@@ -274,8 +264,10 @@ struct CollectView: View {
                 ForEach(stampsByCategory, id: \.category) { section in
                     let cat = section.category
                     let collected = section.stamps.filter { collectedIds.contains($0.id) }.count
-                    chipButton(
-                        label: "\(cat.displayName) \(collected)/\(section.stamps.count)",
+                    iconChipButton(
+                        icon: cat.icon,
+                        count: "\(collected)/\(section.stamps.count)",
+                        accessibilityLabel: "\(cat.displayName) \(collected) of \(section.stamps.count)",
                         isSelected: selectedCategory == cat,
                         color: cat.color
                     ) {
@@ -286,19 +278,64 @@ struct CollectView: View {
                     }
                 }
             }
+            .padding(.horizontal, 1) // avoid clipped edge highlight
         }
+        .mask(
+            // Fade the right edge so users see chips are scrollable
+            HStack(spacing: 0) {
+                Rectangle().fill(.black)
+                LinearGradient(
+                    colors: [.black, .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .frame(width: 24)
+            }
+        )
     }
 
     private func chipButton(label: String, isSelected: Bool, color: Color = .vermillion, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)
-                .font(.caption.weight(.medium))
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(isSelected ? .white : .primary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 7)
                 .background(isSelected ? color : Color(.quaternarySystemFill), in: Capsule())
         }
         .buttonStyle(.plain)
+    }
+
+    /// Compact category chip — icon + count only. Full name is in accessibility label.
+    private func iconChipButton(
+        icon: String,
+        count: String,
+        accessibilityLabel: String,
+        isSelected: Bool,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 5) {
+                Image(systemName: icon)
+                    .font(.caption.weight(.semibold))
+                Text(count)
+                    .font(.caption.weight(.semibold).monospacedDigit())
+            }
+            .foregroundStyle(isSelected ? .white : color)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(
+                Capsule()
+                    .fill(isSelected ? color : color.opacity(0.10))
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(isSelected ? .clear : color.opacity(0.22), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     // MARK: - Gosyuin Book (paginated, book-style)
@@ -461,33 +498,46 @@ struct CollectView: View {
 }
 
 // MARK: - Uncollected Stamp Card
+//
+// Renders a category-aware silhouette (paper-tone tile + category icon + soft tint)
+// instead of a generic "?" placeholder. Reduces the depressing-empty-grid effect
+// when the user has many uncollected stamps.
 
 private struct UncollectedStampCard: View {
     let stampId: Int
     private var isHexagon: Bool { stampId % 2 != 0 }
 
+    /// Resolve the shrine + its category for this stamp slot. Falls back to .jinja.
+    private var category: ShrineCategory {
+        Self.categoryForStamp[stampId] ?? .jinja
+    }
+
+    private static let categoryForStamp: [Int: ShrineCategory] = {
+        Dictionary(uniqueKeysWithValues: Shrine.samples.map { ($0.stampSlotId, $0.category) })
+    }()
+
     var body: some View {
+        let tint = category.color
         ZStack {
-            if isHexagon {
-                HexagonShape()
-                    .fill(Color.progressEmpty)
-                HexagonShape()
-                    .stroke(
-                        Color.placeholderIcon.opacity(0.4),
-                        style: StrokeStyle(lineWidth: 1, dash: [4, 3])
-                    )
-            } else {
-                Circle()
-                    .fill(Color.progressEmpty)
-                Circle()
-                    .strokeBorder(
-                        Color.placeholderIcon.opacity(0.4),
-                        style: StrokeStyle(lineWidth: 1, dash: [4, 3])
-                    )
+            // Paper-tone fill with subtle category tint
+            Group {
+                if isHexagon {
+                    HexagonShape()
+                        .fill(tint.opacity(0.06))
+                    HexagonShape()
+                        .strokeBorder(tint.opacity(0.25), lineWidth: 1)
+                } else {
+                    Circle()
+                        .fill(tint.opacity(0.06))
+                    Circle()
+                        .strokeBorder(tint.opacity(0.25), lineWidth: 1)
+                }
             }
-            Text("?")
-                .font(.system(size: 24, weight: .light))
-                .foregroundStyle(Color.placeholderIcon)
+
+            // Category silhouette (soft, 30% opacity)
+            Image(systemName: category.icon)
+                .font(.system(size: 22, weight: .regular))
+                .foregroundStyle(tint.opacity(0.35))
         }
         .aspectRatio(1, contentMode: .fit)
     }

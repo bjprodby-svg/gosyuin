@@ -59,6 +59,7 @@
 		089C200F293AF1B0007B3F21 /* ShrineData_WestJapan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C200E293AF1B0007B3F21 /* ShrineData_WestJapan.swift */; };
 		96BC904C108141E3B9963B96 /* GooglePlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */; };
 		A1B2C3D5293DF1B0007B3F21 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */; };
+		A1B2C3D7293DF1B0007B3F21 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D6293DF1B0007B3F21 /* AvatarView.swift */; };
 		AA0000000000000000000002 /* ShrinePassportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000001 /* ShrinePassportView.swift */; };
 		AB1234567890ABCDEF000002 /* shrine_images.json in Resources */ = {isa = PBXBuildFile; fileRef = AB1234567890ABCDEF000001 /* shrine_images.json */; };
 		BB0000010000000000000001 /* JapanCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000020000000000000001 /* JapanCoordinates.swift */; };
@@ -163,6 +164,7 @@
 		089C200C293AF1B0007B3F21 /* ShrineData_EastJapan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_EastJapan.swift; sourceTree = "<group>"; };
 		089C200E293AF1B0007B3F21 /* ShrineData_WestJapan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_WestJapan.swift; sourceTree = "<group>"; };
 		A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
+		A1B2C3D6293DF1B0007B3F21 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000001 /* ShrinePassportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrinePassportView.swift; sourceTree = "<group>"; };
 		AB1234567890ABCDEF000001 /* shrine_images.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shrine_images.json; sourceTree = "<group>"; };
 		BB0000020000000000000001 /* JapanCoordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapanCoordinates.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				089C16A2293AF1B0007B3F21 /* StampDetailView.swift */,
 				089C18C1293DF1B0007B3F21 /* GosyuinStampView.swift */,
 				A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */,
+				A1B2C3D6293DF1B0007B3F21 /* AvatarView.swift */,
 				089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */,
 				089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */,
 				AA0000000000000000000001 /* ShrinePassportView.swift */,
@@ -584,6 +587,7 @@
 				089C18D0293DF1B0007B3F21 /* DirectionsService.swift in Sources */,
 				089C18D1293DF1B0007B3F21 /* GosyuinStampView.swift in Sources */,
 				A1B2C3D5293DF1B0007B3F21 /* BadgeView.swift in Sources */,
+				A1B2C3D7293DF1B0007B3F21 /* AvatarView.swift in Sources */,
 				089C1AA1293DF1B0007B3F21 /* GosyuinArtworkView.swift in Sources */,
 				089C1AA3293DF1B0007B3F21 /* GosyuinBookSpreadView.swift in Sources */,
 				089C18D3293DF1B0007B3F21 /* ShrinePinView.swift in Sources */,

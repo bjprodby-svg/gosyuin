@@ -69,6 +69,18 @@ struct FloatingCategoryChips: View {
             }
             .padding(.horizontal, DS.Spacing.lg)
         }
+        .mask(
+            // Fade right edge so users see chips are scrollable beyond the cut-off.
+            HStack(spacing: 0) {
+                Rectangle().fill(.black)
+                LinearGradient(
+                    colors: [.black, .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .frame(width: 28)
+            }
+        )
     }
 }
 
