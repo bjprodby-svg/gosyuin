@@ -30,3 +30,13 @@ Pods/
 .DS_Store
 *.swp
 *~.nib
+__pycache__/
+*.pyc
+
+# Generated output (keep locally, not in repo)
+wave1-output/
+wave2a-output/
+wave2d-output/
+stamps_gemini/
+prototype/
+scripts/

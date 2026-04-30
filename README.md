@@ -1,14 +1,25 @@
 # GosyuinMap
 
-A location-based shrine stamp collecting app for iOS. Discover shrines and temples across Japan, collect digital gosyuin stamps by visiting them, and learn about shrine visit etiquette.
+A location-based shrine stamp collecting app for iOS. Visit real shrines and temples across Japan, collect digital gosyuin stamps, track your pilgrimage progress, and learn about shrine visit etiquette.
 
 ## Features
 
-- **Explore** - Interactive MapKit map with shrine/temple search and category filtering
-- **Collect** - Digital stamp book that tracks your gosyuin collection progress
-- **Learn** - Guides on shrine visit etiquette and shrine/temple types
-- **Proximity Detection** - Automatically detects when you're near a shrine (~100m) and prompts stamp collection
-- **Live Activities** - Shows nearby shrine info on lock screen via ActivityKit
+### Explore
+Interactive MapKit map with shrine/temple discovery. Search by name, filter by category (Jinja, Tera, Inari, Taisha, etc.), get directions, and navigate to shrines.
+
+### Collect
+Digital stamp book with 290+ unique gosyuin stamps. Proximity-based collection triggers automatically when you're within 100m of a shrine. Celebration animations with confetti, level-up overlays, and badge rewards.
+
+### Learn
+Illustrated guides on shrine visit etiquette: Shinto worship (sanpai), temple worship, temizu (hand purification), omikuji (fortune drawing), gosyuin (stamp book) basics, and visitor manners.
+
+### Progression System
+- 12-tier collector levels (Hatsumairi to Shinshi) with unique avatars
+- Achievement badges for milestones, category completions, and regional exploration
+- Shrine Passport with pilgrimage trail visualization and journey statistics
+
+### Tip Jar
+Optional support via StoreKit 2 (Saisen / Omamori / Goshuin tiers). Non-intrusive, frequency-gated, dismissible.
 
 ## Tech Stack
 
@@ -17,72 +28,94 @@ A location-based shrine stamp collecting app for iOS. Discover shrines and templ
 | SwiftUI | UI framework |
 | SwiftData | Local data persistence |
 | MapKit | Map display and search |
+| Lottie | Rich celebration animations |
+| StoreKit 2 | In-app tip jar |
 | ActivityKit | Live Activities for proximity alerts |
-| CoreLocation | Location tracking |
+| CoreLocation | Location tracking and proximity detection |
 
-- **Deployment Target**: iOS 18.0
+- **Platform**: iOS 18.0+
 - **Swift**: 6.0
-- **Xcode**: 16.0+ (Liquid Glass features require Xcode 26 + iOS 26 SDK)
+- **Xcode**: 16.0+
 
 ## Project Structure
 
 ```
 GosyuinMap/
-├── Views/
-│   ├── Explore/       # Map tab - search, annotations, navigation, shrine details
-│   ├── Collect/       # Stamp book tab - collection grid, stamp artwork
-│   └── Learn/         # Etiquette guides
-├── Models/            # SwiftData models, shrine data by region
-├── Services/          # Location, directions, search services
-├── Extensions/        # Theme colors, Liquid Glass helpers
-└── Resources/         # Localization, assets
-GosyuinMapWidget/      # Live Activity widget
-scripts/               # Build & utility scripts
+  Views/
+    Explore/         Map tab, shrine pins, search, navigation, stamp collection prompt
+    Collect/         Stamp book, level card, passport, level detail, avatar, badge
+    Learn/           Illustrated etiquette guides
+    Settings/        Settings, tip jar
+  Models/            SwiftData models, shrine data (8 regions), stamps, levels, achievements
+  Services/          Location, directions, search, StoreKit tip store
+  Extensions/        Design system (DS), animation tokens, Liquid Glass
+  Resources/         Lottie animations, StoreKit config, localization
+GosyuinMapWidget/    Live Activity widget
+docs/                Design specs, animation specs, illustration roadmap
 ```
 
 ## Getting Started
-
-### Prerequisites
-
-- Xcode 16.0+
-- iOS 18.0+ simulator or device
-
-### Build & Run
 
 ```sh
 git clone git@github.com:bjprodby-svg/gosyuin.git
 cd gosyuin
 open GosyuinMap.xcodeproj
-# Press Cmd+R in Xcode (use iPhone 17 Pro simulator)
+# Cmd+R in Xcode (iPhone 17 Pro simulator recommended)
 ```
 
-### Testing Proximity Features
+### Debug Menu
 
-In the iOS Simulator, set a custom location near a sample shrine to test proximity-based stamp collection:
-- Simulator menu > Features > Location > Custom Location
+The app includes a comprehensive debug menu (DEBUG builds only) accessible from **Collect tab > gear icon > Settings**:
+
+- **Collect a Stamp**: Trigger the full stamp collection flow with animations
+- **Level Up + Tip + Collect**: One-tap to experience level-up celebration, badge unlock, and tip card
+- **First Ever Stamp**: Reset and experience the initial collection
+- **Stamp Stepper**: Fine-grained control over stamp count
+- **Reset Onboarding**: Re-experience the first launch flow
+
+### StoreKit Testing
+
+The project includes a `Tips.storekit` configuration file, pre-configured in the run scheme. StoreKit products work automatically in the simulator.
+
+## Design System
+
+The app uses a centralized design system (`DS` namespace) for consistency:
+
+- `DS.Spacing` / `DS.Radius` / `DS.Font`: Layout tokens
+- `DS.Anim`: Animation tokens (press, reveal, collect, celebration, etc.)
+- Reusable modifiers: `.cardStyle()`, `.vermillionButtonStyle()`, `.appearAnimation()`, `.popIn()`, `.celebrationPop()`
+- Semantic colors: vermillion, pageBackground, kincha, matcha, indigo
+- Button styles: `.pressable`, `.stamp`
 
 ## Architecture
 
 ### App Flow
 
-1. **First launch** → Onboarding (3 pages: welcome, location permission, ready)
-2. **Returning users** → Splash screen → Main tabs
-3. **Stamp collection** → Proximity-based: automatic prompt when within ~100m of a shrine
+1. **First launch**: 4-page onboarding (Discover, Collect, Learn, Start)
+2. **Returning users**: Splash screen (1.5s) then 3-tab main view
+3. **Stamp collection**: Proximity-based (100m threshold), full celebration animation sequence
 
-### Data Model (SwiftData)
+### Data Model
 
-- `CollectedStamp` - Tracks stamp collection status (slotId, collectedDate)
-- `Shrine` - Shrine data with coordinates, organized by region
-- `StampDefinition` - Stamp visual definitions
-- `GuideArticle` - Learn tab content
+| Model | Purpose |
+|---|---|
+| `CollectedStamp` | SwiftData. Tracks slotId and collectedDate |
+| `Shrine` | Static data with coordinates, category, organized by 8 regions |
+| `StampDefinition` | 290+ stamp visual definitions with artwork references |
+| `CollectorLevel` | 12-tier progression system with thresholds and achievements |
 
-### Location-Based Collection
+### Animation System
 
-- `LocationService` tracks user location with 20m distance filter
-- Checks proximity to all unvisited shrines on each location update
-- Triggers collection prompt within 100m
-- Collected stamps are excluded from future proximity alerts
+Two-layer approach:
+1. **DS.Anim tokens**: SwiftUI native animations for UI transitions
+2. **Lottie**: Rich celebration effects (confetti, level-up, sparkles, fireworks)
+
+Custom SwiftUI particle systems for themed confetti (sakura petals, gold flecks).
 
 ## Development
 
-See [CLAUDE.md](./CLAUDE.md) for detailed development rules and conventions.
+See [CLAUDE.md](./CLAUDE.md) for development rules and conventions.
+
+## License
+
+This project is not open-source. All rights reserved.
