@@ -29,15 +29,11 @@ GosyuinMap/
       Navigation/                  NavigationETABar, NavigationTopBar, RecenterButton
       Overlay/                     FloatingSearchBar, FloatingCategoryChips, MapFloatingButtons
     Collect/
-      CollectView.swift            Stamp book with paginated gosyuin grid
+      CollectView.swift            Stats hero (count/progress/this week/this month) + paginated gosyuin book
       StampDetailView.swift        Individual stamp detail
       GosyuinStampView.swift       Grid stamp display (hexagon/circle alternation)
       GosyuinArtworkView.swift     Large stamp artwork (detail page)
       GosyuinBookSpreadView.swift  Book page layout
-      ShrinePassportView.swift     Journey card with pilgrimage trail + map + stats
-      LevelDetailView.swift        Level progress + achievement list (tappable from level card)
-      AvatarView.swift             Flat-illustration avatar per collector level
-      BadgeView.swift              SVG badge component
     Learn/
       LearnListView.swift          Article list with staggered entrance
       LearnDetailView.swift        Illustrated step-by-step guides
@@ -54,7 +50,6 @@ GosyuinMap/
     Shrine.swift                   Shrine data + ShrineCategory enum
     ShrineData_*.swift             8 regional shrine data files (290+ shrines)
     StampDefinition.swift          290+ stamp visual definitions
-    CollectorLevel.swift           12-tier level system + Achievement + AchievementCategory
     GuideArticle.swift             Learn tab article definitions
     JapanCoordinates.swift         Japan geography coordinates
     GosyuinActivityAttributes.swift  Live Activity attributes
@@ -79,8 +74,7 @@ GosyuinMap/
   Assets.xcassets/
     AppIcon                        Vermillion torii icon (Wave 1)
     ArtworkStamps/                 290+ stamp PNG images (1024x1024)
-    Avatars/                       12 level avatars + bonus character avatars
-    Badges/                        SVG achievement badges
+    Avatars/                       Bonus character avatars (unused, reserved)
     TipCards/                       Tip tier illustrations (saisen, omamori, goshuin)
     GuideIcons/                    Learn tab guide icons (SVG)
     LearnIllustrations/            Step-by-step guide illustrations (PNG)
@@ -107,9 +101,8 @@ GosyuinMapWidget/                  Live Activity widget extension
    - Phase 2 (100ms): Stamp slams in (scale 2.5 to 1.0, rotation -20 to 0)
    - Phase 3 (400ms): "Stamp Collected!" title bounces in
    - Phase 4 (500ms): Lottie confetti + SwiftUI sakura petal particles
-   - Phase 5 (1000ms): Reward rows cascade (level up, badges) with stagger
-   - Phase 6 (1600ms): Level Up overlay (if applicable) with Lottie fireworks
-   - Phase 7 (2500ms+): Tip card (if frequency gate allows)
+   - Phase 5 (1500ms): Done button fades in
+   - Phase 6 (2500ms+): Tip card (if frequency gate allows)
 
 ### Design System (DS namespace)
 
@@ -124,22 +117,14 @@ View modifiers: `.cardStyle()`, `.vermillionButtonStyle()`, `.accentedCard()`
 Animation modifiers: `.appearAnimation()`, `.popIn()`, `.slideUp()`, `.celebrationPop()`, `.pulseLoop()`
 Button styles: `.pressable`, `.stamp`
 
-### Collector Level System (12 tiers)
+### Collect Tab Stats Hero
 
-| Lv | Kanji | Title | Threshold |
-|----|-------|-------|-----------|
-| 1 | 初参 | Hatsumairi | 0 |
-| 2 | 参り | Mairi | 1 |
-| 3 | 巡り | Meguri | 3 |
-| 4 | 遍路 | Henro | 7 |
-| 5 | 旅人 | Tabibito | 15 |
-| 6 | 山伏 | Yamabushi | 30 |
-| 7 | 先達 | Sendatsu | 50 |
-| 8 | 行者 | Gyoja | 80 |
-| 9 | 主 | Nushi | 120 |
-| 10 | 大権現 | Daigongen | 180 |
-| 11 | 明神 | Myojin | 250 |
-| 12 | 神使 | Shinshi | 380 |
+The Collect tab opens with a stats card showing collection totals — no gamification (no levels, no achievements, no passport). Layout:
+
+- Section label: "STAMPS COLLECTED" + percentage (top-right)
+- Big animated count (`statHero`) + "/ 290" denominator
+- Vermillion progress bar
+- Three sub-stats: This week / This month / Last stamp date
 
 ### Tip Jar (StoreKit 2)
 

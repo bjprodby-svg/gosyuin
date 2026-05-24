@@ -5,11 +5,8 @@ struct CollectView: View {
     @Query private var collectedStamps: [CollectedStamp]
     @Environment(\.modelContext) private var modelContext
     @State private var appeared = false
-    @State private var locationService = LocationService()
     @State private var selectedCategory: ShrineCategory? = nil
-    @State private var showPassport = false
     @State private var showSettings = false
-    @State private var showLevelDetail = false
     @State private var currentBookPage: Int = 0
 
     private let bookColumns = [
@@ -21,32 +18,6 @@ struct CollectView: View {
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
-    }
-
-    private var level: CollectorLevel {
-        CollectorLevel.level(for: collectedStamps.count)
-    }
-
-    private var unlockedAchievements: [Achievement] {
-        Achievement.all.filter { $0.requirement(collectedIds, Shrine.samples) }
-    }
-
-    private var lockedAchievements: [Achievement] {
-        Achievement.all.filter { !$0.requirement(collectedIds, Shrine.samples) }
-    }
-
-    private var achievementsByCategory: [(category: AchievementCategory, achievements: [Achievement])] {
-        AchievementCategory.allCases.compactMap { cat in
-            let items = Achievement.all.filter { $0.category == cat }
-            guard !items.isEmpty else { return nil }
-            let sorted = items.sorted { a, b in
-                let aUnlocked = a.requirement(collectedIds, Shrine.samples)
-                let bUnlocked = b.requirement(collectedIds, Shrine.samples)
-                if aUnlocked != bUnlocked { return aUnlocked }
-                return false
-            }
-            return (category: cat, achievements: sorted)
-        }
     }
 
     private static let cachedStampsByCategory: [(category: ShrineCategory, stamps: [StampDefinition])] = {
@@ -81,11 +52,34 @@ struct CollectView: View {
         }
     }
 
+    private var totalStamps: Int { StampDefinition.all.count }
+
+    private var progress: Double {
+        guard totalStamps > 0 else { return 0 }
+        return Double(collectedStamps.count) / Double(totalStamps)
+    }
+
+    private var thisWeekCount: Int {
+        let calendar = Calendar.current
+        guard let weekAgo = calendar.date(byAdding: .day, value: -7, to: .now) else { return 0 }
+        return collectedStamps.filter { $0.collectedDate >= weekAgo }.count
+    }
+
+    private var thisMonthCount: Int {
+        let calendar = Calendar.current
+        guard let monthAgo = calendar.date(byAdding: .day, value: -30, to: .now) else { return 0 }
+        return collectedStamps.filter { $0.collectedDate >= monthAgo }.count
+    }
+
+    private var lastCollectedDate: Date? {
+        collectedStamps.map(\.collectedDate).max()
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
-                    levelCard
+                    statsHero
 
                     if collectedStamps.isEmpty {
                         emptyStateCard
@@ -94,7 +88,6 @@ struct CollectView: View {
 
                     categoryFilter
 
-                    // Gosyuin Book
                     gosyuinBook
                 }
                 .padding(DS.Spacing.lg)
@@ -110,25 +103,9 @@ struct CollectView: View {
                             .font(.body.weight(.medium))
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showPassport = true } label: {
-                        Image(systemName: "person.text.rectangle")
-                            .font(.body.weight(.medium))
-                    }
-                }
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
-            }
-            .sheet(isPresented: $showPassport) {
-                ShrinePassportView()
-            }
-            .sheet(isPresented: $showLevelDetail) {
-                LevelDetailView(
-                    collectedIds: collectedIds,
-                    stampCount: collectedStamps.count,
-                    achievementsByCategory: achievementsByCategory
-                )
             }
             .navigationDestination(for: StampDefinition.self) { stamp in
                 StampDetailView(stamp: stamp)
@@ -136,8 +113,6 @@ struct CollectView: View {
             .onAppear {
                 withAnimation(DS.Anim.collect) { appeared = true }
             }
-            // Seed removed — use Settings > Debug to add stamps
-
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: collectedStamps.count)
     }
@@ -184,70 +159,74 @@ struct CollectView: View {
         }
     }
 
-    // MARK: - Level Card
+    // MARK: - Stats Hero
 
-    private var levelCard: some View {
-        Button { showLevelDetail = true } label: {
-            HStack(spacing: DS.Spacing.lg) {
-                // Flat-illustration avatar badge with a soft level-color glow.
-                AvatarView(level: level, size: 72)
-                    .shadow(color: level.color.opacity(0.35), radius: 10, y: 3)
-
-                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                    HStack(spacing: DS.Spacing.xs) {
-                        Text("Lv.\(level.rawValue)")
-                            .font(DS.Font.chipLabel)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(level.color, in: Capsule())
-                        Text(level.title)
-                            .font(.headline)
-                            .foregroundStyle(Color.bodyText)
-                    }
-                    Text(level.subtitle)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(Color.subtitleText)
-
-                    if level.next != nil {
-                        VStack(alignment: .leading, spacing: 4) {
-                            ProgressBar(
-                                progress: level.progressToNext(current: collectedStamps.count),
-                                color: level.color,
-                                height: 10
-                            )
-                            if let toNext = level.stampsToNext(current: collectedStamps.count) {
-                                Text("\(toNext) to go")
-                                    .font(DS.Font.statCaption.weight(.semibold))
-                                    .foregroundStyle(level.color)
-                            }
-                        }
-                    } else {
-                        Text("Max level reached!")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(level.color)
-                    }
-                }
-
+    private var statsHero: some View {
+        VStack(spacing: DS.Spacing.lg) {
+            // Label
+            HStack {
+                Text("STAMPS COLLECTED")
+                    .font(DS.Font.sectionLabel)
+                    .foregroundStyle(Color.subtitleText)
+                    .tracking(1.5)
                 Spacer()
-
-                VStack(spacing: 2) {
-                    AnimatedCounter(
-                        value: collectedStamps.count,
-                        font: DS.Font.statMedium,
-                        color: level.color
-                    )
-                    Text("/ \(StampDefinition.all.count)")
-                        .font(.caption2)
-                        .foregroundStyle(Color.captionText)
-                }
+                Text("\(Int(progress * 100))%")
+                    .font(DS.Font.chipLabel)
+                    .foregroundStyle(Color.vermillion)
             }
-            .cardStyle()
+
+            // Big count + denominator
+            HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.sm) {
+                AnimatedCounter(
+                    value: collectedStamps.count,
+                    font: DS.Font.statHero,
+                    color: .vermillion
+                )
+                Text("/ \(totalStamps)")
+                    .font(.title3.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(Color.captionText)
+                Spacer()
+            }
+
+            // Progress bar
+            ProgressBar(progress: progress, color: .vermillion, height: 10)
+
+            // Sub-stats row
+            HStack(spacing: 0) {
+                subStat(value: "\(thisWeekCount)", label: "This week")
+                subStatDivider
+                subStat(value: "\(thisMonthCount)", label: "This month")
+                subStatDivider
+                subStat(value: lastCollectedLabel, label: "Last stamp")
+            }
         }
-        .buttonStyle(.pressable)
+        .cardStyle()
     }
 
-    // Achievement summary removed — accessible via Level Card tap
+    private var lastCollectedLabel: String {
+        guard let date = lastCollectedDate else { return "—" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        return formatter.string(from: date)
+    }
+
+    private func subStat(value: String, label: String) -> some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(DS.Font.statSmall.monospacedDigit())
+                .foregroundStyle(Color.bodyText)
+            Text(label)
+                .font(DS.Font.statCaption)
+                .foregroundStyle(Color.subtitleText)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var subStatDivider: some View {
+        Rectangle()
+            .fill(Color.divider)
+            .frame(width: 1, height: 28)
+    }
 
     // MARK: - Category Filter
 
@@ -476,25 +455,6 @@ struct CollectView: View {
         .padding(.horizontal, DS.Spacing.lg)
         .padding(.vertical, DS.Spacing.md)
     }
-
-    // MARK: - Seed (Debug Only)
-
-    #if DEBUG
-    private func seedSampleDataIfNeeded() {
-        let calendar = Calendar.current
-        let existingIds = Set(collectedStamps.map(\.slotId))
-        let designedStampIds = [
-            1, 2, 3, 19, 21, 27, 28, 29, 36, 41, 42, 46, 47, 48, 49, 82, 262,
-        ]
-        let missing = designedStampIds.filter { !existingIds.contains($0) }
-        guard !missing.isEmpty else { return }
-        for (index, slotId) in missing.enumerated() {
-            let daysAgo = (missing.count - index) * 3
-            let date = calendar.date(byAdding: .day, value: -daysAgo, to: .now) ?? .now
-            modelContext.insert(CollectedStamp(slotId: slotId, collectedDate: date))
-        }
-    }
-    #endif
 }
 
 // MARK: - Uncollected Stamp Card
@@ -540,112 +500,6 @@ private struct UncollectedStampCard: View {
                 .foregroundStyle(tint.opacity(0.35))
         }
         .aspectRatio(1, contentMode: .fit)
-    }
-}
-
-// MARK: - Achievements Detail View (full list, shown in sheet)
-
-struct AchievementsDetailView: View {
-    let collectedIds: Set<Int>
-    let achievementsByCategory: [(category: AchievementCategory, achievements: [Achievement])]
-    @Environment(\.dismiss) private var dismiss
-
-    private var unlockedCount: Int {
-        Achievement.all.filter { $0.requirement(collectedIds, Shrine.samples) }.count
-    }
-
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: DS.Spacing.xl) {
-                    ForEach(achievementsByCategory, id: \.category) { section in
-                        VStack(alignment: .leading, spacing: DS.Spacing.md) {
-                            HStack(spacing: DS.Spacing.xs) {
-                                Image(systemName: section.category.icon)
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(Color.captionText)
-                                Text(section.category.displayName)
-                                    .font(.subheadline.weight(.semibold))
-                            }
-
-                            ForEach(Array(section.achievements.enumerated()), id: \.element.id) { index, achievement in
-                                let unlocked = achievement.requirement(collectedIds, Shrine.samples)
-                                HStack(spacing: DS.Spacing.md) {
-                                    IconBadge(
-                                        icon: achievement.icon,
-                                        size: 40,
-                                        color: unlocked ? achievement.color : .placeholderIcon
-                                    )
-
-                                    VStack(alignment: .leading, spacing: 3) {
-                                        Text(achievement.title)
-                                            .font(.subheadline.weight(.medium))
-                                            .foregroundStyle(unlocked ? .primary : Color.captionText)
-                                        Text(achievement.description)
-                                            .font(.caption)
-                                            .foregroundStyle(Color.subtitleText)
-
-                                        if let progressLabel = achievement.progressLabel {
-                                            let label = progressLabel(collectedIds, Shrine.samples)
-                                            HStack(spacing: DS.Spacing.xs) {
-                                                ProgressBar(
-                                                    progress: progressFraction(label),
-                                                    color: unlocked ? achievement.color : .placeholderIcon,
-                                                    height: 4,
-                                                    useGradient: false
-                                                )
-                                                Text(label)
-                                                    .font(.caption2.weight(.medium).monospacedDigit())
-                                                    .foregroundStyle(Color.captionText)
-                                                    .fixedSize()
-                                            }
-                                        }
-                                    }
-                                    Spacer()
-
-                                    if unlocked {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .font(.body)
-                                            .foregroundStyle(achievement.color)
-                                    }
-                                }
-                                .padding(.vertical, DS.Spacing.xs)
-                                .appearAnimation(delay: DS.Anim.stagger(index))
-                            }
-                        }
-                        .cardStyle()
-                    }
-                }
-                .padding(DS.Spacing.lg)
-            }
-            .background(Color.pageBackground)
-            .navigationTitle("Achievements")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Text("\(unlockedCount)/\(Achievement.all.count)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.captionText)
-                }
-                ToolbarItem(placement: .topBarLeading) {
-                    Button { dismiss() } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(Color.subtitleText)
-                    }
-                }
-            }
-        }
-    }
-
-    private func progressFraction(_ label: String) -> CGFloat {
-        let parts = label.split(separator: "/")
-        guard parts.count == 2,
-              let current = Double(parts[0]),
-              let total = Double(parts[1]),
-              total > 0 else { return 0 }
-        return min(1.0, CGFloat(current / total))
     }
 }
 

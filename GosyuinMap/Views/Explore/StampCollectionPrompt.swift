@@ -30,29 +30,10 @@ struct StampCollectionPrompt: View {
     @State private var showLottieConfetti = false
     @State private var showSwiftUIConfetti = false
     @State private var confettiPieces: [ConfettiPiece] = []
-    @State private var showFireworks = false
     @State private var showShineRing = false
-    @State private var showLevelUp = false
-    @State private var levelKanjiScale: CGFloat = 0
-    @State private var rewardRows: [Bool] = []
     @State private var doneButtonOpacity: Double = 0
 
-    private var collectedIds: Set<Int> {
-        Set(collectedStamps.map(\.slotId))
-    }
-    private var preCollectCount: Int { collectedStamps.count }
     private var postCollectCount: Int { collectedStamps.count + 1 }
-    private var levelBefore: CollectorLevel { CollectorLevel.level(for: preCollectCount) }
-    private var levelAfter: CollectorLevel { CollectorLevel.level(for: postCollectCount) }
-    private var didLevelUp: Bool { levelAfter.rawValue > levelBefore.rawValue }
-    private var newBadges: [Achievement] {
-        let idsBefore = collectedIds
-        var idsAfter = collectedIds
-        idsAfter.insert(shrine.stampSlotId)
-        return Achievement.all.filter { a in
-            !a.requirement(idsBefore, Shrine.samples) && a.requirement(idsAfter, Shrine.samples)
-        }
-    }
 
     var body: some View {
         ZStack {
@@ -87,11 +68,6 @@ struct StampCollectionPrompt: View {
                 confettiCanvas
             }
 
-            // Soft sakura/gold particle drift for level-up (replaces multi-color fireworks)
-            if showFireworks {
-                sakuraDriftCanvas
-            }
-
             // Main content (single layout, animated visibility)
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
@@ -108,11 +84,6 @@ struct StampCollectionPrompt: View {
             }
             .scrollIndicators(.hidden)
             .offset(x: shakeOffset)
-
-            // Level up overlay
-            if showLevelUp {
-                levelUpOverlay
-            }
         }
         .sensoryFeedback(.impact(weight: .heavy), trigger: collected)
     }
@@ -245,39 +216,6 @@ struct StampCollectionPrompt: View {
                 }
             }
 
-            // Rewards cascade
-            if !rewardRows.isEmpty {
-                VStack(spacing: DS.Spacing.sm) {
-                    if didLevelUp && rewardRows.indices.contains(0) && rewardRows[0] {
-                        levelRewardRow(
-                            level: levelAfter,
-                            title: "Level Up!",
-                            detail: "Lv.\(levelAfter.rawValue) \(levelAfter.kanji) \(levelAfter.title)"
-                        )
-                        .transition(.asymmetric(
-                            insertion: .scale(scale: 0.3).combined(with: .opacity),
-                            removal: .opacity
-                        ))
-                    }
-
-                    ForEach(Array(newBadges.enumerated()), id: \.element.id) { index, badge in
-                        let rewardIndex = didLevelUp ? index + 1 : index
-                        if rewardRows.indices.contains(rewardIndex) && rewardRows[rewardIndex] {
-                            rewardRow(
-                                icon: badge.icon,
-                                color: badge.color,
-                                title: "Badge Unlocked!",
-                                detail: badge.title
-                            )
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.3).combined(with: .opacity),
-                                removal: .opacity
-                            ))
-                        }
-                    }
-                }
-            }
-
             // Tip card
             if showTipCard {
                 TipJarCard(
@@ -330,36 +268,6 @@ struct StampCollectionPrompt: View {
         .allowsHitTesting(false)
     }
 
-    // MARK: - Sakura Drift (level-up gentle ambient)
-
-    private var sakuraDriftCanvas: some View {
-        GeometryReader { geo in
-            ForEach(0..<24, id: \.self) { i in
-                let xSeed = Double(i * 37 % 100) / 100.0
-                let size = CGFloat.random(in: 12...22)
-                let petalColor = [Color(red: 1.0, green: 0.78, blue: 0.82),
-                                  Color(red: 0.98, green: 0.86, blue: 0.88),
-                                  Color(red: 0.95, green: 0.78, blue: 0.30)].randomElement()!
-                SakuraPetalShape()
-                    .fill(petalColor.opacity(0.85))
-                    .frame(width: size, height: size)
-                    .rotationEffect(.degrees(showFireworks ? 360 : 0))
-                    .position(
-                        x: geo.size.width * (xSeed + (showFireworks ? 0.05 : -0.05)),
-                        y: showFireworks ? geo.size.height + 30 : -30
-                    )
-                    .animation(
-                        .easeIn(duration: Double.random(in: 4.5...7.0))
-                            .delay(Double(i) * 0.12)
-                            .repeatForever(autoreverses: false),
-                        value: showFireworks
-                    )
-            }
-        }
-        .ignoresSafeArea()
-        .allowsHitTesting(false)
-    }
-
     // MARK: - Buttons
 
     private var buttonsArea: some View {
@@ -393,69 +301,6 @@ struct StampCollectionPrompt: View {
                 .opacity(doneButtonOpacity)
             }
         }
-    }
-
-    // MARK: - Level Up Overlay
-
-    private var levelUpOverlay: some View {
-        ZStack {
-            // Soft sumi-ink dim
-            Color(red: 0.10, green: 0.08, blue: 0.06).opacity(0.78)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    withAnimation(DS.Anim.contentAppear) {
-                        showLevelUp = false
-                        showFireworks = false
-                    }
-                }
-
-            VStack(spacing: DS.Spacing.lg) {
-                // Subdued LEVEL UP tag (was huge neon green kanji)
-                Text("LEVEL UP")
-                    .font(.system(size: 13, weight: .black, design: .default))
-                    .foregroundStyle(.white.opacity(0.85))
-                    .tracking(8)
-                    .padding(.horizontal, DS.Spacing.lg)
-                    .padding(.vertical, 6)
-                    .background(
-                        Capsule().stroke(.white.opacity(0.45), lineWidth: 1)
-                    )
-
-                // Avatar with diffuse glow — square frame respected, no hard ring
-                ZStack(alignment: .bottomTrailing) {
-                    // Soft halo only
-                    Circle()
-                        .fill(levelAfter.color.opacity(0.55))
-                        .frame(width: 240, height: 240)
-                        .blur(radius: 50)
-                    AvatarView(level: levelAfter, size: 168)
-                        .shadow(color: levelAfter.color.opacity(0.6), radius: 24, y: 4)
-                    // Kanji chip overlay (small, doesn't collide with text)
-                    Text(levelAfter.kanji)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(levelAfter.color, in: Capsule())
-                        .overlay(Capsule().strokeBorder(.white, lineWidth: 1.5))
-                        .offset(x: 8, y: 8)
-                }
-                .scaleEffect(levelKanjiScale)
-
-                // Title + subtitle (now clearly visible — no giant kanji overlap)
-                VStack(spacing: 4) {
-                    Text("Lv.\(levelAfter.rawValue) \(levelAfter.title)")
-                        .font(.title.bold())
-                        .foregroundStyle(.white)
-
-                    Text(levelAfter.subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.75))
-                }
-            }
-            .padding(.horizontal, DS.Spacing.xl)
-        }
-        .transition(.opacity)
     }
 
     // MARK: - Collect Animation
@@ -529,43 +374,8 @@ struct StampCollectionPrompt: View {
             }
         }
 
-        // === PHASE 5: Rewards cascade (1000ms) ===
-        let totalRewards = (didLevelUp ? 1 : 0) + newBadges.count
-        if totalRewards > 0 {
-            rewardRows = Array(repeating: false, count: totalRewards)
-            for i in 0..<totalRewards {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + Double(i) * 0.35) {
-                    withAnimation(.spring(duration: 0.5, bounce: 0.4)) {
-                        if rewardRows.indices.contains(i) {
-                            rewardRows[i] = true
-                        }
-                    }
-                }
-            }
-        }
-
-        // === PHASE 6: Level Up overlay (1600ms) ===
-        if didLevelUp {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-                withAnimation(DS.Anim.celebration) {
-                    showLevelUp = true
-                    showFireworks = true
-                }
-                withAnimation(.spring(duration: 0.7, bounce: 0.5).delay(0.2)) {
-                    levelKanjiScale = 1.0
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-                    withAnimation(DS.Anim.contentAppear) {
-                        showLevelUp = false
-                        showFireworks = false
-                    }
-                }
-            }
-        }
-
-        // === PHASE 7: Tip card ===
-        let tipDelay = didLevelUp ? 5.5 : 2.5
-        DispatchQueue.main.asyncAfter(deadline: .now() + tipDelay) {
+        // === PHASE 5: Tip card ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             if tipPromptController.shouldShowTipPrompt(currentStampCount: postCollectCount) {
                 tipPromptController.recordShown(atStampCount: postCollectCount)
                 withAnimation(DS.Anim.collect) {
@@ -574,9 +384,8 @@ struct StampCollectionPrompt: View {
             }
         }
 
-        // === PHASE 8: Done button ===
-        let doneDelay = didLevelUp ? 6.0 : 1.5
-        DispatchQueue.main.asyncAfter(deadline: .now() + doneDelay) {
+        // === PHASE 6: Done button ===
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             withAnimation(DS.Anim.contentAppear) {
                 doneButtonOpacity = 1
             }
@@ -623,88 +432,6 @@ struct StampCollectionPrompt: View {
                 kind: kind
             )
         }
-    }
-
-    // MARK: - Reward Row (Level — uses pixel avatar)
-
-    private func levelRewardRow(level: CollectorLevel, title: String, detail: String) -> some View {
-        HStack(spacing: DS.Spacing.md) {
-            ZStack {
-                LottieView(animation: .named("success_particles"))
-                    .playing(loopMode: .playOnce)
-                    .animationSpeed(1.5)
-                    .frame(width: 60, height: 60)
-                    .allowsHitTesting(false)
-
-                // Flat-illustration avatar badge for the current level.
-                AvatarView(level: level, size: 48)
-                    .shadow(color: level.color.opacity(0.4), radius: 6, y: 2)
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.caption.weight(.black))
-                    .foregroundStyle(level.color)
-                    .tracking(0.5)
-                Text(detail)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.bodyText)
-            }
-
-            Spacer()
-
-            LottieView(animation: .named("sparkle"))
-                .playing(loopMode: .loop)
-                .animationSpeed(0.4)
-                .frame(width: 32, height: 32)
-                .allowsHitTesting(false)
-        }
-        .padding(DS.Spacing.md)
-        .background(level.color.opacity(0.08), in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        .overlay(
-            RoundedRectangle(cornerRadius: DS.Radius.md)
-                .strokeBorder(level.color.opacity(0.18), lineWidth: 1)
-        )
-    }
-
-    // MARK: - Reward Row (Badge — SF Symbol)
-
-    private func rewardRow(icon: String, color: Color, title: String, detail: String) -> some View {
-        HStack(spacing: DS.Spacing.md) {
-            ZStack {
-                LottieView(animation: .named("success_particles"))
-                    .playing(loopMode: .playOnce)
-                    .animationSpeed(1.5)
-                    .frame(width: 60, height: 60)
-                    .allowsHitTesting(false)
-
-                IconBadge(icon: icon, size: 44, color: color, filled: true)
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.caption.weight(.black))
-                    .foregroundStyle(color)
-                    .tracking(0.5)
-                Text(detail)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.bodyText)
-            }
-
-            Spacer()
-
-            LottieView(animation: .named("sparkle"))
-                .playing(loopMode: .loop)
-                .animationSpeed(0.4)
-                .frame(width: 32, height: 32)
-                .allowsHitTesting(false)
-        }
-        .padding(DS.Spacing.md)
-        .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        .overlay(
-            RoundedRectangle(cornerRadius: DS.Radius.md)
-                .strokeBorder(color.opacity(0.15), lineWidth: 1)
-        )
     }
 }
 

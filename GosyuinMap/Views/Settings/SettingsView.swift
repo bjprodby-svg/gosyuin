@@ -14,14 +14,10 @@ struct SettingsView: View {
     @State private var promptShrine: Shrine = Shrine.samples[0]
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
 
-    private var currentLevel: CollectorLevel {
-        CollectorLevel.level(for: collectedStamps.count)
-    }
-    private var collectedIds: Set<Int> {
-        Set(collectedStamps.map(\.slotId))
-    }
-    private var unlockedBadges: [Achievement] {
-        Achievement.all.filter { $0.requirement(collectedIds, Shrine.samples) }
+    private var totalStamps: Int { StampDefinition.all.count }
+    private var progress: Double {
+        guard totalStamps > 0 else { return 0 }
+        return Double(collectedStamps.count) / Double(totalStamps)
     }
     #endif
 
@@ -95,63 +91,28 @@ struct SettingsView: View {
     private var debugStatusCard: some View {
         Section {
             VStack(spacing: DS.Spacing.md) {
-                // Level display
                 HStack(spacing: DS.Spacing.md) {
                     ZStack {
                         Circle()
-                            .fill(currentLevel.color.gradient)
+                            .fill(Color.vermillion.gradient)
                             .frame(width: 48, height: 48)
-                        Text(currentLevel.kanji)
-                            .font(.system(size: 18, weight: .bold))
+                        Image(systemName: "seal.fill")
+                            .font(.system(size: 20, weight: .bold))
                             .foregroundStyle(.white)
                     }
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Lv.\(currentLevel.rawValue) \(currentLevel.title)")
+                        Text("\(collectedStamps.count) / \(totalStamps) stamps")
                             .font(.subheadline.weight(.semibold))
-                        if let next = currentLevel.next {
-                            let toNext = next.threshold - collectedStamps.count
-                            Text("\(toNext) stamps to Lv.\(next.rawValue) \(next.kanji)")
-                                .font(.caption)
-                                .foregroundStyle(Color.subtitleText)
-                        } else {
-                            Text("Max level reached")
-                                .font(.caption)
-                                .foregroundStyle(Color.kincha)
-                        }
+                        Text("\(Int(progress * 100))% complete")
+                            .font(.caption)
+                            .foregroundStyle(Color.subtitleText)
                     }
 
                     Spacer()
-
-                    VStack(spacing: 2) {
-                        Text("\(collectedStamps.count)")
-                            .font(DS.Font.statMedium)
-                            .foregroundStyle(currentLevel.color)
-                        Text("stamps")
-                            .font(.caption2)
-                            .foregroundStyle(Color.captionText)
-                    }
                 }
 
-                // Progress bar
-                if currentLevel.next != nil {
-                    ProgressBar(
-                        progress: currentLevel.progressToNext(current: collectedStamps.count),
-                        color: currentLevel.color,
-                        height: 6
-                    )
-                }
-
-                // Badges
-                HStack(spacing: DS.Spacing.sm) {
-                    Image(systemName: "medal.fill")
-                        .font(.caption)
-                        .foregroundStyle(Color.kincha)
-                    Text("\(unlockedBadges.count)/\(Achievement.all.count) badges")
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(Color.subtitleText)
-                    Spacer()
-                }
+                ProgressBar(progress: progress, color: .vermillion, height: 6)
             }
             .padding(.vertical, DS.Spacing.xs)
         } header: {
@@ -194,7 +155,7 @@ struct SettingsView: View {
                     Spacer()
                     Text("\(collectedStamps.count)")
                         .font(.subheadline.monospacedDigit().weight(.semibold))
-                        .foregroundStyle(currentLevel.color)
+                        .foregroundStyle(Color.vermillion)
                 }
             } onIncrement: {
                 addStamps(count: 1)
@@ -233,25 +194,6 @@ struct SettingsView: View {
 
     private var debugScenarioSection: some View {
         Section {
-            Button {
-                setStampsToNextLevelUp()
-                tipPromptController.resetAll()
-                let uncollected = Shrine.samples.filter { shrine in
-                    !collectedStamps.contains { $0.slotId == shrine.stampSlotId }
-                }
-                promptShrine = uncollected.randomElement() ?? Shrine.samples[0]
-                showCollectionPrompt = true
-            } label: {
-                HStack {
-                    Label("Level Up + Tip + Collect", systemImage: "star.fill")
-                        .foregroundStyle(Color.kincha)
-                    Spacer()
-                    Text("All-in-one")
-                        .font(.caption)
-                        .foregroundStyle(Color.captionText)
-                }
-            }
-
             Button {
                 clearAllStamps()
                 addStamps(count: 4)
@@ -332,21 +274,6 @@ struct SettingsView: View {
     private func removeLastStamp() {
         guard let last = collectedStamps.sorted(by: { $0.collectedDate > $1.collectedDate }).first else { return }
         modelContext.delete(last)
-    }
-
-    private func setStampsToNextLevelUp() {
-        let currentCount = collectedStamps.count
-        let level = CollectorLevel.level(for: currentCount)
-        guard let next = level.next else {
-            debugMessage = "Already max level"
-            return
-        }
-        let needed = next.threshold - 1
-        let diff = needed - currentCount
-        if diff > 0 {
-            addStamps(count: diff)
-        }
-        debugMessage = "→ Lv.\(next.rawValue) \(next.kanji) on next collect"
     }
 
     private func clearAllStamps() {
