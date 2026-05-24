@@ -59,9 +59,23 @@ docs/                Design specs, animation specs, illustration roadmap
 ```sh
 git clone git@github.com:bjprodby-svg/gosyuin.git
 cd gosyuin
+cp GosyuinMap/Config/Secrets.xcconfig.sample GosyuinMap/Config/Secrets.xcconfig
+# Edit Secrets.xcconfig and paste your Google "Places API (New)" key.
 open GosyuinMap.xcodeproj
 # Cmd+R in Xcode (iPhone 17 Pro simulator recommended)
 ```
+
+### Google Places API Key
+
+The app uses Google Places API (New) to enrich shrine pages with photos, ratings,
+reviews and opening hours, to discover shrines in the visible map area, and to
+power name search beyond the bundled list. Without a key, the app still runs —
+it just falls back to the curated 290 shrine list.
+
+- Get a key from Google Cloud Console with **Places API (New)** enabled.
+- Restrict the key to the iOS bundle id `com.bjprodby.gosyuinmap` for safety.
+- Put it in `GosyuinMap/Config/Secrets.xcconfig` (gitignored). The file
+  references `$(GOOGLE_PLACES_API_KEY)` from `Info.plist` at build time.
 
 ### Debug Menu
 

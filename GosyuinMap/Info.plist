@@ -7,6 +7,6 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>御朱印マップで現在地周辺の神社仏閣を表示するために位置情報を使用します。</string>
 	<key>GOOGLE_PLACES_API_KEY</key>
-	<string>YOUR_API_KEY_HERE</string>
+	<string>$(GOOGLE_PLACES_API_KEY)</string>
 </dict>
 </plist>

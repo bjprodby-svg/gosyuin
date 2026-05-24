@@ -55,6 +55,19 @@ struct ExploreView: View {
         return base.filter { region.contains($0.coordinate) }
     }
 
+    /// Google-discovered shrines visible in the current region (deduped against samples
+    /// inside the search service). Hidden when the user is filtering by category.
+    private var googleDiscoveredShrines: [Shrine] {
+        // Avoid duplicating pins for ones we just selected (they already render
+        // through `filteredShrines` when the selection is a sample).
+        let base = searchService.discoveredShrines
+        guard !base.isEmpty else { return [] }
+        if let category = selectedCategory {
+            return base.filter { $0.category == category && currentRegion.contains($0.coordinate) }
+        }
+        return base.filter { currentRegion.contains($0.coordinate) }
+    }
+
     /// The shrine to show in detail: enriched version if available, otherwise original
     private var detailShrine: Shrine? {
         guard case .placeDetail(let shrine) = exploreMode else { return nil }
@@ -289,6 +302,13 @@ struct ExploreView: View {
                 }
             }
 
+            // Google-discovered shrines in the visible viewport
+            ForEach(googleDiscoveredShrines) { shrine in
+                Annotation(shrine.name, coordinate: shrine.coordinate, anchor: .bottom) {
+                    shrinePin(for: shrine, isDiscovered: true)
+                }
+            }
+
             if let route = directionsService.route {
                 MapPolyline(route.polyline)
                     .stroke(Color.white, lineWidth: 8)
@@ -359,7 +379,7 @@ struct ExploreView: View {
 
     // MARK: - Pins
 
-    private func shrinePin(for shrine: Shrine) -> some View {
+    private func shrinePin(for shrine: Shrine, isDiscovered: Bool = false) -> some View {
         let isSelected: Bool = {
             if case .placeDetail(let s) = exploreMode { return s.id == shrine.id }
             return false
@@ -368,6 +388,7 @@ struct ExploreView: View {
             shrine: shrine,
             isSelected: isSelected,
             isCollected: collectedIds.contains(shrine.stampSlotId),
+            isDiscovered: isDiscovered,
             onTap: { handleSelectShrine(shrine) }
         )
     }

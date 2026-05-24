@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import MapKit
 
 // MARK: - Google Places API Response Models
 
@@ -95,9 +96,14 @@ final class GooglePlacesService: @unchecked Sendable {
     private let baseURL = "https://places.googleapis.com/v1"
     private let decoder = JSONDecoder()
 
-    /// Whether the API key is configured (not placeholder or empty)
+    /// Whether the API key is configured (not placeholder or empty).
+    /// Guards against the unsubstituted `$(GOOGLE_PLACES_API_KEY)` placeholder that
+    /// remains in Info.plist when Secrets.xcconfig is missing on a fresh checkout.
     var isConfigured: Bool {
-        !apiKey.isEmpty && apiKey != "YOUR_API_KEY_HERE"
+        guard !apiKey.isEmpty else { return false }
+        if apiKey == "YOUR_API_KEY_HERE" { return false }
+        if apiKey.hasPrefix("$(") { return false }
+        return true
     }
 
     init() {
@@ -140,6 +146,48 @@ final class GooglePlacesService: @unchecked Sendable {
                 ]
             ]
         }
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let data = try await performRequest(request)
+        let response = try decoder.decode(GooglePlacesResponse.self, from: data)
+        return response.places ?? []
+    }
+
+    // MARK: - Viewport Discovery
+
+    /// Search for shrines & temples inside a map viewport (used to populate dynamic pins).
+    /// Uses `locationRestriction.rectangle` so results stay inside the visible region.
+    func discoverShrines(in region: MKCoordinateRegion) async throws -> [GooglePlaceResponse] {
+        guard isConfigured else { throw GooglePlacesError.notConfigured }
+        guard let url = URL(string: "\(baseURL)/places:searchText") else {
+            throw GooglePlacesError.invalidURL
+        }
+
+        var request = makeRequest(url: url, method: "POST")
+        request.setValue(discoverFieldMask, forHTTPHeaderField: "X-Goog-FieldMask")
+
+        let halfLat = region.span.latitudeDelta / 2
+        let halfLon = region.span.longitudeDelta / 2
+        let low = [
+            "latitude": region.center.latitude - halfLat,
+            "longitude": region.center.longitude - halfLon
+        ]
+        let high = [
+            "latitude": region.center.latitude + halfLat,
+            "longitude": region.center.longitude + halfLon
+        ]
+
+        let body: [String: Any] = [
+            "textQuery": "神社 寺院",
+            "languageCode": "en",
+            "maxResultCount": 20,
+            "locationRestriction": [
+                "rectangle": [
+                    "low": low,
+                    "high": high
+                ]
+            ]
+        ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let data = try await performRequest(request)
@@ -206,6 +254,19 @@ final class GooglePlacesService: @unchecked Sendable {
         "places.photos",
         "places.currentOpeningHours",
         "places.editorialSummary"
+    ].joined(separator: ",")
+
+    /// Slim field mask for viewport discovery — only the fields needed to render a pin & preview.
+    /// Keeps cost low (Places API charges by field tier).
+    private let discoverFieldMask = [
+        "places.id",
+        "places.displayName",
+        "places.formattedAddress",
+        "places.location",
+        "places.types",
+        "places.rating",
+        "places.userRatingCount",
+        "places.photos"
     ].joined(separator: ",")
 
     private let detailFieldMask = [

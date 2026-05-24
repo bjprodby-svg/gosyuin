@@ -4,12 +4,22 @@ struct ShrinePinView: View {
     let shrine: Shrine
     let isSelected: Bool
     let isCollected: Bool
+    /// `true` when the pin originated from Google Places discovery (not a hard-coded sample).
+    /// Discovered pins render in an outlined, lower-emphasis style so curated samples remain
+    /// the visual anchor.
+    var isDiscovered: Bool = false
     let onTap: () -> Void
 
     @State private var appeared = false
 
-    private var pinSize: CGFloat { isSelected ? 48 : 36 }
-    private var iconSize: CGFloat { isSelected ? 20 : 14 }
+    private var pinSize: CGFloat {
+        if isSelected { return 48 }
+        return isDiscovered ? 28 : 36
+    }
+    private var iconSize: CGFloat {
+        if isSelected { return 20 }
+        return isDiscovered ? 12 : 14
+    }
 
     var body: some View {
         Button(action: onTap) {
@@ -27,19 +37,24 @@ struct ShrinePinView: View {
                 }
 
                 Circle()
-                    .fill(shrine.category.color)
+                    .fill(isDiscovered && !isSelected
+                          ? Color(.systemBackground)
+                          : shrine.category.color)
                     .frame(width: pinSize, height: pinSize)
-                    .shadow(color: shrine.category.color.opacity(0.4), radius: isSelected ? 8 : 4, y: 2)
+                    .shadow(color: shrine.category.color.opacity(isDiscovered ? 0.2 : 0.4),
+                            radius: isSelected ? 8 : (isDiscovered ? 2 : 4), y: 2)
 
                 Circle()
-                    .strokeBorder(.white, lineWidth: isSelected ? 3 : 2)
+                    .strokeBorder(isDiscovered && !isSelected
+                                  ? shrine.category.color
+                                  : .white,
+                                  lineWidth: isSelected ? 3 : 2)
                     .frame(width: pinSize, height: pinSize)
 
-                // Canvas-drawn category icon (guaranteed to render)
                 CategoryIconView(
                     category: shrine.category,
                     size: iconSize,
-                    color: .white
+                    color: isDiscovered && !isSelected ? shrine.category.color : .white
                 )
 
                 if isCollected {

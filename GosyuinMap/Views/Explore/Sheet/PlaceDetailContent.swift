@@ -19,11 +19,14 @@ struct PlaceDetailContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            heroBanner
             peekSection
             Divider()
             ScrollView {
                 VStack(spacing: DS.Spacing.xl) {
-                    photoGallery
+                    if shrine.imageURLs.count > 1 {
+                        photoGallery
+                    }
 
                     // Collect prompt stays near the top so users see it immediately
                     if !isCollected && shrine.effectiveStampSlotId > 0 {
@@ -190,6 +193,70 @@ struct PlaceDetailContent: View {
             }
         }
         .buttonStyle(AppleMapButtonStyle())
+    }
+
+    // MARK: - Hero Banner (visible at peek)
+
+    @ViewBuilder
+    private var heroBanner: some View {
+        if let first = shrine.imageURLs.first, let url = URL(string: first) {
+            ZStack(alignment: .bottomLeading) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure:
+                        heroPlaceholder
+                    case .empty:
+                        heroPlaceholder
+                            .overlay { ProgressView().tint(.white) }
+                    @unknown default:
+                        heroPlaceholder
+                    }
+                }
+                .frame(height: 160)
+                .frame(maxWidth: .infinity)
+                .clipped()
+
+                LinearGradient(
+                    colors: [.black.opacity(0.0), .black.opacity(0.35)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 70)
+                .frame(maxWidth: .infinity, alignment: .bottom)
+                .allowsHitTesting(false)
+
+                if shrine.imageURLs.count > 1 {
+                    Label("\(shrine.imageURLs.count) Photos", systemImage: "photo.on.rectangle.angled")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, DS.Spacing.sm)
+                        .padding(.vertical, 4)
+                        .background(.black.opacity(0.45), in: Capsule())
+                        .padding(DS.Spacing.md)
+                }
+            }
+        } else if isEnriching {
+            heroPlaceholder
+                .frame(height: 160)
+                .overlay { ProgressView().tint(.white) }
+        }
+    }
+
+    private var heroPlaceholder: some View {
+        LinearGradient(
+            colors: [shrine.category.color.opacity(0.55), shrine.category.color.opacity(0.85)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .overlay {
+            Image(systemName: shrine.category.icon)
+                .font(.system(size: 36))
+                .foregroundStyle(.white.opacity(0.45))
+        }
     }
 
     // MARK: - Photo Gallery

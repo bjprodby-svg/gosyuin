@@ -8,9 +8,15 @@ final class ShrineSearchService {
 
     // MARK: - Published State
 
-    /// Filtered shrine suggestions (from local Shrine.samples)
+    /// Local sample matches (free, no API cost)
     private(set) var completions: [Shrine] = []
-    private(set) var isSearching = false
+    /// Google Places matches not already in `completions` (shown below local results)
+    private(set) var googleCompletions: [Shrine] = []
+    private(set) var isSearchingGoogle = false
+
+    /// Dynamic shrine pins fetched for the current map viewport
+    private(set) var discoveredShrines: [Shrine] = []
+    private(set) var isDiscovering = false
 
     /// Enriched shrine detail (fetched on demand when user taps a shrine)
     private(set) var enrichedShrine: Shrine?
@@ -21,6 +27,7 @@ final class ShrineSearchService {
         didSet {
             guard queryFragment != oldValue else { return }
             filterLocally()
+            scheduleGoogleSearch()
         }
     }
 
@@ -29,12 +36,22 @@ final class ShrineSearchService {
     let placesService = GooglePlacesService()
     private var enrichTask: Task<Void, Never>?
     private var enrichCache: [String: Shrine] = [:] // keyed by shrine name
+
+    private var googleSearchTask: Task<Void, Never>?
+    private var discoverTask: Task<Void, Never>?
+
     private var currentRegion: MKCoordinateRegion?
+    private var lastDiscoveredRegion: MKCoordinateRegion?
+    /// Stable Shrine objects keyed by Google place ID. Reused across viewport refreshes
+    /// so SwiftUI keeps existing annotation views (and their appear animation) instead of
+    /// re-mounting them every time the camera moves.
+    private var placeShrineCache: [String: Shrine] = [:]
 
     // MARK: - Region
 
     func updateRegion(_ region: MKCoordinateRegion) {
         currentRegion = region
+        scheduleDiscovery(region)
     }
 
     // MARK: - Local Filter
@@ -43,6 +60,7 @@ final class ShrineSearchService {
         let query = queryFragment.trimmingCharacters(in: .whitespaces).lowercased()
         guard !query.isEmpty else {
             completions = []
+            googleCompletions = []
             return
         }
 
@@ -62,6 +80,107 @@ final class ShrineSearchService {
             if aPrefix != bPrefix { return aPrefix }
             return a.name < b.name
         }
+    }
+
+    // MARK: - Google Search (debounced)
+
+    private func scheduleGoogleSearch() {
+        googleSearchTask?.cancel()
+        googleCompletions = []
+
+        let query = queryFragment.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty, query.count >= 2, placesService.isConfigured else {
+            isSearchingGoogle = false
+            return
+        }
+
+        isSearchingGoogle = true
+        let center = currentRegion?.center
+        googleSearchTask = Task { [weak self] in
+            // Debounce: wait briefly so we don't fire on every keystroke
+            try? await Task.sleep(nanoseconds: 350_000_000)
+            guard !Task.isCancelled, let self else { return }
+
+            do {
+                let places = try await self.placesService.searchText(
+                    query: query,
+                    center: center,
+                    radius: 80_000
+                )
+                guard !Task.isCancelled else { return }
+                let localNames = Set(self.completions.map { $0.name.lowercased() })
+                let mapped: [Shrine] = places.compactMap { place in
+                    if let cached = self.placeShrineCache[place.id] { return cached }
+                    let shrine = Shrine(from: place, placesService: self.placesService)
+                    guard !shrine.name.isEmpty else { return nil }
+                    // Skip Google results that duplicate a local sample we already show
+                    if localNames.contains(shrine.name.lowercased()) { return nil }
+                    if shrine.matchedSample() != nil { return nil }
+                    self.placeShrineCache[place.id] = shrine
+                    return shrine
+                }
+                self.googleCompletions = mapped
+            } catch {
+                // Silent failure for search — local results still work
+                self.googleCompletions = []
+            }
+            self.isSearchingGoogle = false
+        }
+    }
+
+    // MARK: - Viewport Discovery (debounced)
+
+    private func scheduleDiscovery(_ region: MKCoordinateRegion) {
+        // Skip viewport discovery if API not configured or zoomed out too far
+        guard placesService.isConfigured else {
+            discoveredShrines = []
+            return
+        }
+        // Roughly: only fetch when zoomed in to ~city scale
+        guard region.span.latitudeDelta < 0.25 else {
+            discoverTask?.cancel()
+            isDiscovering = false
+            return
+        }
+        // Skip if the camera barely moved since the last successful fetch
+        if let last = lastDiscoveredRegion, regionIsNearlyEqual(last, region) {
+            return
+        }
+
+        discoverTask?.cancel()
+        isDiscovering = true
+
+        discoverTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 600_000_000)
+            guard !Task.isCancelled, let self else { return }
+
+            do {
+                let places = try await self.placesService.discoverShrines(in: region)
+                guard !Task.isCancelled else { return }
+                let sampleNames = Set(Shrine.samples.map { $0.name.lowercased() })
+                let shrines: [Shrine] = places.compactMap { place in
+                    if let cached = self.placeShrineCache[place.id] { return cached }
+                    let shrine = Shrine(from: place, placesService: self.placesService)
+                    guard !shrine.name.isEmpty else { return nil }
+                    if sampleNames.contains(shrine.name.lowercased()) { return nil }
+                    if shrine.matchedSample() != nil { return nil }
+                    self.placeShrineCache[place.id] = shrine
+                    return shrine
+                }
+                self.discoveredShrines = shrines
+                self.lastDiscoveredRegion = region
+            } catch {
+                // Silent failure — discovered pins are an enhancement
+            }
+            self.isDiscovering = false
+        }
+    }
+
+    private func regionIsNearlyEqual(_ a: MKCoordinateRegion, _ b: MKCoordinateRegion) -> Bool {
+        let centerMoved = abs(a.center.latitude - b.center.latitude) + abs(a.center.longitude - b.center.longitude)
+        let avgSpan = (a.span.latitudeDelta + a.span.longitudeDelta) / 2
+        let spanRatio = b.span.latitudeDelta / max(a.span.latitudeDelta, 0.0001)
+        return centerMoved < avgSpan * 0.3 && spanRatio > 0.7 && spanRatio < 1.4
     }
 
     // MARK: - Japanese Name Lookup
@@ -126,6 +245,13 @@ final class ShrineSearchService {
         enrichedShrine = nil
         enrichError = nil
 
+        // If this shrine was itself produced from a Google place, it already has
+        // photos/rating/address; we just need to fetch reviews + opening hours.
+        if let placeId = shrine.placeId {
+            enrichFromPlaceId(placeId, base: shrine)
+            return
+        }
+
         // Return cached result if available
         if let cached = enrichCache[shrine.name] {
             enrichedShrine = cached
@@ -150,7 +276,7 @@ final class ShrineSearchService {
                     if let details = try await placesService.fetchDetails(placeId: match.id) {
                         guard !Task.isCancelled else { return }
                         let googleShrine = Shrine(from: details, placesService: placesService)
-                        self.enrichedShrine = Shrine(
+                        let merged = Shrine(
                             id: shrine.id,
                             name: shrine.name,
                             address: shrine.address.isEmpty ? googleShrine.address : shrine.address,
@@ -174,11 +300,63 @@ final class ShrineSearchService {
                             reviews: googleShrine.reviews,
                             photoReferences: googleShrine.photoReferences
                         )
-                        // Cache the result
-                        if let enriched = self.enrichedShrine {
-                            self.enrichCache[shrine.name] = enriched
-                        }
+                        self.enrichedShrine = merged
+                        self.enrichCache[shrine.name] = merged
                     }
+                }
+            } catch {
+                guard !Task.isCancelled else {
+                    self.isEnriching = false
+                    return
+                }
+                self.enrichError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            }
+            self.isEnriching = false
+        }
+    }
+
+    /// Fetch full details using a known place ID (faster, more accurate than text search).
+    private func enrichFromPlaceId(_ placeId: String, base: Shrine) {
+        if let cached = enrichCache[base.name] {
+            enrichedShrine = cached
+            return
+        }
+        guard placesService.isConfigured else {
+            enrichedShrine = base
+            return
+        }
+        isEnriching = true
+        enrichTask = Task {
+            do {
+                if let details = try await placesService.fetchDetails(placeId: placeId) {
+                    guard !Task.isCancelled else { return }
+                    let googleShrine = Shrine(from: details, placesService: placesService)
+                    let merged = Shrine(
+                        id: base.id,
+                        name: base.name,
+                        address: googleShrine.address.isEmpty ? base.address : googleShrine.address,
+                        description: googleShrine.description.isEmpty ? base.description : googleShrine.description,
+                        coordinate: base.coordinate,
+                        stampSlotId: base.stampSlotId,
+                        category: base.category,
+                        tagline: base.tagline,
+                        highlights: base.highlights,
+                        mustSee: base.mustSee,
+                        tips: base.tips,
+                        bestSeason: base.bestSeason,
+                        access: base.access,
+                        hours: googleShrine.hours.isEmpty ? base.hours : googleShrine.hours,
+                        imageURLs: googleShrine.imageURLs.isEmpty ? base.imageURLs : googleShrine.imageURLs,
+                        placeId: googleShrine.placeId,
+                        rating: googleShrine.rating ?? base.rating,
+                        userRatingCount: googleShrine.userRatingCount ?? base.userRatingCount,
+                        openNow: googleShrine.openNow ?? base.openNow,
+                        weekdayHours: googleShrine.weekdayHours ?? base.weekdayHours,
+                        reviews: googleShrine.reviews ?? base.reviews,
+                        photoReferences: googleShrine.photoReferences.isEmpty ? base.photoReferences : googleShrine.photoReferences
+                    )
+                    self.enrichedShrine = merged
+                    self.enrichCache[base.name] = merged
                 }
             } catch {
                 guard !Task.isCancelled else {
@@ -195,8 +373,10 @@ final class ShrineSearchService {
 
     func clear() {
         enrichTask?.cancel()
+        googleSearchTask?.cancel()
         queryFragment = ""
         completions = []
-        isSearching = false
+        googleCompletions = []
+        isSearchingGoogle = false
     }
 }

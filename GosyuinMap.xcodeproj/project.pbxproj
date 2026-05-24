@@ -175,6 +175,8 @@
 		CC0000010000000000000005 /* TipJarFullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarFullView.swift; sourceTree = "<group>"; };
 		CC0000010000000000000006 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
 		D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlacesService.swift; sourceTree = "<group>"; };
+		C0F1690000000000000000A1 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		C0F1690000000000000000A2 /* Secrets.xcconfig.sample */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig.sample; sourceTree = "<group>"; };
 		DD0000010000000000000001 /* Animation+DS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+DS.swift"; sourceTree = "<group>"; };
 		FA000002293AF1B0007B3F21 /* ShrineData_Famous.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Famous.swift; sourceTree = "<group>"; };
 		FA1A0003293DF1B0007B3F21 /* CategoryIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryIconView.swift; sourceTree = "<group>"; };
@@ -238,12 +240,22 @@
 				089C1698293AF1B0007B3F21 /* Services */,
 				089C168F293AF1B0007B3F21 /* Extensions */,
 				AB1234567890ABCDEF000003 /* Resources */,
+				C0F1690000000000000000B1 /* Config */,
 				089C1682293AF1B0007B3F21 /* Assets.xcassets */,
 				089C16E1293AF1B0007B3F21 /* Localizable.xcstrings */,
 				089C168E293AF1B0007B3F21 /* Preview Content */,
 				089C1686293AF1B0007B3F21 /* Info.plist */,
 			);
 			path = GosyuinMap;
+			sourceTree = "<group>";
+		};
+		C0F1690000000000000000B1 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				C0F1690000000000000000A1 /* Secrets.xcconfig */,
+				C0F1690000000000000000A2 /* Secrets.xcconfig.sample */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		089C1689293AF1B0007B3F21 /* Views */ = {
@@ -643,6 +655,7 @@
 /* Begin XCBuildConfiguration section */
 		089C1669293AF1AF007B3F21 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0F1690000000000000000A1 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ACCESSIBILITY_VALUES = YES;
@@ -708,6 +721,7 @@
 		};
 		089C166A293AF1AF007B3F21 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0F1690000000000000000A1 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ACCESSIBILITY_VALUES = YES;

@@ -33,6 +33,9 @@ Pods/
 __pycache__/
 *.pyc
 
+# Local secrets (Google Places API key, etc.) — keep template only
+GosyuinMap/Config/Secrets.xcconfig
+
 # Generated output (keep locally, not in repo)
 wave1-output/
 wave2a-output/
