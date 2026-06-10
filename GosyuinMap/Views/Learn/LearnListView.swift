@@ -32,7 +32,7 @@ struct LearnListView: View {
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 20)
                         .animation(
-                            .spring(duration: 0.5, bounce: 0.25)
+                            DS.Anim.entrance
                                 .delay(Double(index) * 0.08),
                             value: appeared
                         )
