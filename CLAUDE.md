@@ -41,7 +41,6 @@ GosyuinMap/
     Learn/
       LearnListView.swift          Article list with staggered entrance
       LearnDetailView.swift        Illustrated step-by-step guides
-      EtiquetteIllustrations.swift Canvas-drawn illustrations (legacy, being replaced by PNGs)
       GuideArticleIcon.swift       Guide icon component
     Settings/
       SettingsView.swift           Settings + comprehensive DEBUG menu
@@ -51,9 +50,8 @@ GosyuinMap/
 
   Models/
     CollectedStamp.swift           SwiftData model (slotId, collectedDate)
-    Shrine.swift                   Shrine data + ShrineCategory enum
-    ShrineData_*.swift             8 regional shrine data files (290+ shrines)
-    StampDefinition.swift          290+ stamp visual definitions
+    Shrine.swift                   Shrine model + ShrineCategory enum + JSON loader (Resources/shrines.json, 480 shrines)
+    StampDefinition.swift          Stamp model + JSON loader (Resources/stamps.json, 290 stamps)
     CollectorLevel.swift           12-tier level system + Achievement + AchievementCategory
     GuideArticle.swift             Learn tab article definitions
     JapanCoordinates.swift         Japan geography coordinates
@@ -71,9 +69,11 @@ GosyuinMap/
   Extensions/
     Color+Theme.swift              Semantic colors, DS namespace (Spacing, Radius, Anim, Font)
     Animation+DS.swift             Animation modifiers, AnimatedCounter, AnimationSequence
-    GlassEffect+Adaptive.swift     Liquid Glass helper
 
   Resources/
+    shrines.json                   Shrine catalog (480 shrines, loaded at launch)
+    stamps.json                    Stamp catalog (290 stamps, loaded at launch)
+    shrine_images.json             Optional image-URL overlay keyed by shrine name
     Animations/                    Lottie JSON files (confetti, fireworks, sparkle, etc.)
     Tips.storekit                  StoreKit testing configuration (3 consumable products)
   Assets.xcassets/

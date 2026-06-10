@@ -13,7 +13,6 @@
 		089C167D293AF1B0007B3F21 /* CollectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C167C293AF1B0007B3F21 /* CollectView.swift */; };
 		089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089C1682293AF1B0007B3F21 /* Assets.xcassets */; };
 		089C1692293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */; };
-		089C1693293AF1B0007B3F21 /* GlassEffect+Adaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */; };
 		089C1695293AF1B0007B3F21 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1694293AF1B0007B3F21 /* LocationService.swift */; };
 		089C1697293AF1B0007B3F21 /* Shrine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1696293AF1B0007B3F21 /* Shrine.swift */; };
 		089C169B293AF1B0007B3F21 /* CollectedStamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C169A293AF1B0007B3F21 /* CollectedStamp.swift */; };
@@ -49,19 +48,13 @@
 		089C19B2293DF1B0007B3F21 /* MapFloatingButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C19A2293DF1B0007B3F21 /* MapFloatingButtons.swift */; };
 		089C1AA1293DF1B0007B3F21 /* GosyuinArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */; };
 		089C1AA3293DF1B0007B3F21 /* GosyuinBookSpreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */; };
-		089C2001293AF1B0007B3F21 /* ShrineData_Tokyo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C2000293AF1B0007B3F21 /* ShrineData_Tokyo.swift */; };
-		089C2003293AF1B0007B3F21 /* ShrineData_Kanagawa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C2002293AF1B0007B3F21 /* ShrineData_Kanagawa.swift */; };
-		089C2005293AF1B0007B3F21 /* ShrineData_Chiba.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C2004293AF1B0007B3F21 /* ShrineData_Chiba.swift */; };
-		089C2007293AF1B0007B3F21 /* ShrineData_Kansai.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C2006293AF1B0007B3F21 /* ShrineData_Kansai.swift */; };
-		089C2009293AF1B0007B3F21 /* ShrineData_Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C2008293AF1B0007B3F21 /* ShrineData_Other.swift */; };
-		089C200B293AF1B0007B3F21 /* ShrineData_Chubu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C200A293AF1B0007B3F21 /* ShrineData_Chubu.swift */; };
-		089C200D293AF1B0007B3F21 /* ShrineData_EastJapan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C200C293AF1B0007B3F21 /* ShrineData_EastJapan.swift */; };
-		089C200F293AF1B0007B3F21 /* ShrineData_WestJapan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C200E293AF1B0007B3F21 /* ShrineData_WestJapan.swift */; };
 		96BC904C108141E3B9963B96 /* GooglePlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */; };
 		A1B2C3D5293DF1B0007B3F21 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */; };
 		A1B2C3D7293DF1B0007B3F21 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D6293DF1B0007B3F21 /* AvatarView.swift */; };
 		AA0000000000000000000002 /* ShrinePassportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000001 /* ShrinePassportView.swift */; };
 		AB1234567890ABCDEF000002 /* shrine_images.json in Resources */ = {isa = PBXBuildFile; fileRef = AB1234567890ABCDEF000001 /* shrine_images.json */; };
+		AB1234567890ABCDEF000004 /* shrines.json in Resources */ = {isa = PBXBuildFile; fileRef = AB1234567890ABCDEF000005 /* shrines.json */; };
+		AB1234567890ABCDEF000006 /* stamps.json in Resources */ = {isa = PBXBuildFile; fileRef = AB1234567890ABCDEF000007 /* stamps.json */; };
 		BB0000010000000000000001 /* JapanCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000020000000000000001 /* JapanCoordinates.swift */; };
 		CC0000020000000000000001 /* TipStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000001 /* TipStore.swift */; };
 		CC0000020000000000000002 /* TipPromptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000002 /* TipPromptController.swift */; };
@@ -69,11 +62,9 @@
 		CC0000020000000000000004 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000004 /* SettingsView.swift */; };
 		CC0000020000000000000005 /* TipJarFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000010000000000000005 /* TipJarFullView.swift */; };
 		DD0000020000000000000001 /* Animation+DS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0000010000000000000001 /* Animation+DS.swift */; };
-		FA000001293AF1B0007B3F21 /* ShrineData_Famous.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA000002293AF1B0007B3F21 /* ShrineData_Famous.swift */; };
 		FA1A0004293DF1B0007B3F21 /* CategoryIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1A0003293DF1B0007B3F21 /* CategoryIconView.swift */; };
 		FA2D0002293DF1B0007B3F21 /* DirectionsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */; };
 		FA3D0001293AF1B0007B3F21 /* CollectorLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */; };
-		FA4D000000000002293AF1B0 /* EtiquetteIllustrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */; };
 		EE0000020000000000000002 /* LevelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000010000000000000002 /* LevelDetailView.swift */; };
 		FF0000020000000000000001 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000001 /* confetti.json */; };
 		FF0000020000000000000002 /* level_up.json in Resources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* level_up.json */; };
@@ -119,7 +110,6 @@
 		089C1684293AF1B0007B3F21 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		089C1686293AF1B0007B3F21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		089C1690293AF1B0007B3F21 /* GosyuinActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinActivityAttributes.swift; sourceTree = "<group>"; };
-		089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlassEffect+Adaptive.swift"; sourceTree = "<group>"; };
 		089C1694293AF1B0007B3F21 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		089C1696293AF1B0007B3F21 /* Shrine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shrine.swift; sourceTree = "<group>"; };
 		089C169A293AF1B0007B3F21 /* CollectedStamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedStamp.swift; sourceTree = "<group>"; };
@@ -155,18 +145,12 @@
 		089C19A2293DF1B0007B3F21 /* MapFloatingButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapFloatingButtons.swift; sourceTree = "<group>"; };
 		089C1AA0293DF1B0007B3F21 /* GosyuinArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinArtworkView.swift; sourceTree = "<group>"; };
 		089C1AA2293DF1B0007B3F21 /* GosyuinBookSpreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosyuinBookSpreadView.swift; sourceTree = "<group>"; };
-		089C2000293AF1B0007B3F21 /* ShrineData_Tokyo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Tokyo.swift; sourceTree = "<group>"; };
-		089C2002293AF1B0007B3F21 /* ShrineData_Kanagawa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Kanagawa.swift; sourceTree = "<group>"; };
-		089C2004293AF1B0007B3F21 /* ShrineData_Chiba.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Chiba.swift; sourceTree = "<group>"; };
-		089C2006293AF1B0007B3F21 /* ShrineData_Kansai.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Kansai.swift; sourceTree = "<group>"; };
-		089C2008293AF1B0007B3F21 /* ShrineData_Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Other.swift; sourceTree = "<group>"; };
-		089C200A293AF1B0007B3F21 /* ShrineData_Chubu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Chubu.swift; sourceTree = "<group>"; };
-		089C200C293AF1B0007B3F21 /* ShrineData_EastJapan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_EastJapan.swift; sourceTree = "<group>"; };
-		089C200E293AF1B0007B3F21 /* ShrineData_WestJapan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_WestJapan.swift; sourceTree = "<group>"; };
 		A1B2C3D4293DF1B0007B3F21 /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		A1B2C3D6293DF1B0007B3F21 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000001 /* ShrinePassportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrinePassportView.swift; sourceTree = "<group>"; };
 		AB1234567890ABCDEF000001 /* shrine_images.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shrine_images.json; sourceTree = "<group>"; };
+		AB1234567890ABCDEF000005 /* shrines.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shrines.json; sourceTree = "<group>"; };
+		AB1234567890ABCDEF000007 /* stamps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stamps.json; sourceTree = "<group>"; };
 		BB0000020000000000000001 /* JapanCoordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapanCoordinates.swift; sourceTree = "<group>"; };
 		CC0000010000000000000001 /* TipStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipStore.swift; sourceTree = "<group>"; };
 		CC0000010000000000000002 /* TipPromptController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipPromptController.swift; sourceTree = "<group>"; };
@@ -176,11 +160,9 @@
 		CC0000010000000000000006 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
 		D2FEEEF711D345AE92EA75CE /* GooglePlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlacesService.swift; sourceTree = "<group>"; };
 		DD0000010000000000000001 /* Animation+DS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+DS.swift"; sourceTree = "<group>"; };
-		FA000002293AF1B0007B3F21 /* ShrineData_Famous.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrineData_Famous.swift; sourceTree = "<group>"; };
 		FA1A0003293DF1B0007B3F21 /* CategoryIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryIconView.swift; sourceTree = "<group>"; };
 		FA2D0001293DF1B0007B3F21 /* DirectionsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsSheet.swift; sourceTree = "<group>"; };
 		FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectorLevel.swift; sourceTree = "<group>"; };
-		FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EtiquetteIllustrations.swift; sourceTree = "<group>"; };
 		EE0000010000000000000002 /* LevelDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDetailView.swift; sourceTree = "<group>"; };
 		FF0000010000000000000001 /* confetti.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		FF0000010000000000000002 /* level_up.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = level_up.json; sourceTree = "<group>"; };
@@ -296,7 +278,6 @@
 			children = (
 				089C16A4293AF1B0007B3F21 /* LearnListView.swift */,
 				089C16A6293AF1B0007B3F21 /* LearnDetailView.swift */,
-				FA4D000000000001293AF1B0 /* EtiquetteIllustrations.swift */,
 			);
 			path = Learn;
 			sourceTree = "<group>";
@@ -305,15 +286,6 @@
 			isa = PBXGroup;
 			children = (
 				089C1696293AF1B0007B3F21 /* Shrine.swift */,
-				089C2000293AF1B0007B3F21 /* ShrineData_Tokyo.swift */,
-				089C2002293AF1B0007B3F21 /* ShrineData_Kanagawa.swift */,
-				089C2004293AF1B0007B3F21 /* ShrineData_Chiba.swift */,
-				089C2006293AF1B0007B3F21 /* ShrineData_Kansai.swift */,
-				089C2008293AF1B0007B3F21 /* ShrineData_Other.swift */,
-				089C200A293AF1B0007B3F21 /* ShrineData_Chubu.swift */,
-				089C200C293AF1B0007B3F21 /* ShrineData_EastJapan.swift */,
-				089C200E293AF1B0007B3F21 /* ShrineData_WestJapan.swift */,
-				FA000002293AF1B0007B3F21 /* ShrineData_Famous.swift */,
 				089C169A293AF1B0007B3F21 /* CollectedStamp.swift */,
 				089C169C293AF1B0007B3F21 /* StampDefinition.swift */,
 				FA3D0002293AF1B0007B3F21 /* CollectorLevel.swift */,
@@ -335,7 +307,6 @@
 		089C168F293AF1B0007B3F21 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				089C1691293AF1B0007B3F21 /* GlassEffect+Adaptive.swift */,
 				089C16B0293AF1B0007B3F21 /* Color+Theme.swift */,
 				DD0000010000000000000001 /* Animation+DS.swift */,
 			);
@@ -410,6 +381,8 @@
 			isa = PBXGroup;
 			children = (
 				AB1234567890ABCDEF000001 /* shrine_images.json */,
+				AB1234567890ABCDEF000005 /* shrines.json */,
+				AB1234567890ABCDEF000007 /* stamps.json */,
 				CC0000010000000000000006 /* Tips.storekit */,
 				FF0000030000000000000001 /* Animations */,
 			);
@@ -531,6 +504,8 @@
 				089C1683293AF1B0007B3F21 /* Assets.xcassets in Resources */,
 				089C16E0293AF1B0007B3F21 /* Localizable.xcstrings in Resources */,
 				AB1234567890ABCDEF000002 /* shrine_images.json in Resources */,
+				AB1234567890ABCDEF000004 /* shrines.json in Resources */,
+				AB1234567890ABCDEF000006 /* stamps.json in Resources */,
 				FF0000020000000000000001 /* confetti.json in Resources */,
 				FF0000020000000000000002 /* level_up.json in Resources */,
 				FF0000020000000000000003 /* badge_unlock.json in Resources */,
@@ -563,7 +538,6 @@
 				089C167D293AF1B0007B3F21 /* CollectView.swift in Sources */,
 				AA0000000000000000000002 /* ShrinePassportView.swift in Sources */,
 				089C1692293AF1B0007B3F21 /* GosyuinActivityAttributes.swift in Sources */,
-				089C1693293AF1B0007B3F21 /* GlassEffect+Adaptive.swift in Sources */,
 				089C1695293AF1B0007B3F21 /* LocationService.swift in Sources */,
 				089C1697293AF1B0007B3F21 /* Shrine.swift in Sources */,
 				089C169B293AF1B0007B3F21 /* CollectedStamp.swift in Sources */,
@@ -574,7 +548,6 @@
 				089C16A3293AF1B0007B3F21 /* StampDetailView.swift in Sources */,
 				089C16A5293AF1B0007B3F21 /* LearnListView.swift in Sources */,
 				089C16A7293AF1B0007B3F21 /* LearnDetailView.swift in Sources */,
-				FA4D000000000002293AF1B0 /* EtiquetteIllustrations.swift in Sources */,
 				089C16A9293AF1B0007B3F21 /* GuideArticle.swift in Sources */,
 				089C16C0293AF1B0007B3F21 /* Color+Theme.swift in Sources */,
 				089C16C1293AF1B0007B3F21 /* SplashView.swift in Sources */,
@@ -601,15 +574,6 @@
 				089C19B0293DF1B0007B3F21 /* FloatingSearchBar.swift in Sources */,
 				089C19B1293DF1B0007B3F21 /* FloatingCategoryChips.swift in Sources */,
 				089C19B2293DF1B0007B3F21 /* MapFloatingButtons.swift in Sources */,
-				089C2001293AF1B0007B3F21 /* ShrineData_Tokyo.swift in Sources */,
-				089C2003293AF1B0007B3F21 /* ShrineData_Kanagawa.swift in Sources */,
-				089C2005293AF1B0007B3F21 /* ShrineData_Chiba.swift in Sources */,
-				089C2007293AF1B0007B3F21 /* ShrineData_Kansai.swift in Sources */,
-				089C2009293AF1B0007B3F21 /* ShrineData_Other.swift in Sources */,
-				089C200B293AF1B0007B3F21 /* ShrineData_Chubu.swift in Sources */,
-				089C200D293AF1B0007B3F21 /* ShrineData_EastJapan.swift in Sources */,
-				089C200F293AF1B0007B3F21 /* ShrineData_WestJapan.swift in Sources */,
-				FA000001293AF1B0007B3F21 /* ShrineData_Famous.swift in Sources */,
 				CC0000020000000000000001 /* TipStore.swift in Sources */,
 				CC0000020000000000000002 /* TipPromptController.swift in Sources */,
 				CC0000020000000000000003 /* TipJarCard.swift in Sources */,

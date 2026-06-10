@@ -145,10 +145,10 @@ struct Shrine: Identifiable, Hashable {
         lhs.id == rhs.id
     }
 
-    // MARK: - Sample Data (combined from regional files)
+    // MARK: - Sample Data (loaded from bundled shrines.json)
 
     static let samples: [Shrine] = {
-        let all = tokyoShrines + kanagawaShrines + chibaShrines + kansaiShrines + otherShrines + chubuShrines + eastJapanShrines + westJapanShrines + famousShrines
+        let all = ShrineSeed.loadAll().map { $0.toShrine() }
         // Load image URLs from bundled JSON
         guard let url = Bundle.main.url(forResource: "shrine_images", withExtension: "json"),
               let data = try? Data(contentsOf: url),
@@ -164,6 +164,61 @@ struct Shrine: Identifiable, Hashable {
             return shrine
         }
     }()
+}
+
+// MARK: - Shrine JSON Seed
+
+/// Decodable representation of a shrine as stored in `shrines.json`. The shrine
+/// catalog lives as data (not compiled Swift literals) and is loaded at launch.
+private struct ShrineSeed: Decodable {
+    let id: String
+    let name: String
+    let address: String
+    let description: String
+    let latitude: Double
+    let longitude: Double
+    let stampSlotId: Int
+    let category: String
+    let tagline: String
+    let highlights: [String]
+    let mustSee: String
+    let tips: [String]
+    let bestSeason: String
+    let access: String
+    let hours: String
+
+    func toShrine() -> Shrine {
+        Shrine(
+            id: UUID(uuidString: id) ?? UUID(),
+            name: name,
+            address: address,
+            description: description,
+            coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
+            stampSlotId: stampSlotId,
+            category: ShrineCategory(rawValue: category) ?? .jinja,
+            tagline: tagline,
+            highlights: highlights,
+            mustSee: mustSee,
+            tips: tips,
+            bestSeason: bestSeason,
+            access: access,
+            hours: hours
+        )
+    }
+
+    static func loadAll() -> [ShrineSeed] {
+        guard let url = Bundle.main.url(forResource: "shrines", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            assertionFailure("shrines.json missing from bundle")
+            return []
+        }
+        do {
+            return try JSONDecoder().decode([ShrineSeed].self, from: data)
+        } catch {
+            assertionFailure("Failed to decode shrines.json: \(error)")
+            return []
+        }
+    }
 }
 
 extension Shrine {

@@ -1,0 +1,3772 @@
+[
+ {
+  "id": 1,
+  "name": "Meiji Jingu",
+  "icon": "building.columns.fill",
+  "color": [
+   0.8,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Shibuya, Yoyogi",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_meiji_jingu"
+ },
+ {
+  "id": 2,
+  "name": "Senso-ji",
+  "icon": "flame.fill",
+  "color": [
+   0.85,
+   0.2,
+   0.1
+  ],
+  "subtitle": "Taito, Asakusa",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_sensoji"
+ },
+ {
+  "id": 3,
+  "name": "Yasukuni Jinja",
+  "icon": "flag.fill",
+  "color": [
+   0.75,
+   0.12,
+   0.2
+  ],
+  "subtitle": "Chiyoda, Kudan",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_yasukuni"
+ },
+ {
+  "id": 4,
+  "name": "Kanda Myojin",
+  "icon": "leaf.fill",
+  "color": [
+   0.2,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Chiyoda, Sotokanda",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_kanda_myojin"
+ },
+ {
+  "id": 5,
+  "name": "Hie Jinja",
+  "icon": "tree.fill",
+  "color": [
+   0.15,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Chiyoda, Nagatacho",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_hie_jinja"
+ },
+ {
+  "id": 6,
+  "name": "Nezu Jinja",
+  "icon": "camera.macro",
+  "color": [
+   0.3,
+   0.6,
+   0.35
+  ],
+  "subtitle": "Bunkyo, Nezu",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_nezu_jinja"
+ },
+ {
+  "id": 7,
+  "name": "Tokyo Daijingu",
+  "icon": "moon.stars.fill",
+  "color": [
+   0.15,
+   0.3,
+   0.6
+  ],
+  "subtitle": "Chiyoda, Fujimi",
+  "stampSymbol": "🌙",
+  "imageName": "stamp_tokyo_daijingu"
+ },
+ {
+  "id": 8,
+  "name": "Yushima Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.2,
+   0.35,
+   0.65
+  ],
+  "subtitle": "Bunkyo, Yushima",
+  "stampSymbol": "🏓",
+  "imageName": "stamp_yushima_tenmangu"
+ },
+ {
+  "id": 9,
+  "name": "Gotoku-ji",
+  "icon": "cat.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Setagaya, Gotokuji",
+  "stampSymbol": "🐱",
+  "imageName": "stamp_gotokuji"
+ },
+ {
+  "id": 10,
+  "name": "Zojo-ji",
+  "icon": "flame.fill",
+  "color": [
+   0.2,
+   0.35,
+   0.6
+  ],
+  "subtitle": "Minato, Shibakoen",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_zojoji"
+ },
+ {
+  "id": 11,
+  "name": "Tomioka Hachimangu",
+  "icon": "figure.wrestling",
+  "color": [
+   0.75,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Koto, Tomioka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_tomioka"
+ },
+ {
+  "id": 12,
+  "name": "Atago Jinja",
+  "icon": "stairs",
+  "color": [
+   0.2,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Minato, Atago",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_atago"
+ },
+ {
+  "id": 13,
+  "name": "Hanazono Jinja",
+  "icon": "sparkles",
+  "color": [
+   0.8,
+   0.2,
+   0.3
+  ],
+  "subtitle": "Shinjuku",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hanazono"
+ },
+ {
+  "id": 14,
+  "name": "Asakusa Jinja",
+  "icon": "party.popper.fill",
+  "color": [
+   0.85,
+   0.25,
+   0.15
+  ],
+  "subtitle": "Taito, Asakusa",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_asakusa_jinja"
+ },
+ {
+  "id": 15,
+  "name": "Sengaku-ji",
+  "icon": "shield.fill",
+  "color": [
+   0.3,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Minato, Takanawa",
+  "stampSymbol": "⚔️",
+  "imageName": "stamp_sengakuji"
+ },
+ {
+  "id": 16,
+  "name": "Jindai-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.25,
+   0.55,
+   0.25
+  ],
+  "subtitle": "Chofu, Jindaiji",
+  "stampSymbol": "🍜",
+  "imageName": "stamp_jindaiji"
+ },
+ {
+  "id": 17,
+  "name": "Nogi Jinja",
+  "icon": "star.fill",
+  "color": [
+   0.45,
+   0.4,
+   0.35
+  ],
+  "subtitle": "Minato, Akasaka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_nogi"
+ },
+ {
+  "id": 18,
+  "name": "Akasaka Hikawa",
+  "icon": "tree.fill",
+  "color": [
+   0.18,
+   0.48,
+   0.28
+  ],
+  "subtitle": "Minato, Akasaka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_akasaka_hikawa"
+ },
+ {
+  "id": 19,
+  "name": "Tsurugaoka Hachiman",
+  "icon": "flag.fill",
+  "color": [
+   0.7,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Kamakura",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_tsurugaoka"
+ },
+ {
+  "id": 20,
+  "name": "Kotoku-in",
+  "icon": "figure.seated.seatbelt",
+  "color": [
+   0.45,
+   0.55,
+   0.35
+  ],
+  "subtitle": "Kamakura, Hase",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_kotokuin"
+ },
+ {
+  "id": 21,
+  "name": "Hasedera",
+  "icon": "camera.macro",
+  "color": [
+   0.35,
+   0.5,
+   0.7
+  ],
+  "subtitle": "Kamakura, Hase",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_hasedera"
+ },
+ {
+  "id": 22,
+  "name": "Enoshima Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.45,
+   0.7
+  ],
+  "subtitle": "Fujisawa, Enoshima",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_enoshima"
+ },
+ {
+  "id": 23,
+  "name": "Kawasaki Daishi",
+  "icon": "flame.fill",
+  "color": [
+   0.8,
+   0.3,
+   0.1
+  ],
+  "subtitle": "Kawasaki",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kawasaki_daishi"
+ },
+ {
+  "id": 24,
+  "name": "Kencho-ji",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Kamakura",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_kenchoji"
+ },
+ {
+  "id": 25,
+  "name": "Hokoku-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.2,
+   0.6,
+   0.3
+  ],
+  "subtitle": "Kamakura, Jomyoji",
+  "stampSymbol": "🎍",
+  "imageName": "stamp_hokokuji"
+ },
+ {
+  "id": 26,
+  "name": "Samukawa Jinja",
+  "icon": "shield.checkered",
+  "color": [
+   0.55,
+   0.4,
+   0.2
+  ],
+  "subtitle": "Samukawa, Kanagawa",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_samukawa"
+ },
+ {
+  "id": 27,
+  "name": "Fushimi Inari Taisha",
+  "icon": "flame.fill",
+  "color": [
+   0.8,
+   0.15,
+   0.1
+  ],
+  "subtitle": "Fushimi, Kyoto",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_fushimi_inari"
+ },
+ {
+  "id": 28,
+  "name": "Kinkaku-ji",
+  "icon": "sparkles",
+  "color": [
+   0.75,
+   0.6,
+   0.1
+  ],
+  "subtitle": "Kita, Kyoto",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kinkakuji"
+ },
+ {
+  "id": 29,
+  "name": "Kiyomizu-dera",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.55,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Higashiyama, Kyoto",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_kiyomizudera"
+ },
+ {
+  "id": 30,
+  "name": "Yasaka Jinja",
+  "icon": "lantern.2.fill",
+  "color": [
+   0.78,
+   0.12,
+   0.18
+  ],
+  "subtitle": "Gion, Kyoto",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_yasaka"
+ },
+ {
+  "id": 31,
+  "name": "Shimogamo Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.15,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Sakyo, Kyoto",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_shimogamo"
+ },
+ {
+  "id": 32,
+  "name": "Kamigamo Jinja",
+  "icon": "wind",
+  "color": [
+   0.2,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Kita, Kyoto",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kamigamo"
+ },
+ {
+  "id": 33,
+  "name": "Kitano Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.55,
+   0.25,
+   0.52
+  ],
+  "subtitle": "Kamigyo, Kyoto",
+  "stampSymbol": "☂️",
+  "imageName": "stamp_kitano_tenmangu"
+ },
+ {
+  "id": 34,
+  "name": "Heian Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.15,
+   0.3,
+   0.65
+  ],
+  "subtitle": "Sakyo, Kyoto",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_heian_jingu"
+ },
+ {
+  "id": 35,
+  "name": "Nijo Castle",
+  "icon": "building.2.fill",
+  "color": [
+   0.3,
+   0.28,
+   0.55
+  ],
+  "subtitle": "Nakagyo, Kyoto",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_nijo_castle"
+ },
+ {
+  "id": 36,
+  "name": "Sumiyoshi Taisha",
+  "icon": "drop.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Sumiyoshi, Osaka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_sumiyoshi"
+ },
+ {
+  "id": 37,
+  "name": "Osaka Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.5,
+   0.22,
+   0.5
+  ],
+  "subtitle": "Kita, Osaka",
+  "stampSymbol": "💫",
+  "imageName": "stamp_osaka_tenmangu"
+ },
+ {
+  "id": 38,
+  "name": "Namba Yasaka Jinja",
+  "icon": "mouth.fill",
+  "color": [
+   0.8,
+   0.2,
+   0.1
+  ],
+  "subtitle": "Naniwa, Osaka",
+  "stampSymbol": "🦁",
+  "imageName": "stamp_namba_yasaka"
+ },
+ {
+  "id": 39,
+  "name": "Imamiya Ebisu Jinja",
+  "icon": "cart.fill",
+  "color": [
+   0.7,
+   0.45,
+   0.1
+  ],
+  "subtitle": "Naniwa, Osaka",
+  "stampSymbol": "🍀",
+  "imageName": "stamp_imamiya_ebisu"
+ },
+ {
+  "id": 40,
+  "name": "Shitennoji",
+  "icon": "building.columns.fill",
+  "color": [
+   0.2,
+   0.35,
+   0.6
+  ],
+  "subtitle": "Tennoji, Osaka",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_shitennoji"
+ },
+ {
+  "id": 41,
+  "name": "Kasuga Taisha",
+  "icon": "light.cylindrical.ceiling.fill",
+  "color": [
+   0.75,
+   0.5,
+   0.1
+  ],
+  "subtitle": "Nara Park, Nara",
+  "stampSymbol": "🪔",
+  "imageName": "stamp_kasuga_taisha"
+ },
+ {
+  "id": 42,
+  "name": "Todai-ji",
+  "icon": "figure.seated.seatbelt",
+  "color": [
+   0.25,
+   0.45,
+   0.3
+  ],
+  "subtitle": "Zoshi, Nara",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_todaiji"
+ },
+ {
+  "id": 43,
+  "name": "Yakushi-ji",
+  "icon": "medical.thermometer.fill",
+  "color": [
+   0.4,
+   0.55,
+   0.65
+  ],
+  "subtitle": "Nishinokyo, Nara",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_yakushiji"
+ },
+ {
+  "id": 44,
+  "name": "Kofuku-ji",
+  "icon": "building.fill",
+  "color": [
+   0.55,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Noborioji, Nara",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kofukuji"
+ },
+ {
+  "id": 45,
+  "name": "Ise Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.6,
+   0.45,
+   0.15
+  ],
+  "subtitle": "Ise, Mie",
+  "stampSymbol": "✨",
+  "imageName": "stamp_ise_jingu"
+ },
+ {
+  "id": 46,
+  "name": "Itsukushima Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.8,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Miyajima, Hiroshima",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_itsukushima"
+ },
+ {
+  "id": 47,
+  "name": "Izumo Taisha",
+  "icon": "heart.fill",
+  "color": [
+   0.2,
+   0.45,
+   0.65
+  ],
+  "subtitle": "Izumo, Shimane",
+  "stampSymbol": "💞",
+  "imageName": "stamp_izumo_taisha"
+ },
+ {
+  "id": 48,
+  "name": "Dazaifu Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.45,
+   0.2,
+   0.48
+  ],
+  "subtitle": "Dazaifu, Fukuoka",
+  "stampSymbol": "🌺",
+  "imageName": "stamp_dazaifu"
+ },
+ {
+  "id": 49,
+  "name": "Toshogu (Nikko)",
+  "icon": "paintpalette.fill",
+  "color": [
+   0.65,
+   0.35,
+   0.1
+  ],
+  "subtitle": "Nikko, Tochigi",
+  "stampSymbol": "🐒",
+  "imageName": "stamp_nikko_toshogu"
+ },
+ {
+  "id": 50,
+  "name": "Hakozaki Hachimangu",
+  "icon": "shield.fill",
+  "color": [
+   0.7,
+   0.12,
+   0.2
+  ],
+  "subtitle": "Higashi, Fukuoka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hakozaki"
+ },
+ {
+  "id": 51,
+  "name": "Shibamata Taishakuten",
+  "icon": "film.fill",
+  "color": [
+   0.55,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Katsushika",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_shibamata"
+ },
+ {
+  "id": 52,
+  "name": "Ikegami Honmon-ji",
+  "icon": "flame.fill",
+  "color": [
+   0.2,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Ota, Ikegami",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_ikegami"
+ },
+ {
+  "id": 53,
+  "name": "Oji Jinja",
+  "icon": "fox.fill",
+  "color": [
+   0.75,
+   0.2,
+   0.15
+  ],
+  "subtitle": "Kita, Oji",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_oji"
+ },
+ {
+  "id": 54,
+  "name": "Oji Inari Jinja",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.25,
+   0.1
+  ],
+  "subtitle": "Kita, Oji",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_oji_inari"
+ },
+ {
+  "id": 55,
+  "name": "Toyokawa Inari",
+  "icon": "flame",
+  "color": [
+   0.75,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Minato, Akasaka",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_toyokawa_inari_tokyo"
+ },
+ {
+  "id": 56,
+  "name": "Shiba Toshogu",
+  "icon": "paintpalette.fill",
+  "color": [
+   0.6,
+   0.4,
+   0.12
+  ],
+  "subtitle": "Minato, Shiba",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_shiba_toshogu"
+ },
+ {
+  "id": 57,
+  "name": "Namiyoke Inari",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.4,
+   0.65
+  ],
+  "subtitle": "Chuo, Tsukiji",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_namiyoke_inari"
+ },
+ {
+  "id": 58,
+  "name": "Okunitama Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.7,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Fuchu",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_okunitama"
+ },
+ {
+  "id": 59,
+  "name": "Musashi Mitake Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.25,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Ome, Mt. Mitake",
+  "stampSymbol": "⛰️",
+  "imageName": "stamp_musashi_mitake"
+ },
+ {
+  "id": 60,
+  "name": "Kishimojin-do",
+  "icon": "figure.and.child.holdinghands",
+  "color": [
+   0.7,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Toshima, Zoshigaya",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kishimojin"
+ },
+ {
+  "id": 61,
+  "name": "Tennoji",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.3,
+   0.25,
+   0.55
+  ],
+  "subtitle": "Taito, Yanaka",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_tennoji_yanaka"
+ },
+ {
+  "id": 62,
+  "name": "Fukagawa Fudo-do",
+  "icon": "flame.fill",
+  "color": [
+   0.8,
+   0.3,
+   0.1
+  ],
+  "subtitle": "Koto, Fukagawa",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_fukagawa_fudo"
+ },
+ {
+  "id": 63,
+  "name": "Suitengu",
+  "icon": "drop.fill",
+  "color": [
+   0.15,
+   0.35,
+   0.65
+  ],
+  "subtitle": "Chuo, Nihonbashi",
+  "stampSymbol": "💧",
+  "imageName": "stamp_suitengu"
+ },
+ {
+  "id": 64,
+  "name": "Togo Jinja",
+  "icon": "anchor",
+  "color": [
+   0.2,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Shibuya, Harajuku",
+  "stampSymbol": "⚓",
+  "imageName": "stamp_togo_jinja"
+ },
+ {
+  "id": 65,
+  "name": "Takao-san Yakuo-in",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Hachioji, Mt. Takao",
+  "stampSymbol": "🏔️",
+  "imageName": "stamp_takao_yakuoin"
+ },
+ {
+  "id": 66,
+  "name": "Konno Hachimangu",
+  "icon": "shield.fill",
+  "color": [
+   0.6,
+   0.12,
+   0.15
+  ],
+  "subtitle": "Shibuya",
+  "stampSymbol": "🛡️",
+  "imageName": "stamp_konno_hachimangu"
+ },
+ {
+  "id": 67,
+  "name": "Imado Jinja",
+  "icon": "cat.fill",
+  "color": [
+   0.8,
+   0.4,
+   0.5
+  ],
+  "subtitle": "Taito, Asakusa",
+  "stampSymbol": "🐱",
+  "imageName": "stamp_imado_jinja"
+ },
+ {
+  "id": 68,
+  "name": "Toranomon Kotohiragu",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.4,
+   0.15
+  ],
+  "subtitle": "Minato, Toranomon",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_toranomon_kotohira"
+ },
+ {
+  "id": 69,
+  "name": "Matsuchiyama Shoden",
+  "icon": "carrot.fill",
+  "color": [
+   0.8,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Taito, Asakusa",
+  "stampSymbol": "🥕",
+  "imageName": "stamp_matsuchiyama"
+ },
+ {
+  "id": 70,
+  "name": "Kameido Tenjin",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.45,
+   0.2,
+   0.5
+  ],
+  "subtitle": "Koto, Kameido",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_kameido_tenjin"
+ },
+ {
+  "id": 71,
+  "name": "Koami Jinja",
+  "icon": "banknote.fill",
+  "color": [
+   0.7,
+   0.55,
+   0.1
+  ],
+  "subtitle": "Chuo, Nihonbashi",
+  "stampSymbol": "💰",
+  "imageName": "stamp_koami_jinja"
+ },
+ {
+  "id": 72,
+  "name": "Yushima Seido",
+  "icon": "book.fill",
+  "color": [
+   0.25,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Bunkyo, Yushima",
+  "stampSymbol": "📚",
+  "imageName": "stamp_yushima_seido"
+ },
+ {
+  "id": 73,
+  "name": "Engaku-ji",
+  "icon": "bell.fill",
+  "color": [
+   0.35,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Kita-Kamakura",
+  "stampSymbol": "🔔",
+  "imageName": "stamp_engakuji"
+ },
+ {
+  "id": 74,
+  "name": "Jochi-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.25,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Kita-Kamakura",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_jochiji"
+ },
+ {
+  "id": 75,
+  "name": "Zuisen-ji",
+  "icon": "camera.macro",
+  "color": [
+   0.5,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Kamakura",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_zuisenji"
+ },
+ {
+  "id": 76,
+  "name": "Sugimoto-dera",
+  "icon": "stairs",
+  "color": [
+   0.4,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Kamakura",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_sugimotodera"
+ },
+ {
+  "id": 77,
+  "name": "Meigetsuin",
+  "icon": "camera.macro",
+  "color": [
+   0.3,
+   0.45,
+   0.7
+  ],
+  "subtitle": "Kita-Kamakura",
+  "stampSymbol": "💮",
+  "imageName": "stamp_meigetsuin"
+ },
+ {
+  "id": 78,
+  "name": "Tokei-ji",
+  "icon": "camera.macro",
+  "color": [
+   0.55,
+   0.4,
+   0.6
+  ],
+  "subtitle": "Kita-Kamakura",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_tokeiji"
+ },
+ {
+  "id": 79,
+  "name": "Ofuna Kannon-ji",
+  "icon": "figure.seated.seatbelt",
+  "color": [
+   0.7,
+   0.7,
+   0.7
+  ],
+  "subtitle": "Kamakura, Ofuna",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_ofuna_kannon"
+ },
+ {
+  "id": 80,
+  "name": "Iseyama Kotai Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.6,
+   0.45,
+   0.15
+  ],
+  "subtitle": "Yokohama, Nishi",
+  "stampSymbol": "✨",
+  "imageName": "stamp_iseyama"
+ },
+ {
+  "id": 81,
+  "name": "Soji-ji",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.2,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Yokohama, Tsurumi",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_sojiji"
+ },
+ {
+  "id": 82,
+  "name": "Hakone Jinja",
+  "icon": "tree.fill",
+  "color": [
+   0.15,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Hakone",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hakone"
+ },
+ {
+  "id": 83,
+  "name": "Kuzuharaoka Jinja",
+  "icon": "heart.fill",
+  "color": [
+   0.75,
+   0.25,
+   0.4
+  ],
+  "subtitle": "Kamakura",
+  "stampSymbol": "💗",
+  "imageName": "stamp_kuzuharaoka"
+ },
+ {
+  "id": 84,
+  "name": "Sasuke Inari Jinja",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.2,
+   0.1
+  ],
+  "subtitle": "Kamakura",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_sasuke_inari"
+ },
+ {
+  "id": 85,
+  "name": "Naritasan Shinshoji",
+  "icon": "flame.fill",
+  "color": [
+   0.8,
+   0.3,
+   0.1
+  ],
+  "subtitle": "Narita",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_naritasan"
+ },
+ {
+  "id": 86,
+  "name": "Katori Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.55,
+   0.4,
+   0.15
+  ],
+  "subtitle": "Katori",
+  "stampSymbol": "✨",
+  "imageName": "stamp_katori_jingu"
+ },
+ {
+  "id": 87,
+  "name": "Awa Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.4,
+   0.6
+  ],
+  "subtitle": "Tateyama",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_awa_jinja"
+ },
+ {
+  "id": 88,
+  "name": "Chiba Jinja",
+  "icon": "star.fill",
+  "color": [
+   0.2,
+   0.3,
+   0.6
+  ],
+  "subtitle": "Chiba",
+  "stampSymbol": "⭐",
+  "imageName": "stamp_chiba_jinja"
+ },
+ {
+  "id": 89,
+  "name": "Katsushika Hachimangu",
+  "icon": "shield.fill",
+  "color": [
+   0.6,
+   0.12,
+   0.18
+  ],
+  "subtitle": "Ichikawa",
+  "stampSymbol": "🛡️",
+  "imageName": "stamp_katsushika_hachiman"
+ },
+ {
+  "id": 90,
+  "name": "Nakayama Hokekyoji",
+  "icon": "book.fill",
+  "color": [
+   0.25,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Ichikawa",
+  "stampSymbol": "📖",
+  "imageName": "stamp_nakayama_hokekyoji"
+ },
+ {
+  "id": 91,
+  "name": "Inage Sengen Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.7,
+   0.2,
+   0.3
+  ],
+  "subtitle": "Chiba, Inage",
+  "stampSymbol": "🗻",
+  "imageName": "stamp_inage_sengen"
+ },
+ {
+  "id": 92,
+  "name": "Funabashi Daijingu",
+  "icon": "crown.fill",
+  "color": [
+   0.65,
+   0.45,
+   0.1
+  ],
+  "subtitle": "Funabashi",
+  "stampSymbol": "✨",
+  "imageName": "stamp_funabashi_daijingu"
+ },
+ {
+  "id": 93,
+  "name": "Matsudo Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.7,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Matsudo",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_matsudo_jinja"
+ },
+ {
+  "id": 94,
+  "name": "Tamasaki Jinja",
+  "icon": "figure.wave",
+  "color": [
+   0.75,
+   0.25,
+   0.2
+  ],
+  "subtitle": "Ichinomiya",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_tamasaki"
+ },
+ {
+  "id": 95,
+  "name": "Nihon-ji",
+  "icon": "figure.seated.seatbelt",
+  "color": [
+   0.3,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Nokogiriyama",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_nihonaji"
+ },
+ {
+  "id": 96,
+  "name": "Tanjoji",
+  "icon": "sunrise.fill",
+  "color": [
+   0.8,
+   0.45,
+   0.1
+  ],
+  "subtitle": "Kamogawa",
+  "stampSymbol": "🌅",
+  "imageName": "stamp_tanjoji"
+ },
+ {
+  "id": 97,
+  "name": "Mamasan Guho-ji",
+  "icon": "camera.macro",
+  "color": [
+   0.55,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Ichikawa, Mama",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_mamasan_guhoji"
+ },
+ {
+  "id": 98,
+  "name": "Kashiwa Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.25,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Kashiwa",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_kashiwa_jinja"
+ },
+ {
+  "id": 99,
+  "name": "Ohara Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.15,
+   0.2
+  ],
+  "subtitle": "Narashino",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_ohara_jinja"
+ },
+ {
+  "id": 100,
+  "name": "Kemigawa Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.18,
+   0.22
+  ],
+  "subtitle": "Chiba, Hanamigawa",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kemigawa_jinja"
+ },
+ {
+  "id": 101,
+  "name": "Shiba Daijingu",
+  "icon": "building.columns.fill",
+  "color": [
+   0.75,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Minato, Shiba",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_shiba_daijingu"
+ },
+ {
+  "id": 102,
+  "name": "Hakusan Jinja",
+  "icon": "camera.macro",
+  "color": [
+   0.55,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Bunkyo, Hakusan",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_hakusan_jinja"
+ },
+ {
+  "id": 103,
+  "name": "Shinagawa Jinja",
+  "icon": "flag.fill",
+  "color": [
+   0.7,
+   0.15,
+   0.2
+  ],
+  "subtitle": "Shinagawa, Kitashinagawa",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_shinagawa_jinja"
+ },
+ {
+  "id": 104,
+  "name": "Ryusen-ji",
+  "icon": "flame.fill",
+  "color": [
+   0.3,
+   0.22,
+   0.55
+  ],
+  "subtitle": "Meguro, Shimomeguro",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_ryusenji"
+ },
+ {
+  "id": 105,
+  "name": "Gokoku-ji",
+  "icon": "building.columns.fill",
+  "color": [
+   0.22,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Bunkyo, Otsuka",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_gokokuji"
+ },
+ {
+  "id": 106,
+  "name": "Fukutoku Jinja",
+  "icon": "sparkles",
+  "color": [
+   0.7,
+   0.55,
+   0.12
+  ],
+  "subtitle": "Chuo, Nihonbashi Muromachi",
+  "stampSymbol": "✨",
+  "imageName": "stamp_fukutoku"
+ },
+ {
+  "id": 107,
+  "name": "Akagi Jinja",
+  "icon": "building.2.fill",
+  "color": [
+   0.22,
+   0.32,
+   0.6
+  ],
+  "subtitle": "Shinjuku, Kagurazaka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_akagi_jinja"
+ },
+ {
+  "id": 108,
+  "name": "Anamori Inari Jinja",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Ota, Haneda",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_anamori_inari"
+ },
+ {
+  "id": 109,
+  "name": "Takahatafudo Kongoji",
+  "icon": "flame.fill",
+  "color": [
+   0.75,
+   0.28,
+   0.12
+  ],
+  "subtitle": "Hino",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_takahatafudo"
+ },
+ {
+  "id": 110,
+  "name": "Ueno Toshogu",
+  "icon": "paintpalette.fill",
+  "color": [
+   0.65,
+   0.5,
+   0.12
+  ],
+  "subtitle": "Taito, Ueno",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_ueno_toshogu"
+ },
+ {
+  "id": 111,
+  "name": "Koganji",
+  "icon": "heart.circle.fill",
+  "color": [
+   0.55,
+   0.35,
+   0.22
+  ],
+  "subtitle": "Toshima, Sugamo",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_koganji"
+ },
+ {
+  "id": 112,
+  "name": "Juniso Kumano Jinja",
+  "icon": "tree.fill",
+  "color": [
+   0.2,
+   0.48,
+   0.28
+  ],
+  "subtitle": "Shinjuku, Nishishinjuku",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_juniso_kumano"
+ },
+ {
+  "id": 113,
+  "name": "Oyama Afuri Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.18,
+   0.35,
+   0.6
+  ],
+  "subtitle": "Isehara, Oyama",
+  "stampSymbol": "⛰️",
+  "imageName": "stamp_oyama_afuri"
+ },
+ {
+  "id": 114,
+  "name": "Hotoku Ninomiya Jinja",
+  "icon": "book.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Odawara",
+  "stampSymbol": "📚",
+  "imageName": "stamp_hotoku_ninomiya"
+ },
+ {
+  "id": 115,
+  "name": "Hiratsuka Hachimangu",
+  "icon": "flag.fill",
+  "color": [
+   0.65,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Hiratsuka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hiratsuka_hachiman"
+ },
+ {
+  "id": 116,
+  "name": "Hakone Kuzuryu Jinja",
+  "icon": "drop.fill",
+  "color": [
+   0.15,
+   0.4,
+   0.65
+  ],
+  "subtitle": "Hakone, Moto-Hakone",
+  "stampSymbol": "🐉",
+  "imageName": "stamp_hakone_kuzuryu"
+ },
+ {
+  "id": 117,
+  "name": "Jufuku-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.25,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Kamakura, Ogigayatsu",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_jufukuji"
+ },
+ {
+  "id": 118,
+  "name": "Jomyo-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.3,
+   0.55,
+   0.28
+  ],
+  "subtitle": "Kamakura, Jomyoji",
+  "stampSymbol": "🍵",
+  "imageName": "stamp_jomyoji"
+ },
+ {
+  "id": 119,
+  "name": "Morito Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.45,
+   0.65
+  ],
+  "subtitle": "Hayama",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_morito"
+ },
+ {
+  "id": 120,
+  "name": "Hashirimizu Jinja",
+  "icon": "sailboat.fill",
+  "color": [
+   0.2,
+   0.38,
+   0.6
+  ],
+  "subtitle": "Yokosuka",
+  "stampSymbol": "⛵",
+  "imageName": "stamp_hashirimizu"
+ },
+ {
+  "id": 121,
+  "name": "Kasamori Kannon",
+  "icon": "building.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.22
+  ],
+  "subtitle": "Chonan",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kasamori_kannon"
+ },
+ {
+  "id": 122,
+  "name": "Sakuragi Jinja",
+  "icon": "camera.macro",
+  "color": [
+   0.75,
+   0.4,
+   0.5
+  ],
+  "subtitle": "Noda",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_sakuragi_jinja"
+ },
+ {
+  "id": 123,
+  "name": "Mizonokuchi Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.7,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Kawasaki, Takatsu",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_mizonokuchi"
+ },
+ {
+  "id": 124,
+  "name": "Yokoji",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.3,
+   0.4,
+   0.55
+  ],
+  "subtitle": "Kawasaki, Takatsu",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_yokoji"
+ },
+ {
+  "id": 125,
+  "name": "Kuji Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Kawasaki, Takatsu",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kuji_jinja"
+ },
+ {
+  "id": 126,
+  "name": "Nagao Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.22,
+   0.5,
+   0.28
+  ],
+  "subtitle": "Kawasaki, Tama",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_nagao_jinja"
+ },
+ {
+  "id": 127,
+  "name": "Myorakuji",
+  "icon": "camera.macro",
+  "color": [
+   0.35,
+   0.45,
+   0.7
+  ],
+  "subtitle": "Kawasaki, Tama",
+  "stampSymbol": "💮",
+  "imageName": "stamp_myorakuji"
+ },
+ {
+  "id": 128,
+  "name": "Inage Jinja",
+  "icon": "flame.fill",
+  "color": [
+   0.75,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Kawasaki",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_inage_jinja_kawasaki"
+ },
+ {
+  "id": 129,
+  "name": "Hie Daijinja",
+  "icon": "tree.fill",
+  "color": [
+   0.18,
+   0.48,
+   0.25
+  ],
+  "subtitle": "Kawasaki, Takatsu",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_hie_daijinja"
+ },
+ {
+  "id": 130,
+  "name": "Noborito Inari",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.2,
+   0.12
+  ],
+  "subtitle": "Kawasaki, Tama",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_noborito_inari"
+ },
+ {
+  "id": 131,
+  "name": "Kinkaku-ji",
+  "icon": "sparkles",
+  "color": [
+   0.8,
+   0.65,
+   0.1
+  ],
+  "subtitle": "Kyoto, Kita",
+  "stampSymbol": "✨",
+  "imageName": "stamp_kinkakuji_kyoto"
+ },
+ {
+  "id": 132,
+  "name": "Ginkaku-ji",
+  "icon": "moon.fill",
+  "color": [
+   0.55,
+   0.55,
+   0.55
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "🌙",
+  "imageName": "stamp_ginkakuji"
+ },
+ {
+  "id": 133,
+  "name": "Kiyomizu-dera",
+  "icon": "water.waves",
+  "color": [
+   0.7,
+   0.18,
+   0.15
+  ],
+  "subtitle": "Kyoto, Higashiyama",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kiyomizudera_kyoto"
+ },
+ {
+  "id": 134,
+  "name": "Tofuku-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.8,
+   0.35,
+   0.1
+  ],
+  "subtitle": "Kyoto, Higashiyama",
+  "stampSymbol": "🍁",
+  "imageName": "stamp_tofukuji"
+ },
+ {
+  "id": 135,
+  "name": "Nanzen-ji",
+  "icon": "building.fill",
+  "color": [
+   0.3,
+   0.45,
+   0.25
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_nanzenji"
+ },
+ {
+  "id": 136,
+  "name": "Ryoan-ji",
+  "icon": "circle.grid.3x3",
+  "color": [
+   0.5,
+   0.5,
+   0.45
+  ],
+  "subtitle": "Kyoto, Ukyo",
+  "stampSymbol": "🪨",
+  "imageName": "stamp_ryoanji"
+ },
+ {
+  "id": 137,
+  "name": "Tenryu-ji",
+  "icon": "cloud.fill",
+  "color": [
+   0.25,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Kyoto, Ukyo",
+  "stampSymbol": "🐉",
+  "imageName": "stamp_tenryuji"
+ },
+ {
+  "id": 138,
+  "name": "Daitoku-ji",
+  "icon": "cup.and.saucer.fill",
+  "color": [
+   0.35,
+   0.3,
+   0.25
+  ],
+  "subtitle": "Kyoto, Kita",
+  "stampSymbol": "🍵",
+  "imageName": "stamp_daitokuji"
+ },
+ {
+  "id": 139,
+  "name": "Myoshin-ji",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.4,
+   0.35,
+   0.3
+  ],
+  "subtitle": "Kyoto, Ukyo",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_myoshinji"
+ },
+ {
+  "id": 140,
+  "name": "Kennin-ji",
+  "icon": "wind",
+  "color": [
+   0.3,
+   0.4,
+   0.55
+  ],
+  "subtitle": "Kyoto, Higashiyama",
+  "stampSymbol": "🌬",
+  "imageName": "stamp_kenninaji"
+ },
+ {
+  "id": 141,
+  "name": "Nishi Hongan-ji",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.4,
+   0.2
+  ],
+  "subtitle": "Kyoto, Shimogyo",
+  "stampSymbol": "🏛",
+  "imageName": "stamp_nishi_honganji"
+ },
+ {
+  "id": 142,
+  "name": "Higashi Hongan-ji",
+  "icon": "building.columns.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.18
+  ],
+  "subtitle": "Kyoto, Shimogyo",
+  "stampSymbol": "🏛",
+  "imageName": "stamp_higashi_honganji"
+ },
+ {
+  "id": 143,
+  "name": "Kitano Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.55,
+   0.25,
+   0.52
+  ],
+  "subtitle": "Kyoto, Kamigyo",
+  "stampSymbol": "🏓",
+  "imageName": "stamp_kitano_tenmangu_kyoto"
+ },
+ {
+  "id": 144,
+  "name": "Yasaka Jinja",
+  "icon": "flame.fill",
+  "color": [
+   0.75,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Kyoto, Higashiyama",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_yasaka_kyoto"
+ },
+ {
+  "id": 145,
+  "name": "Heian Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.7,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "👑",
+  "imageName": "stamp_heian_jingu_kyoto"
+ },
+ {
+  "id": 146,
+  "name": "Shimogamo Jinja",
+  "icon": "tree.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.28
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_shimogamo_kyoto"
+ },
+ {
+  "id": 147,
+  "name": "Kamigamo Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.22,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Kyoto, Kita",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_kamigamo_kyoto"
+ },
+ {
+  "id": 148,
+  "name": "Kifune Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.4,
+   0.65
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_kifune"
+ },
+ {
+  "id": 149,
+  "name": "Kurama-dera",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.35,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_kurama"
+ },
+ {
+  "id": 150,
+  "name": "Byodo-in",
+  "icon": "bird.fill",
+  "color": [
+   0.45,
+   0.25,
+   0.55
+  ],
+  "subtitle": "Uji, Kyoto",
+  "stampSymbol": "🐦",
+  "imageName": "stamp_byodoin"
+ },
+ {
+  "id": 151,
+  "name": "Daigo-ji",
+  "icon": "camera.macro",
+  "color": [
+   0.7,
+   0.4,
+   0.5
+  ],
+  "subtitle": "Kyoto, Fushimi",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_daigoji"
+ },
+ {
+  "id": 152,
+  "name": "Sanjusangendo",
+  "icon": "figure.stand",
+  "color": [
+   0.6,
+   0.3,
+   0.15
+  ],
+  "subtitle": "Kyoto, Higashiyama",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_sanjusangendo"
+ },
+ {
+  "id": 153,
+  "name": "To-ji",
+  "icon": "building.2.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.25
+  ],
+  "subtitle": "Kyoto, Minami",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_toji"
+ },
+ {
+  "id": 154,
+  "name": "Eikan-do",
+  "icon": "leaf.fill",
+  "color": [
+   0.8,
+   0.4,
+   0.1
+  ],
+  "subtitle": "Kyoto, Sakyo",
+  "stampSymbol": "🍁",
+  "imageName": "stamp_eikando"
+ },
+ {
+  "id": 155,
+  "name": "Kodai-ji",
+  "icon": "moon.stars.fill",
+  "color": [
+   0.25,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Kyoto, Higashiyama",
+  "stampSymbol": "🌃",
+  "imageName": "stamp_kodaiji"
+ },
+ {
+  "id": 156,
+  "name": "Sumiyoshi Taisha",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Osaka, Sumiyoshi",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_sumiyoshi_osaka"
+ },
+ {
+  "id": 157,
+  "name": "Shitennoji",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.3,
+   0.15
+  ],
+  "subtitle": "Osaka, Tennoji",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_shitennoji_osaka"
+ },
+ {
+  "id": 158,
+  "name": "Osaka Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.55,
+   0.25,
+   0.52
+  ],
+  "subtitle": "Osaka, Kita",
+  "stampSymbol": "🏓",
+  "imageName": "stamp_osaka_tenmangu_2"
+ },
+ {
+  "id": 159,
+  "name": "Imamiya Ebisu Jinja",
+  "icon": "fish.fill",
+  "color": [
+   0.7,
+   0.5,
+   0.1
+  ],
+  "subtitle": "Osaka, Naniwa",
+  "stampSymbol": "🐟",
+  "imageName": "stamp_imamiya_ebisu_osaka"
+ },
+ {
+  "id": 160,
+  "name": "Tamatsukuri Inari",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Osaka, Chuo",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_tamatsukuri_inari"
+ },
+ {
+  "id": 161,
+  "name": "Hozen-ji",
+  "icon": "drop.fill",
+  "color": [
+   0.25,
+   0.4,
+   0.55
+  ],
+  "subtitle": "Osaka, Chuo",
+  "stampSymbol": "💧",
+  "imageName": "stamp_hozenji"
+ },
+ {
+  "id": 162,
+  "name": "Domyoji Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.5,
+   0.22,
+   0.48
+  ],
+  "subtitle": "Fujiidera, Osaka",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_domyoji_tenmangu"
+ },
+ {
+  "id": 163,
+  "name": "Hiraoka Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Higashi-Osaka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hiraoka"
+ },
+ {
+  "id": 164,
+  "name": "Todai-ji",
+  "icon": "figure.seated.side",
+  "color": [
+   0.6,
+   0.35,
+   0.15
+  ],
+  "subtitle": "Nara",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_todaiji_nara"
+ },
+ {
+  "id": 165,
+  "name": "Kasuga Taisha",
+  "icon": "lamp.desk.fill",
+  "color": [
+   0.75,
+   0.18,
+   0.12
+  ],
+  "subtitle": "Nara",
+  "stampSymbol": "🏮",
+  "imageName": "stamp_kasuga_nara"
+ },
+ {
+  "id": 166,
+  "name": "Horyu-ji",
+  "icon": "building.2.fill",
+  "color": [
+   0.5,
+   0.4,
+   0.25
+  ],
+  "subtitle": "Ikaruga, Nara",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_horyuji"
+ },
+ {
+  "id": 167,
+  "name": "Yakushi-ji",
+  "icon": "cross.fill",
+  "color": [
+   0.45,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Nara, Nishinokyo",
+  "stampSymbol": "⚕",
+  "imageName": "stamp_yakushiji_nara"
+ },
+ {
+  "id": 168,
+  "name": "Toshodai-ji",
+  "icon": "building.fill",
+  "color": [
+   0.4,
+   0.35,
+   0.3
+  ],
+  "subtitle": "Nara, Nishinokyo",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_toshodaiji"
+ },
+ {
+  "id": 169,
+  "name": "Hase-dera",
+  "icon": "camera.macro",
+  "color": [
+   0.65,
+   0.35,
+   0.5
+  ],
+  "subtitle": "Sakurai, Nara",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_hasedera_nara"
+ },
+ {
+  "id": 170,
+  "name": "Tanzan Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.8,
+   0.35,
+   0.1
+  ],
+  "subtitle": "Sakurai, Nara",
+  "stampSymbol": "🍁",
+  "imageName": "stamp_tanzan"
+ },
+ {
+  "id": 171,
+  "name": "Asuka-dera",
+  "icon": "hourglass",
+  "color": [
+   0.5,
+   0.4,
+   0.3
+  ],
+  "subtitle": "Asuka, Nara",
+  "stampSymbol": "⌛",
+  "imageName": "stamp_asuka_dera"
+ },
+ {
+  "id": 172,
+  "name": "Muro-ji",
+  "icon": "tree.fill",
+  "color": [
+   0.22,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Uda, Nara",
+  "stampSymbol": "🌲",
+  "imageName": "stamp_muroji"
+ },
+ {
+  "id": 173,
+  "name": "Enryaku-ji",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.35,
+   0.45,
+   0.25
+  ],
+  "subtitle": "Otsu, Shiga",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_enryakuji"
+ },
+ {
+  "id": 174,
+  "name": "Miidera",
+  "icon": "bell.fill",
+  "color": [
+   0.45,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Otsu, Shiga",
+  "stampSymbol": "🔔",
+  "imageName": "stamp_miidera"
+ },
+ {
+  "id": 175,
+  "name": "Taga Taisha",
+  "icon": "heart.fill",
+  "color": [
+   0.7,
+   0.2,
+   0.3
+  ],
+  "subtitle": "Taga, Shiga",
+  "stampSymbol": "❤",
+  "imageName": "stamp_taga_taisha"
+ },
+ {
+  "id": 176,
+  "name": "Hiyoshi Taisha",
+  "icon": "tree.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Otsu, Shiga",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_hiyoshi_taisha"
+ },
+ {
+  "id": 177,
+  "name": "Ishiyama-dera",
+  "icon": "book.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Otsu, Shiga",
+  "stampSymbol": "📖",
+  "imageName": "stamp_ishiyamadera"
+ },
+ {
+  "id": 178,
+  "name": "Ikuta Jinja",
+  "icon": "heart.fill",
+  "color": [
+   0.75,
+   0.15,
+   0.25
+  ],
+  "subtitle": "Kobe, Hyogo",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_ikuta"
+ },
+ {
+  "id": 179,
+  "name": "Nagata Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Kobe, Hyogo",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_nagata"
+ },
+ {
+  "id": 180,
+  "name": "Engyoji",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.35,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Himeji, Hyogo",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_engyoji"
+ },
+ {
+  "id": 181,
+  "name": "Taisan-ji",
+  "icon": "building.2.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.22
+  ],
+  "subtitle": "Kobe, Hyogo",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_taisanji"
+ },
+ {
+  "id": 182,
+  "name": "Nishinomiya Jinja",
+  "icon": "fish.fill",
+  "color": [
+   0.65,
+   0.5,
+   0.12
+  ],
+  "subtitle": "Nishinomiya, Hyogo",
+  "stampSymbol": "🐟",
+  "imageName": "stamp_nishinomiya"
+ },
+ {
+  "id": 183,
+  "name": "Suma-dera",
+  "icon": "water.waves",
+  "color": [
+   0.2,
+   0.4,
+   0.6
+  ],
+  "subtitle": "Kobe, Hyogo",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_sumadera"
+ },
+ {
+  "id": 184,
+  "name": "Kumano Hongu Taisha",
+  "icon": "flame.fill",
+  "color": [
+   0.7,
+   0.18,
+   0.12
+  ],
+  "subtitle": "Tanabe, Wakayama",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_kumano_hongu"
+ },
+ {
+  "id": 185,
+  "name": "Kumano Nachi Taisha",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.45,
+   0.65
+  ],
+  "subtitle": "Nachikatsuura, Wakayama",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_kumano_nachi"
+ },
+ {
+  "id": 186,
+  "name": "Kumano Hayatama Taisha",
+  "icon": "bolt.fill",
+  "color": [
+   0.75,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Shingu, Wakayama",
+  "stampSymbol": "⚡",
+  "imageName": "stamp_kumano_hayatama"
+ },
+ {
+  "id": 187,
+  "name": "Koyasan Kongobu-ji",
+  "icon": "building.fill",
+  "color": [
+   0.5,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Koya, Wakayama",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_koyasan_kongobuji"
+ },
+ {
+  "id": 188,
+  "name": "Koyasan Okunoin",
+  "icon": "moon.stars.fill",
+  "color": [
+   0.2,
+   0.25,
+   0.45
+  ],
+  "subtitle": "Koya, Wakayama",
+  "stampSymbol": "🌃",
+  "imageName": "stamp_koyasan_okunoin"
+ },
+ {
+  "id": 189,
+  "name": "Kimiidera",
+  "icon": "camera.macro",
+  "color": [
+   0.65,
+   0.35,
+   0.5
+  ],
+  "subtitle": "Wakayama",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_kimiidera"
+ },
+ {
+  "id": 190,
+  "name": "Kokawa-dera",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.45,
+   0.35,
+   0.3
+  ],
+  "subtitle": "Kinokawa, Wakayama",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kokawa_dera"
+ },
+ {
+  "id": 191,
+  "name": "Atsuta Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.7,
+   0.55,
+   0.1
+  ],
+  "subtitle": "Nagoya, Aichi",
+  "stampSymbol": "👑",
+  "imageName": "stamp_atsuta_jingu"
+ },
+ {
+  "id": 192,
+  "name": "Toyokawa Inari",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Toyokawa, Aichi",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_toyokawa_inari"
+ },
+ {
+  "id": 193,
+  "name": "Osu Kannon",
+  "icon": "figure.seated.side",
+  "color": [
+   0.6,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Nagoya, Aichi",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_osu_kannon"
+ },
+ {
+  "id": 194,
+  "name": "Masumida Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Ichinomiya, Aichi",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_masumida"
+ },
+ {
+  "id": 195,
+  "name": "Tsushima Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Tsushima, Aichi",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_tsushima"
+ },
+ {
+  "id": 196,
+  "name": "Inuyama Naritasan",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.55,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Inuyama, Aichi",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_inuyama_naritasan"
+ },
+ {
+  "id": 197,
+  "name": "Fujisan Hongu Sengen Taisha",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.7
+  ],
+  "subtitle": "Fujinomiya, Shizuoka",
+  "stampSymbol": "🗻",
+  "imageName": "stamp_fujisan_sengen"
+ },
+ {
+  "id": 198,
+  "name": "Kunozan Toshogu",
+  "icon": "sparkles",
+  "color": [
+   0.75,
+   0.6,
+   0.12
+  ],
+  "subtitle": "Shizuoka",
+  "stampSymbol": "✨",
+  "imageName": "stamp_kunouzan_toshogu"
+ },
+ {
+  "id": 199,
+  "name": "Mishima Taisha",
+  "icon": "shield.fill",
+  "color": [
+   0.6,
+   0.15,
+   0.18
+  ],
+  "subtitle": "Mishima, Shizuoka",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_mishima_taisha"
+ },
+ {
+  "id": 200,
+  "name": "Hattasan Sonei-ji",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.25
+  ],
+  "subtitle": "Fukuroi, Shizuoka",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_hattasan"
+ },
+ {
+  "id": 201,
+  "name": "Kinomiya Jinja",
+  "icon": "tree.fill",
+  "color": [
+   0.18,
+   0.5,
+   0.25
+  ],
+  "subtitle": "Atami, Shizuoka",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_kinomiya"
+ },
+ {
+  "id": 202,
+  "name": "Zenko-ji",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.4,
+   0.2
+  ],
+  "subtitle": "Nagano",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_zenkoji"
+ },
+ {
+  "id": 203,
+  "name": "Togakushi Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.25,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Nagano",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_togakushi"
+ },
+ {
+  "id": 204,
+  "name": "Suwa Taisha",
+  "icon": "wind",
+  "color": [
+   0.3,
+   0.45,
+   0.6
+  ],
+  "subtitle": "Suwa, Nagano",
+  "stampSymbol": "🌬",
+  "imageName": "stamp_suwa_taisha"
+ },
+ {
+  "id": 205,
+  "name": "Takeda Jinja",
+  "icon": "shield.fill",
+  "color": [
+   0.6,
+   0.15,
+   0.15
+  ],
+  "subtitle": "Kofu, Yamanashi",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_takeda_jinja"
+ },
+ {
+  "id": 206,
+  "name": "Minobusan Kuon-ji",
+  "icon": "building.fill",
+  "color": [
+   0.45,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Minobu, Yamanashi",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_minobusan"
+ },
+ {
+  "id": 207,
+  "name": "Yahiko Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.22,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Yahiko, Niigata",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_yahiko"
+ },
+ {
+  "id": 208,
+  "name": "Kitaguchi Hongu Fuji Sengen Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.25,
+   0.45,
+   0.65
+  ],
+  "subtitle": "Fujiyoshida, Yamanashi",
+  "stampSymbol": "🗻",
+  "imageName": "stamp_kitaguchi_sengen"
+ },
+ {
+  "id": 209,
+  "name": "Hotaka Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.4
+  ],
+  "subtitle": "Azumino, Nagano",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_hotaka"
+ },
+ {
+  "id": 210,
+  "name": "Hakusan Jinja (Niigata)",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Niigata",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hakusan_niigata"
+ },
+ {
+  "id": 211,
+  "name": "Eihei-ji",
+  "icon": "figure.mind.and.body",
+  "color": [
+   0.3,
+   0.4,
+   0.25
+  ],
+  "subtitle": "Eiheiji, Fukui",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_eiheiji"
+ },
+ {
+  "id": 212,
+  "name": "Kehi Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.65,
+   0.5,
+   0.12
+  ],
+  "subtitle": "Tsuruga, Fukui",
+  "stampSymbol": "👑",
+  "imageName": "stamp_kehi_jingu"
+ },
+ {
+  "id": 213,
+  "name": "Shirayama Hime Jinja",
+  "icon": "snow",
+  "color": [
+   0.4,
+   0.55,
+   0.7
+  ],
+  "subtitle": "Hakusan, Ishikawa",
+  "stampSymbol": "❄",
+  "imageName": "stamp_shirayama_hime"
+ },
+ {
+  "id": 214,
+  "name": "Oyama Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Kanazawa, Ishikawa",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_oyama_jinja"
+ },
+ {
+  "id": 215,
+  "name": "Kanazawa Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.22,
+   0.22
+  ],
+  "subtitle": "Kanazawa, Ishikawa",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kanazawa_jinja"
+ },
+ {
+  "id": 216,
+  "name": "Nata-dera",
+  "icon": "flame.fill",
+  "color": [
+   0.7,
+   0.3,
+   0.15
+  ],
+  "subtitle": "Komatsu, Ishikawa",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_natadera"
+ },
+ {
+  "id": 217,
+  "name": "Zuiryu-ji",
+  "icon": "building.fill",
+  "color": [
+   0.4,
+   0.35,
+   0.5
+  ],
+  "subtitle": "Takaoka, Toyama",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_zuiryuji"
+ },
+ {
+  "id": 218,
+  "name": "Takaoka Daibutsu",
+  "icon": "figure.seated.side",
+  "color": [
+   0.55,
+   0.4,
+   0.25
+  ],
+  "subtitle": "Takaoka, Toyama",
+  "stampSymbol": "🧘",
+  "imageName": "stamp_takaoka_daibutsu"
+ },
+ {
+  "id": 219,
+  "name": "Musashi Ichinomiya Hikawa Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.7,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Omiya, Saitama",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hikawa_omiya"
+ },
+ {
+  "id": 220,
+  "name": "Chichibu Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Chichibu, Saitama",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_chichibu"
+ },
+ {
+  "id": 221,
+  "name": "Mitsumine Jinja",
+  "icon": "cloud.fill",
+  "color": [
+   0.25,
+   0.45,
+   0.6
+  ],
+  "subtitle": "Chichibu, Saitama",
+  "stampSymbol": "☁",
+  "imageName": "stamp_mitsumine"
+ },
+ {
+  "id": 222,
+  "name": "Hodosan Jinja",
+  "icon": "flame.fill",
+  "color": [
+   0.75,
+   0.2,
+   0.12
+  ],
+  "subtitle": "Nagatoro, Saitama",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_hodosan"
+ },
+ {
+  "id": 223,
+  "name": "Kitain",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Kawagoe, Saitama",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_kitain"
+ },
+ {
+  "id": 224,
+  "name": "Kawagoe Hikawa Jinja",
+  "icon": "heart.fill",
+  "color": [
+   0.7,
+   0.2,
+   0.35
+  ],
+  "subtitle": "Kawagoe, Saitama",
+  "stampSymbol": "❤",
+  "imageName": "stamp_kawagoe_hikawa"
+ },
+ {
+  "id": 225,
+  "name": "Nikko Futarasan Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.25,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Nikko, Tochigi",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_futarasan"
+ },
+ {
+  "id": 226,
+  "name": "Banna-ji",
+  "icon": "book.fill",
+  "color": [
+   0.45,
+   0.35,
+   0.25
+  ],
+  "subtitle": "Ashikaga, Tochigi",
+  "stampSymbol": "📖",
+  "imageName": "stamp_bannaji"
+ },
+ {
+  "id": 227,
+  "name": "Haruna Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.2,
+   0.45,
+   0.6
+  ],
+  "subtitle": "Takasaki, Gunma",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_haruna"
+ },
+ {
+  "id": 228,
+  "name": "Myogi Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.35,
+   0.45,
+   0.3
+  ],
+  "subtitle": "Tomioka, Gunma",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_myogi"
+ },
+ {
+  "id": 229,
+  "name": "Kashima Jingu",
+  "icon": "figure.fencing",
+  "color": [
+   0.6,
+   0.15,
+   0.2
+  ],
+  "subtitle": "Kashima, Ibaraki",
+  "stampSymbol": "⚔",
+  "imageName": "stamp_kashima_jingu"
+ },
+ {
+  "id": 230,
+  "name": "Ikisu Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Kamisu, Ibaraki",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_ikisu"
+ },
+ {
+  "id": 231,
+  "name": "Kasama Inari Jinja",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Kasama, Ibaraki",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_kasama_inari"
+ },
+ {
+  "id": 232,
+  "name": "Rinno-ji",
+  "icon": "building.fill",
+  "color": [
+   0.45,
+   0.3,
+   0.55
+  ],
+  "subtitle": "Nikko, Tochigi",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_rinnoji"
+ },
+ {
+  "id": 233,
+  "name": "Chuson-ji",
+  "icon": "sparkles",
+  "color": [
+   0.75,
+   0.6,
+   0.12
+  ],
+  "subtitle": "Hiraizumi, Iwate",
+  "stampSymbol": "✨",
+  "imageName": "stamp_chusonji"
+ },
+ {
+  "id": 234,
+  "name": "Motsu-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.22,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Hiraizumi, Iwate",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_motsuji"
+ },
+ {
+  "id": 235,
+  "name": "Zuigan-ji",
+  "icon": "tree.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.28
+  ],
+  "subtitle": "Matsushima, Miyagi",
+  "stampSymbol": "🌲",
+  "imageName": "stamp_zuiganji"
+ },
+ {
+  "id": 236,
+  "name": "Shiogama Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.2,
+   0.4,
+   0.6
+  ],
+  "subtitle": "Shiogama, Miyagi",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_shiogama"
+ },
+ {
+  "id": 237,
+  "name": "Dewa Sanzan Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Tsuruoka, Yamagata",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_dewa_sanzan"
+ },
+ {
+  "id": 238,
+  "name": "Risshaku-ji (Yamadera)",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.35,
+   0.45,
+   0.3
+  ],
+  "subtitle": "Yamagata",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_yamadera"
+ },
+ {
+  "id": 239,
+  "name": "Iwakiyama Jinja",
+  "icon": "snow",
+  "color": [
+   0.35,
+   0.5,
+   0.65
+  ],
+  "subtitle": "Hirosaki, Aomori",
+  "stampSymbol": "❄",
+  "imageName": "stamp_iwakiyama"
+ },
+ {
+  "id": 240,
+  "name": "Uesugi Jinja",
+  "icon": "shield.fill",
+  "color": [
+   0.55,
+   0.15,
+   0.18
+  ],
+  "subtitle": "Yonezawa, Yamagata",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_uesugi"
+ },
+ {
+  "id": 241,
+  "name": "Isasumi Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Aizumisato, Fukushima",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_isasumi"
+ },
+ {
+  "id": 242,
+  "name": "Nanko Jinja",
+  "icon": "camera.macro",
+  "color": [
+   0.65,
+   0.35,
+   0.5
+  ],
+  "subtitle": "Shirakawa, Fukushima",
+  "stampSymbol": "🌸",
+  "imageName": "stamp_nanko"
+ },
+ {
+  "id": 243,
+  "name": "Osaki Hachimangu",
+  "icon": "shield.fill",
+  "color": [
+   0.6,
+   0.12,
+   0.15
+  ],
+  "subtitle": "Sendai, Miyagi",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_osaki_hachimangu"
+ },
+ {
+  "id": 244,
+  "name": "Taiheizan Miyoshi Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.22,
+   0.22
+  ],
+  "subtitle": "Akita",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_taiheizan"
+ },
+ {
+  "id": 245,
+  "name": "Dewa Jinja (Gassan)",
+  "icon": "moon.fill",
+  "color": [
+   0.4,
+   0.45,
+   0.6
+  ],
+  "subtitle": "Yamagata",
+  "stampSymbol": "🌙",
+  "imageName": "stamp_dewa_gassan"
+ },
+ {
+  "id": 246,
+  "name": "Hokkaido Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.65,
+   0.5,
+   0.12
+  ],
+  "subtitle": "Sapporo, Hokkaido",
+  "stampSymbol": "👑",
+  "imageName": "stamp_hokkaido_jingu"
+ },
+ {
+  "id": 247,
+  "name": "Hakodate Hachimangu",
+  "icon": "shield.fill",
+  "color": [
+   0.6,
+   0.12,
+   0.15
+  ],
+  "subtitle": "Hakodate, Hokkaido",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_hakodate_hachiman"
+ },
+ {
+  "id": 248,
+  "name": "Obihiro Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Obihiro, Hokkaido",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_obihiro"
+ },
+ {
+  "id": 249,
+  "name": "Kamikawa Jinja",
+  "icon": "tree.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Asahikawa, Hokkaido",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_kamikawa"
+ },
+ {
+  "id": 250,
+  "name": "Hisaizu Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Iwatsuki, Saitama",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_hisaizu"
+ },
+ {
+  "id": 251,
+  "name": "Tsuki Jinja",
+  "icon": "hare.fill",
+  "color": [
+   0.65,
+   0.4,
+   0.5
+  ],
+  "subtitle": "Urawa, Saitama",
+  "stampSymbol": "🐇",
+  "imageName": "stamp_tsuki_jinja"
+ },
+ {
+  "id": 252,
+  "name": "Seitenkyu",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.7,
+   0.3,
+   0.15
+  ],
+  "subtitle": "Sakado, Saitama",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_seitenkyu"
+ },
+ {
+  "id": 253,
+  "name": "Kibitsu Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Okayama",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kibitsu"
+ },
+ {
+  "id": 254,
+  "name": "Kibitsuhiko Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Okayama",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_kibitsuhiko"
+ },
+ {
+  "id": 255,
+  "name": "Hofu Tenmangu",
+  "icon": "graduationcap.fill",
+  "color": [
+   0.55,
+   0.25,
+   0.52
+  ],
+  "subtitle": "Hofu, Yamaguchi",
+  "stampSymbol": "🏓",
+  "imageName": "stamp_hofu_tenmangu"
+ },
+ {
+  "id": 256,
+  "name": "Senko-ji",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.35,
+   0.45,
+   0.3
+  ],
+  "subtitle": "Onomichi, Hiroshima",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_senkoji"
+ },
+ {
+  "id": 257,
+  "name": "Miho Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.2,
+   0.45,
+   0.6
+  ],
+  "subtitle": "Matsue, Shimane",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_miho_jinja"
+ },
+ {
+  "id": 258,
+  "name": "Yaegaki Jinja",
+  "icon": "heart.fill",
+  "color": [
+   0.7,
+   0.2,
+   0.35
+  ],
+  "subtitle": "Matsue, Shimane",
+  "stampSymbol": "❤",
+  "imageName": "stamp_yaegaki"
+ },
+ {
+  "id": 259,
+  "name": "Ruriko-ji",
+  "icon": "building.2.fill",
+  "color": [
+   0.45,
+   0.35,
+   0.25
+  ],
+  "subtitle": "Yamaguchi",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_rurikoji"
+ },
+ {
+  "id": 260,
+  "name": "Izumo Daijingu",
+  "icon": "building.columns.fill",
+  "color": [
+   0.55,
+   0.22,
+   0.22
+  ],
+  "subtitle": "Kameoka, Kyoto",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_izumo_daijingu"
+ },
+ {
+  "id": 261,
+  "name": "Akama Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.65,
+   0.15,
+   0.2
+  ],
+  "subtitle": "Shimonoseki, Yamaguchi",
+  "stampSymbol": "👑",
+  "imageName": "stamp_akama_jingu"
+ },
+ {
+  "id": 262,
+  "name": "Kotohira-gu",
+  "icon": "figure.stairs",
+  "color": [
+   0.7,
+   0.5,
+   0.12
+  ],
+  "subtitle": "Kotohira, Kagawa",
+  "stampSymbol": "🏛",
+  "imageName": "stamp_kotohiragu"
+ },
+ {
+  "id": 263,
+  "name": "Zentsu-ji",
+  "icon": "house.lodge.fill",
+  "color": [
+   0.5,
+   0.35,
+   0.55
+  ],
+  "subtitle": "Zentsuji, Kagawa",
+  "stampSymbol": "🏯",
+  "imageName": "stamp_zentsuji"
+ },
+ {
+  "id": 264,
+  "name": "Ishite-ji",
+  "icon": "hand.raised.fill",
+  "color": [
+   0.55,
+   0.35,
+   0.25
+  ],
+  "subtitle": "Matsuyama, Ehime",
+  "stampSymbol": "✋",
+  "imageName": "stamp_ishiteji"
+ },
+ {
+  "id": 265,
+  "name": "Oyamazumi Jinja",
+  "icon": "shield.fill",
+  "color": [
+   0.55,
+   0.15,
+   0.18
+  ],
+  "subtitle": "Omishima, Ehime",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_oyamazumi"
+ },
+ {
+  "id": 266,
+  "name": "Ryozen-ji",
+  "icon": "figure.walk",
+  "color": [
+   0.6,
+   0.3,
+   0.5
+  ],
+  "subtitle": "Naruto, Tokushima",
+  "stampSymbol": "🚶",
+  "imageName": "stamp_ryozenji"
+ },
+ {
+  "id": 267,
+  "name": "Okubo-ji",
+  "icon": "flag.checkered",
+  "color": [
+   0.5,
+   0.35,
+   0.2
+  ],
+  "subtitle": "Sanuki, Kagawa",
+  "stampSymbol": "🏁",
+  "imageName": "stamp_okuboji"
+ },
+ {
+  "id": 268,
+  "name": "Iwaya-ji",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.4,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Kumakogen, Ehime",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_iwayaji"
+ },
+ {
+  "id": 269,
+  "name": "Yashima-ji",
+  "icon": "binoculars.fill",
+  "color": [
+   0.35,
+   0.45,
+   0.55
+  ],
+  "subtitle": "Takamatsu, Kagawa",
+  "stampSymbol": "🔭",
+  "imageName": "stamp_yashimaji"
+ },
+ {
+  "id": 270,
+  "name": "Unpen-ji",
+  "icon": "cloud.fill",
+  "color": [
+   0.45,
+   0.5,
+   0.6
+  ],
+  "subtitle": "Miyoshi, Tokushima",
+  "stampSymbol": "☁",
+  "imageName": "stamp_unpenji"
+ },
+ {
+  "id": 271,
+  "name": "Munakata Taisha",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.45,
+   0.65
+  ],
+  "subtitle": "Munakata, Fukuoka",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_munakata"
+ },
+ {
+  "id": 272,
+  "name": "Kushida Jinja",
+  "icon": "flame.fill",
+  "color": [
+   0.75,
+   0.18,
+   0.15
+  ],
+  "subtitle": "Hakata, Fukuoka",
+  "stampSymbol": "🔥",
+  "imageName": "stamp_kushida"
+ },
+ {
+  "id": 273,
+  "name": "Usa Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.65,
+   0.5,
+   0.12
+  ],
+  "subtitle": "Usa, Oita",
+  "stampSymbol": "👑",
+  "imageName": "stamp_usa_jingu"
+ },
+ {
+  "id": 274,
+  "name": "Hikosan Jingu",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Soeda, Fukuoka",
+  "stampSymbol": "⛰",
+  "imageName": "stamp_hikosan"
+ },
+ {
+  "id": 275,
+  "name": "Yutoku Inari Jinja",
+  "icon": "flame",
+  "color": [
+   0.8,
+   0.22,
+   0.15
+  ],
+  "subtitle": "Kashima, Saga",
+  "stampSymbol": "🦊",
+  "imageName": "stamp_yutoku_inari"
+ },
+ {
+  "id": 276,
+  "name": "Suwa Jinja Nagasaki",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Nagasaki",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_suwa_nagasaki"
+ },
+ {
+  "id": 277,
+  "name": "Kato Jinja",
+  "icon": "shield.fill",
+  "color": [
+   0.55,
+   0.15,
+   0.18
+  ],
+  "subtitle": "Kumamoto",
+  "stampSymbol": "🛡",
+  "imageName": "stamp_kato_jinja"
+ },
+ {
+  "id": 278,
+  "name": "Aso Jinja",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.3
+  ],
+  "subtitle": "Aso, Kumamoto",
+  "stampSymbol": "🌋",
+  "imageName": "stamp_aso_jinja"
+ },
+ {
+  "id": 279,
+  "name": "Takachiho Jinja",
+  "icon": "sparkles",
+  "color": [
+   0.5,
+   0.4,
+   0.6
+  ],
+  "subtitle": "Takachiho, Miyazaki",
+  "stampSymbol": "✨",
+  "imageName": "stamp_takachiho"
+ },
+ {
+  "id": 280,
+  "name": "Amanoiwato Jinja",
+  "icon": "sun.max.fill",
+  "color": [
+   0.75,
+   0.6,
+   0.12
+  ],
+  "subtitle": "Takachiho, Miyazaki",
+  "stampSymbol": "☀",
+  "imageName": "stamp_amanoiwato"
+ },
+ {
+  "id": 281,
+  "name": "Miyazaki Jingu",
+  "icon": "crown.fill",
+  "color": [
+   0.65,
+   0.48,
+   0.1
+  ],
+  "subtitle": "Miyazaki",
+  "stampSymbol": "👑",
+  "imageName": "stamp_miyazaki_jingu"
+ },
+ {
+  "id": 282,
+  "name": "Udo Jingu",
+  "icon": "water.waves",
+  "color": [
+   0.15,
+   0.4,
+   0.65
+  ],
+  "subtitle": "Nichinan, Miyazaki",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_udo_jingu"
+ },
+ {
+  "id": 283,
+  "name": "Aoshima Jinja",
+  "icon": "sun.max.fill",
+  "color": [
+   0.8,
+   0.55,
+   0.1
+  ],
+  "subtitle": "Miyazaki",
+  "stampSymbol": "🌴",
+  "imageName": "stamp_aoshima"
+ },
+ {
+  "id": 284,
+  "name": "Kirishima Jingu",
+  "icon": "mountain.2.fill",
+  "color": [
+   0.3,
+   0.5,
+   0.35
+  ],
+  "subtitle": "Kirishima, Kagoshima",
+  "stampSymbol": "🌋",
+  "imageName": "stamp_kirishima"
+ },
+ {
+  "id": 285,
+  "name": "Terukuni Jinja",
+  "icon": "building.columns.fill",
+  "color": [
+   0.6,
+   0.18,
+   0.18
+  ],
+  "subtitle": "Kagoshima",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_terukuni"
+ },
+ {
+  "id": 286,
+  "name": "Izumi Jinja",
+  "icon": "leaf.fill",
+  "color": [
+   0.22,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Kumamoto",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_izumi_jinja"
+ },
+ {
+  "id": 287,
+  "name": "Shikanoshima Jinja",
+  "icon": "water.waves",
+  "color": [
+   0.2,
+   0.42,
+   0.58
+  ],
+  "subtitle": "Fukuoka",
+  "stampSymbol": "🌊",
+  "imageName": "stamp_shikanoshima"
+ },
+ {
+  "id": 288,
+  "name": "Sumiyoshi Jinja Hakata",
+  "icon": "building.columns.fill",
+  "color": [
+   0.65,
+   0.2,
+   0.2
+  ],
+  "subtitle": "Hakata, Fukuoka",
+  "stampSymbol": "⛩",
+  "imageName": "stamp_sumiyoshi_hakata"
+ },
+ {
+  "id": 289,
+  "name": "Kashii-gu",
+  "icon": "tree.fill",
+  "color": [
+   0.2,
+   0.5,
+   0.28
+  ],
+  "subtitle": "Fukuoka",
+  "stampSymbol": "🌳",
+  "imageName": "stamp_kashiigu"
+ },
+ {
+  "id": 290,
+  "name": "Komyozen-ji",
+  "icon": "leaf.fill",
+  "color": [
+   0.25,
+   0.55,
+   0.3
+  ],
+  "subtitle": "Dazaifu, Fukuoka",
+  "stampSymbol": "🍃",
+  "imageName": "stamp_komyozenji"
+ }
+]
