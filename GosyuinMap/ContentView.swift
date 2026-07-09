@@ -2,9 +2,15 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    private enum AppTab: Hashable {
+        case explore, collect, learn
+    }
+
+    @State private var selectedTab: AppTab = .explore
+
     var body: some View {
-        TabView {
-            Tab {
+        TabView(selection: $selectedTab) {
+            Tab(value: .explore) {
                 ExploreView()
             } label: {
                 Label {
@@ -13,7 +19,7 @@ struct ContentView: View {
                     Image(systemName: "mappin.and.ellipse")
                 }
             }
-            Tab {
+            Tab(value: .collect) {
                 CollectView()
             } label: {
                 Label {
@@ -22,7 +28,7 @@ struct ContentView: View {
                     Image(systemName: "seal.fill")
                 }
             }
-            Tab {
+            Tab(value: .learn) {
                 LearnListView()
             } label: {
                 Label {
@@ -33,6 +39,7 @@ struct ContentView: View {
             }
         }
         .tint(Color.vermillion)
+        .sensoryFeedback(.selection, trigger: selectedTab)
     }
 }
 

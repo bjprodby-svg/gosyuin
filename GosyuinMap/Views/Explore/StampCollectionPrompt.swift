@@ -114,7 +114,19 @@ struct StampCollectionPrompt: View {
                 levelUpOverlay
             }
         }
+        // Haptic choreography — follows the visual phases of the celebration:
+        // heavy slam on collect → success as the title lands → light tick per
+        // reward row → success when the Level Up overlay appears.
         .sensoryFeedback(.impact(weight: .heavy), trigger: collected)
+        .sensoryFeedback(trigger: titleOpacity) { _, new in
+            new == 1 ? .success : nil
+        }
+        .sensoryFeedback(trigger: rewardRows) { _, new in
+            new.contains(true) ? .impact(weight: .light) : nil
+        }
+        .sensoryFeedback(trigger: showLevelUp) { _, new in
+            new ? .success : nil
+        }
     }
 
     // MARK: - Main Content (unified, animated visibility)

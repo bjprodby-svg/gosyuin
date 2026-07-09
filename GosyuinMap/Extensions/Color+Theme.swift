@@ -192,7 +192,8 @@ extension View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.vermillion, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+            .background(Color.vermillion.gradient, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+            .shadow(color: Color.vermillion.opacity(0.30), radius: 8, y: 4)
     }
 
     /// 朱色の縦線アクセント付きカード
@@ -297,13 +298,16 @@ struct ProgressBar: View {
 
 // MARK: - Pressed Button Style
 
-/// タップ時にスケール + 透明度変化するボタンスタイル
+/// タップ時にスケール + 透明度変化するボタンスタイル（押下時に軽い触覚フィードバック）
 struct PressableButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
             .opacity(configuration.isPressed ? 0.85 : 1.0)
-            .animation(.spring(duration: 0.2, bounce: 0.4), value: configuration.isPressed)
+            .animation(DS.Anim.press, value: configuration.isPressed)
+            .sensoryFeedback(trigger: configuration.isPressed) { _, pressed in
+                pressed ? .impact(weight: .light) : nil
+            }
     }
 }
 
@@ -311,13 +315,16 @@ extension ButtonStyle where Self == PressableButtonStyle {
     static var pressable: PressableButtonStyle { PressableButtonStyle() }
 }
 
-/// 朱印風の印章スタンプアニメーション用 — タップでドスンと押す
+/// 朱印風の印章スタンプアニメーション用 — タップでドスンと押す（押下時に中程度の触覚フィードバック）
 struct StampButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.88 : 1.0)
             .rotationEffect(.degrees(configuration.isPressed ? -2 : 0))
-            .animation(.spring(duration: 0.25, bounce: 0.5), value: configuration.isPressed)
+            .animation(DS.Anim.stamp, value: configuration.isPressed)
+            .sensoryFeedback(trigger: configuration.isPressed) { _, pressed in
+                pressed ? .impact(weight: .medium) : nil
+            }
     }
 }
 

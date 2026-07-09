@@ -241,6 +241,10 @@ struct CollectView: View {
                         .font(.caption2)
                         .foregroundStyle(Color.captionText)
                 }
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.captionText)
             }
             .cardStyle()
         }
@@ -303,7 +307,7 @@ struct CollectView: View {
                 .padding(.vertical, 7)
                 .background(isSelected ? color : Color(.quaternarySystemFill), in: Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// Compact category chip — icon + count only. Full name is in accessibility label.
@@ -334,7 +338,7 @@ struct CollectView: View {
                     .strokeBorder(isSelected ? .clear : color.opacity(0.22), lineWidth: 1)
             )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityLabel(accessibilityLabel)
     }
 
@@ -360,6 +364,8 @@ struct CollectView: View {
         }
         .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
+        // Page-turn tick — light haptic on every spread change (swipe or chevron)
+        .sensoryFeedback(.impact(weight: .light), trigger: currentBookPage)
     }
 
     private var bookHeader: some View {
@@ -385,6 +391,9 @@ struct CollectView: View {
             Text("\(collected)/\(total)")
                 .font(DS.Font.chipLabel)
                 .foregroundStyle(Color.captionText)
+                .contentTransition(.numericText())
+                .animation(DS.Anim.select, value: collected)
+                .animation(DS.Anim.select, value: total)
         }
         .padding(.horizontal, DS.Spacing.lg)
         .padding(.top, DS.Spacing.lg)
@@ -459,6 +468,8 @@ struct CollectView: View {
             Text("Page \(currentBookPage + 1) of \(max(bookPages.count, 1))")
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(Color.captionText)
+                .contentTransition(.numericText())
+                .animation(DS.Anim.select, value: currentBookPage)
 
             Spacer()
 

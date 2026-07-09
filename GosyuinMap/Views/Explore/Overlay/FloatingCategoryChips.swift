@@ -46,6 +46,7 @@ struct FloatingCategoryChips: View {
                                 Text("\(count)")
                                     .font(.caption2.weight(.bold))
                                     .foregroundStyle(isSelected ? category.shrineCategory.color : .white)
+                                    .contentTransition(.numericText())
                                     .padding(.horizontal, 5)
                                     .padding(.vertical, 1)
                                     .background(
@@ -63,6 +64,8 @@ struct FloatingCategoryChips: View {
                             in: Capsule()
                         )
                         .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+                        // Count ticks smoothly as the visible map region changes
+                        .animation(DS.Anim.select, value: count)
                     }
                     .buttonStyle(AppleMapButtonStyle())
                 }

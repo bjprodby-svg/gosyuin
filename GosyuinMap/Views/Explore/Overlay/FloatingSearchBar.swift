@@ -27,12 +27,15 @@ struct FloatingSearchBar: View {
     }
 }
 
-/// Apple Maps-style press effect: gentle scale + opacity.
+/// Apple Maps-style press effect: gentle scale + opacity + light haptic on touch-down.
 struct AppleMapButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
             .opacity(configuration.isPressed ? 0.85 : 1.0)
-            .animation(.spring(duration: 0.2, bounce: 0.4), value: configuration.isPressed)
+            .animation(DS.Anim.press, value: configuration.isPressed)
+            .sensoryFeedback(trigger: configuration.isPressed) { _, pressed in
+                pressed ? .impact(weight: .light) : nil
+            }
     }
 }

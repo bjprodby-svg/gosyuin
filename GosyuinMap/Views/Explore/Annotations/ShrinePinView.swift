@@ -62,6 +62,10 @@ struct ShrinePinView: View {
             .animation(.spring(duration: 0.3, bounce: 0.4), value: isSelected)
         }
         .buttonStyle(.plain)
+        // Apple Maps-style tick when this pin becomes the selected one
+        .sensoryFeedback(trigger: isSelected) { _, selected in
+            selected ? .impact(weight: .light) : nil
+        }
         .onAppear { appeared = true }
     }
 }
