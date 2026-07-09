@@ -1,23 +1,25 @@
 import SwiftUI
 import SwiftData
 
+/// Modern stamp book: level header, stat tiles, recent-stamps carousel,
+/// then a searchable, category-sectioned grid of every stamp.
+/// Collected stamps show their artwork; uncollected show a silhouette.
 struct CollectView: View {
     @Query private var collectedStamps: [CollectedStamp]
-    @Environment(\.modelContext) private var modelContext
-    @State private var appeared = false
-    @State private var locationService = LocationService()
     @State private var selectedCategory: ShrineCategory? = nil
+    @State private var searchText = ""
     @State private var showPassport = false
     @State private var showSettings = false
     @State private var showLevelDetail = false
-    @State private var currentBookPage: Int = 0
 
-    private let bookColumns = [
+    private let gridColumns = [
         GridItem(.flexible(), spacing: DS.Spacing.md),
         GridItem(.flexible(), spacing: DS.Spacing.md),
         GridItem(.flexible(), spacing: DS.Spacing.md)
     ]
-    private let stampsPerPage = 6
+
+    /// Washi paper tone shared with the section cards
+    private let washi = Color(red: 0.98, green: 0.96, blue: 0.93)
 
     private var collectedIds: Set<Int> {
         Set(collectedStamps.map(\.slotId))
@@ -29,10 +31,6 @@ struct CollectView: View {
 
     private var unlockedAchievements: [Achievement] {
         Achievement.all.filter { $0.requirement(collectedIds, Shrine.samples) }
-    }
-
-    private var lockedAchievements: [Achievement] {
-        Achievement.all.filter { !$0.requirement(collectedIds, Shrine.samples) }
     }
 
     private var achievementsByCategory: [(category: AchievementCategory, achievements: [Achievement])] {
@@ -67,18 +65,38 @@ struct CollectView: View {
         Self.cachedStampsByCategory
     }
 
-    /// All stamps for the current filter, used by the book
-    private var bookStamps: [StampDefinition] {
-        if let selected = selectedCategory {
-            return stampsByCategory.first { $0.category == selected }?.stamps ?? []
-        }
-        return stampsByCategory.flatMap(\.stamps)
+    private func matchesSearch(_ stamp: StampDefinition) -> Bool {
+        guard !searchText.isEmpty else { return true }
+        return stamp.name.localizedCaseInsensitiveContains(searchText)
+            || stamp.subtitle.localizedCaseInsensitiveContains(searchText)
     }
 
-    private var bookPages: [[StampDefinition]] {
-        stride(from: 0, to: bookStamps.count, by: stampsPerPage).map {
-            Array(bookStamps[$0..<min($0 + stampsPerPage, bookStamps.count)])
-        }
+    /// Sections currently visible after applying the category filter + search.
+    private var visibleSections: [(category: ShrineCategory, stamps: [StampDefinition])] {
+        stampsByCategory
+            .filter { selectedCategory == nil || $0.category == selectedCategory }
+            .compactMap { section -> (category: ShrineCategory, stamps: [StampDefinition])? in
+                let stamps = section.stamps.filter(matchesSearch)
+                guard !stamps.isEmpty else { return nil }
+                return (category: section.category, stamps: stamps)
+            }
+    }
+
+    /// Latest collections, newest first, paired with their stamp definitions.
+    private var recentStamps: [(record: CollectedStamp, stamp: StampDefinition)] {
+        collectedStamps
+            .sorted { $0.collectedDate > $1.collectedDate }
+            .prefix(8)
+            .compactMap { record -> (record: CollectedStamp, stamp: StampDefinition)? in
+                guard let stamp = StampDefinition.all.first(where: { $0.id == record.slotId }) else { return nil }
+                return (record: record, stamp: stamp)
+            }
+    }
+
+    private var completionPercent: Int {
+        let total = StampDefinition.all.count
+        guard total > 0 else { return 0 }
+        return Int((Double(collectedStamps.count) / Double(total) * 100).rounded())
     }
 
     var body: some View {
@@ -87,22 +105,42 @@ struct CollectView: View {
                 VStack(spacing: DS.Spacing.xl) {
                     levelCard
 
+                    statsRow
+
                     if collectedStamps.isEmpty {
                         emptyStateCard
-                            .transition(.scale(scale: 0.95).combined(with: .opacity))
+                    } else {
+                        recentSection
                     }
-
-                    categoryFilter
-
-                    // Gosyuin Book
-                    gosyuinBook
                 }
-                .padding(DS.Spacing.lg)
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.top, DS.Spacing.lg)
+
+                // Sticky category filter + sectioned stamp grid
+                LazyVStack(alignment: .leading, spacing: DS.Spacing.lg, pinnedViews: [.sectionHeaders]) {
+                    Section {
+                        if visibleSections.isEmpty {
+                            ContentUnavailableView.search(text: searchText)
+                                .padding(.top, DS.Spacing.xl)
+                        } else {
+                            ForEach(visibleSections, id: \.category) { section in
+                                categorySection(section)
+                            }
+                        }
+                    } header: {
+                        categoryFilter
+                            .padding(.vertical, DS.Spacing.sm)
+                            .background(Color.pageBackground)
+                    }
+                }
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.top, DS.Spacing.md)
                 .padding(.bottom, DS.Spacing.xxl)
             }
             .background(Color.pageBackground)
             .navigationTitle("Stamp Book")
             .navigationBarTitleDisplayMode(.large)
+            .searchable(text: $searchText, prompt: "Search shrines & temples")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button { showSettings = true } label: {
@@ -133,55 +171,8 @@ struct CollectView: View {
             .navigationDestination(for: StampDefinition.self) { stamp in
                 StampDetailView(stamp: stamp)
             }
-            .onAppear {
-                withAnimation(DS.Anim.collect) { appeared = true }
-            }
-            // Seed removed — use Settings > Debug to add stamps
-
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: collectedStamps.count)
-    }
-
-    // MARK: - Empty State
-
-    private var emptyStateCard: some View {
-        VStack(spacing: DS.Spacing.lg) {
-            IconBadge(icon: "building.columns", size: 72, color: .vermillion)
-
-            VStack(spacing: DS.Spacing.xs) {
-                Text("Start Your Journey")
-                    .font(.title3.bold())
-                Text("Visit a shrine or temple and get within 100m to collect your first stamp.")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.subtitleText)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-                stepRow(number: "1", text: "Open the Explore tab")
-                stepRow(number: "2", text: "Find a shrine nearby on the map")
-                stepRow(number: "3", text: "Walk within 100m to collect your stamp")
-            }
-            .padding(DS.Spacing.md)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.vermillion.opacity(0.05), in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        }
-        .cardStyle()
-    }
-
-    private func stepRow(number: String, text: String) -> some View {
-        HStack(spacing: DS.Spacing.sm) {
-            Text(number)
-                .font(.caption.bold())
-                .foregroundStyle(.white)
-                .frame(width: 20, height: 20)
-                .background(Color.vermillion, in: Circle())
-            Text(text)
-                .font(.caption.weight(.medium))
-                .foregroundStyle(Color.bodyText)
-            Spacer()
-        }
     }
 
     // MARK: - Level Card
@@ -251,9 +242,124 @@ struct CollectView: View {
         .buttonStyle(.pressable)
     }
 
-    // Achievement summary removed — accessible via Level Card tap
+    // MARK: - Stat Tiles
 
-    // MARK: - Category Filter
+    private var statsRow: some View {
+        HStack(spacing: DS.Spacing.md) {
+            statTile(icon: "seal.fill", value: collectedStamps.count, caption: "Collected", color: .vermillion)
+            statTile(icon: "chart.pie.fill", value: completionPercent, suffix: "%", caption: "Complete", color: .kincha)
+            statTile(icon: "rosette", value: unlockedAchievements.count, caption: "Badges", color: .matcha)
+        }
+    }
+
+    private func statTile(icon: String, value: Int, suffix: String = "", caption: String, color: Color) -> some View {
+        VStack(spacing: DS.Spacing.xs) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundStyle(color)
+            HStack(alignment: .firstTextBaseline, spacing: 1) {
+                AnimatedCounter(value: value, font: DS.Font.statSmall, color: .bodyText)
+                if !suffix.isEmpty {
+                    Text(suffix)
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(Color.bodyText)
+                }
+            }
+            Text(caption.uppercased())
+                .font(DS.Font.statCaption)
+                .foregroundStyle(Color.captionText)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DS.Spacing.md)
+        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+        .shadow(color: .black.opacity(0.05), radius: 3, y: 1)
+    }
+
+    // MARK: - Recent Stamps Carousel
+
+    private var recentSection: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            SectionHeader(title: "Recent Stamps", icon: "clock")
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: DS.Spacing.md) {
+                    ForEach(recentStamps, id: \.record.id) { item in
+                        recentCard(stamp: item.stamp, date: item.record.collectedDate)
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.viewAligned)
+            .scrollClipDisabled()
+        }
+    }
+
+    private func recentCard(stamp: StampDefinition, date: Date) -> some View {
+        NavigationLink(value: stamp) {
+            VStack(spacing: DS.Spacing.sm) {
+                GosyuinStampView(stamp: stamp, size: 92, showDate: false)
+
+                VStack(spacing: 2) {
+                    Text(stamp.name)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.bodyText)
+                        .lineLimit(1)
+                    Text(date, format: .dateTime.month().day())
+                        .font(.caption2)
+                        .foregroundStyle(Color.captionText)
+                }
+            }
+            .padding(DS.Spacing.md)
+            .frame(width: 132)
+            .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+            .shadow(color: .black.opacity(0.06), radius: 3, y: 1)
+        }
+        .buttonStyle(.pressable)
+    }
+
+    // MARK: - Empty State
+
+    private var emptyStateCard: some View {
+        VStack(spacing: DS.Spacing.lg) {
+            IconBadge(icon: "building.columns", size: 72, color: .vermillion)
+
+            VStack(spacing: DS.Spacing.xs) {
+                Text("Start Your Journey")
+                    .font(.title3.bold())
+                Text("Visit a shrine or temple and get within 100m to collect your first stamp.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.subtitleText)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                stepRow(number: "1", text: "Open the Explore tab")
+                stepRow(number: "2", text: "Find a shrine nearby on the map")
+                stepRow(number: "3", text: "Walk within 100m to collect your stamp")
+            }
+            .padding(DS.Spacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.vermillion.opacity(0.05), in: RoundedRectangle(cornerRadius: DS.Radius.md))
+        }
+        .cardStyle()
+    }
+
+    private func stepRow(number: String, text: String) -> some View {
+        HStack(spacing: DS.Spacing.sm) {
+            Text(number)
+                .font(.caption.bold())
+                .foregroundStyle(.white)
+                .frame(width: 20, height: 20)
+                .background(Color.vermillion, in: Circle())
+            Text(text)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(Color.bodyText)
+            Spacer()
+        }
+    }
+
+    // MARK: - Category Filter (sticky header)
 
     private var categoryFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -262,7 +368,6 @@ struct CollectView: View {
                 chipButton(label: "All", isSelected: selectedCategory == nil) {
                     withAnimation(DS.Anim.select) {
                         selectedCategory = nil
-                        currentBookPage = 0
                     }
                 }
                 ForEach(stampsByCategory, id: \.category) { section in
@@ -277,7 +382,6 @@ struct CollectView: View {
                     ) {
                         withAnimation(DS.Anim.select) {
                             selectedCategory = selectedCategory == cat ? nil : cat
-                            currentBookPage = 0
                         }
                     }
                 }
@@ -296,6 +400,7 @@ struct CollectView: View {
                 .frame(width: 24)
             }
         )
+        .sensoryFeedback(.selection, trigger: selectedCategory)
     }
 
     private func chipButton(label: String, isSelected: Bool, color: Color = .vermillion, action: @escaping () -> Void) -> some View {
@@ -342,170 +447,69 @@ struct CollectView: View {
         .accessibilityLabel(accessibilityLabel)
     }
 
-    // MARK: - Gosyuin Book (paginated, book-style)
+    // MARK: - Stamp Grid Sections
 
-    private var gosyuinBook: some View {
-        VStack(spacing: 0) {
-            // Book cover header
-            bookHeader
+    private func categorySection(_ section: (category: ShrineCategory, stamps: [StampDefinition])) -> some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            HStack(spacing: DS.Spacing.sm) {
+                Image(systemName: section.category.icon)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(section.category.color)
+                Text(section.category.displayName)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.bodyText)
+                Spacer()
+                let collected = section.stamps.filter { collectedIds.contains($0.id) }.count
+                Text("\(collected)/\(section.stamps.count)")
+                    .font(DS.Font.chipLabel)
+                    .foregroundStyle(Color.captionText)
+                    .contentTransition(.numericText())
+                    .animation(DS.Anim.select, value: collected)
+            }
 
-            // Paged stamp spreads
-            TabView(selection: $currentBookPage) {
-                ForEach(bookPages.indices, id: \.self) { pageIndex in
-                    bookPage(stamps: bookPages[pageIndex], pageNumber: pageIndex + 1)
-                        .tag(pageIndex)
+            LazyVGrid(columns: gridColumns, spacing: DS.Spacing.md) {
+                ForEach(section.stamps) { stamp in
+                    stampCell(stamp)
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 340)
-
-            // Page indicator
-            bookFooter
         }
-        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-        .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
-        // Page-turn tick — light haptic on every spread change (swipe or chevron)
-        .sensoryFeedback(.impact(weight: .light), trigger: currentBookPage)
+        .padding(DS.Spacing.lg)
+        .background(washi, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(color: .black.opacity(0.05), radius: 3, y: 1)
     }
 
-    private var bookHeader: some View {
-        HStack {
-            if let cat = selectedCategory {
-                Image(systemName: cat.icon)
-                    .font(.caption)
-                    .foregroundStyle(cat.color)
-                Text(cat.displayName)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.bodyText)
-            } else {
-                Image(systemName: "book.closed.fill")
-                    .font(.caption)
-                    .foregroundStyle(Color.vermillion)
-                Text("All Stamps")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.bodyText)
-            }
-            Spacer()
-            let total = bookStamps.count
-            let collected = bookStamps.filter { collectedIds.contains($0.id) }.count
-            Text("\(collected)/\(total)")
-                .font(DS.Font.chipLabel)
-                .foregroundStyle(Color.captionText)
-                .contentTransition(.numericText())
-                .animation(DS.Anim.select, value: collected)
-                .animation(DS.Anim.select, value: total)
-        }
-        .padding(.horizontal, DS.Spacing.lg)
-        .padding(.top, DS.Spacing.lg)
-        .padding(.bottom, DS.Spacing.sm)
-    }
-
-    private func bookPage(stamps: [StampDefinition], pageNumber: Int) -> some View {
-        VStack(spacing: 0) {
-            // Washi paper page
-            LazyVGrid(columns: bookColumns, spacing: DS.Spacing.md) {
-                ForEach(stamps) { stamp in
-                    NavigationLink(value: stamp) {
-                        GeometryReader { geo in
-                            let size = geo.size.width
-                            let isCollected = collectedIds.contains(stamp.id)
-                            Group {
-                                if isCollected {
-                                    GosyuinStampView(
-                                        stamp: stamp,
-                                        size: size,
-                                        showDate: false,
-                                        collectedDate: collectedStamps.first { $0.slotId == stamp.id }?.collectedDate
-                                    )
-                                    .transition(.scale(scale: 0.5).combined(with: .opacity))
-                                } else {
-                                    UncollectedStampCard(stampId: stamp.id)
-                                        .transition(.opacity)
-                                }
-                            }
-                            .frame(width: size, height: size)
-                            .animation(DS.Anim.reveal, value: isCollected)
-                        }
-                        .aspectRatio(1, contentMode: .fit)
+    private func stampCell(_ stamp: StampDefinition) -> some View {
+        let isCollected = collectedIds.contains(stamp.id)
+        return NavigationLink(value: stamp) {
+            GeometryReader { geo in
+                let size = geo.size.width
+                Group {
+                    if isCollected {
+                        GosyuinStampView(
+                            stamp: stamp,
+                            size: size,
+                            showDate: false,
+                            collectedDate: collectedStamps.first { $0.slotId == stamp.id }?.collectedDate
+                        )
+                        .transition(.scale(scale: 0.5).combined(with: .opacity))
+                    } else {
+                        UncollectedStampCard(stampId: stamp.id)
+                            .transition(.opacity)
                     }
-                    .buttonStyle(.stamp)
                 }
+                .frame(width: size, height: size)
+                .animation(DS.Anim.reveal, value: isCollected)
             }
-            .padding(.horizontal, DS.Spacing.lg)
-            .padding(.vertical, DS.Spacing.md)
-
-            Spacer()
+            .aspectRatio(1, contentMode: .fit)
         }
-        .background(Color(red: 0.98, green: 0.96, blue: 0.93))
-        // Book spine shadow on leading edge
-        .overlay(alignment: .leading) {
-            LinearGradient(
-                colors: [.black.opacity(0.06), .clear],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-            .frame(width: 8)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.sm))
-        .padding(.horizontal, DS.Spacing.sm)
-    }
-
-    private var bookFooter: some View {
-        HStack {
-            Button {
-                withAnimation(DS.Anim.select) {
-                    currentBookPage = max(0, currentBookPage - 1)
-                }
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(currentBookPage > 0 ? Color.bodyText : Color.captionText)
-            }
-            .disabled(currentBookPage == 0)
-
-            Spacer()
-
-            Text("Page \(currentBookPage + 1) of \(max(bookPages.count, 1))")
-                .font(.caption2.weight(.medium))
-                .foregroundStyle(Color.captionText)
-                .contentTransition(.numericText())
-                .animation(DS.Anim.select, value: currentBookPage)
-
-            Spacer()
-
-            Button {
-                withAnimation(DS.Anim.select) {
-                    currentBookPage = min(bookPages.count - 1, currentBookPage + 1)
-                }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(currentBookPage < bookPages.count - 1 ? Color.bodyText : Color.captionText)
-            }
-            .disabled(currentBookPage >= bookPages.count - 1)
-        }
-        .padding(.horizontal, DS.Spacing.lg)
-        .padding(.vertical, DS.Spacing.md)
-    }
-
-    // MARK: - Seed (Debug Only)
-
-    #if DEBUG
-    private func seedSampleDataIfNeeded() {
-        let calendar = Calendar.current
-        let existingIds = Set(collectedStamps.map(\.slotId))
-        let designedStampIds = [
-            1, 2, 3, 19, 21, 27, 28, 29, 36, 41, 42, 46, 47, 48, 49, 82, 262,
-        ]
-        let missing = designedStampIds.filter { !existingIds.contains($0) }
-        guard !missing.isEmpty else { return }
-        for (index, slotId) in missing.enumerated() {
-            let daysAgo = (missing.count - index) * 3
-            let date = calendar.date(byAdding: .day, value: -daysAgo, to: .now) ?? .now
-            modelContext.insert(CollectedStamp(slotId: slotId, collectedDate: date))
+        .buttonStyle(.stamp)
+        // Cells gently fade + scale in as they scroll into view
+        .scrollTransition(.interactive) { content, phase in
+            content
+                .opacity(phase.isIdentity ? 1 : 0.35)
+                .scaleEffect(phase.isIdentity ? 1 : 0.9)
         }
     }
-    #endif
 }
 
 // MARK: - Uncollected Stamp Card

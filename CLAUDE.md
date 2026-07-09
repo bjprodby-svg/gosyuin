@@ -29,11 +29,11 @@ GosyuinMap/
       Navigation/                  NavigationETABar, NavigationTopBar, RecenterButton
       Overlay/                     FloatingSearchBar, FloatingCategoryChips, MapFloatingButtons
     Collect/
-      CollectView.swift            Stamp book with paginated gosyuin grid
+      CollectView.swift            Stamp book: stats row, recent carousel, searchable sectioned grid
       StampDetailView.swift        Individual stamp detail
       GosyuinStampView.swift       Grid stamp display (hexagon/circle alternation)
       GosyuinArtworkView.swift     Large stamp artwork (detail page)
-      GosyuinBookSpreadView.swift  Book page layout
+      GosyuinBookSpreadView.swift  Book page layout (legacy, unused since grid redesign)
       ShrinePassportView.swift     Journey card with pilgrimage trail + map + stats
       LevelDetailView.swift        Level progress + achievement list (tappable from level card)
       AvatarView.swift             Flat-illustration avatar per collector level
