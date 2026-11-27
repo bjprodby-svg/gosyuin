@@ -45,7 +45,7 @@ body {
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--link); text-underline-offset: 3px; }
 a:focus-visible { outline: 2px solid var(--shu); outline-offset: 3px; border-radius: 4px; }
-h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--sans); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; margin: 0; text-wrap: balance; }
 p { margin: 0; }
 
 .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
@@ -72,18 +72,46 @@ p { margin: 0; }
   font-family: var(--serif); font-size: 22px; line-height: 1.05; writing-mode: vertical-rl; letter-spacing: 2px;
   transform: rotate(-4deg);
 }
-.eyebrow { font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--shu); }
 .lead { font-size: 19px; color: var(--ink-soft); }
 .fine { font-size: 14px; color: var(--ink-soft); }
 
+/* The App Store button, drawn after Apple's black "Download on the App
+   Store" badge (black, white Apple mark and type, a thin grey keyline,
+   about 3:1). Replace it with the official artwork from
+   https://tools.applemediaservices.com/ when the app is live. */
 .store-badge {
-  display: inline-flex; align-items: center; gap: 11px; text-decoration: none;
-  background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 14px;
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+  background: #000; color: #fff; border: 1px solid #a6a6a6;
+  height: 56px; padding: 0 20px 0 16px; border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
 .store-badge svg { flex: none; }
-.store-badge small { display: block; font-size: 11px; line-height: 1.2; opacity: 0.75; }
-.store-badge b { display: block; font-size: 18px; line-height: 1.2; }
-.store-badge:hover { opacity: 0.9; }
+.store-badge span { display: block; }
+.store-badge small { display: block; font-size: 12px; line-height: 1.1; letter-spacing: 0.01em; }
+.store-badge b { display: block; font-size: 24px; line-height: 1.05; font-weight: 600; letter-spacing: -0.02em; }
+.store-badge:hover { opacity: 0.88; }
+.store-badge[aria-disabled="true"] { cursor: default; }
+
+/* On phones the button stays in reach at the bottom of the screen. */
+.get-bar { display: none; }
+@media (max-width: 640px) {
+  body.has-get-bar { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .get-bar {
+    display: flex; align-items: center; gap: 12px;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+  }
+  .get-bar img { width: 44px; height: 44px; border-radius: 10px; }
+  .get-bar .name { font-weight: 700; font-size: 16px; line-height: 1.2; color: var(--ink); }
+  .get-bar .name small { display: block; font-weight: 500; font-size: 13px; color: var(--ink-soft); }
+  .get-bar .store-badge { margin-left: auto; height: 46px; padding: 0 14px 0 12px; border-radius: 10px; gap: 8px; }
+  .get-bar .store-badge svg { width: 18px; height: 22px; }
+  .get-bar .store-badge small { font-size: 10px; }
+  .get-bar .store-badge b { font-size: 19px; }
+}
 
 /* A phone-shaped frame around a screenshot (1320 x 2868). */
 .shot {
@@ -96,7 +124,7 @@ p { margin: 0; }
 /* ---------- hero ---------- */
 .hero { padding: 72px 0 80px; overflow: hidden; }
 .hero .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
-.hero h1 { font-size: clamp(38px, 5.2vw, 60px); letter-spacing: -0.01em; }
+.hero h1 { font-size: clamp(40px, 5.6vw, 66px); letter-spacing: -0.035em; }
 .hero .lead { margin-top: 22px; max-width: 30em; }
 .hero .cta { margin-top: 32px; display: flex; align-items: center; gap: 18px 22px; flex-wrap: wrap; }
 .hero .cta .fine { font-weight: 600; }
@@ -114,7 +142,7 @@ p { margin: 0; }
 /* ---------- three claims ---------- */
 .claims { padding: 24px 0 40px; }
 .claim { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 56px 0; border-top: 1px solid var(--line); }
-.claim h2 { font-size: clamp(28px, 3.4vw, 40px); margin-top: 14px; }
+.claim h2 { font-size: clamp(28px, 3.4vw, 40px); }
 .claim p.body { margin-top: 18px; color: var(--ink-soft); max-width: 32em; }
 .claim ul { margin: 18px 0 0; padding-left: 1.15em; color: var(--ink-soft); max-width: 32em; }
 .claim li { margin: 6px 0; }
@@ -133,7 +161,7 @@ p { margin: 0; }
 .note-band .wrap { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; }
 .note-band h2 { font-size: clamp(26px, 3.2vw, 36px); margin-top: 10px; }
 .note-band p { margin-top: 16px; max-width: 40em; }
-.note-band p.strong { font-family: var(--serif); font-size: 22px; line-height: 1.4; }
+.note-band p.strong { font-size: 21px; font-weight: 600; line-height: 1.45; }
 @media (max-width: 560px) { .note-band .wrap { grid-template-columns: 1fr; } }
 
 /* ---------- guides ---------- */

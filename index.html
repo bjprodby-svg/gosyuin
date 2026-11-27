@@ -4,17 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GosyuinMap: a guide to Japan's shrines and temples</title>
-<meta name="description" content="A free iPhone app for visiting Japan's shrines and temples. 233 places with written guides, the customs explained, walking directions, and a digital keepsake stamp you press when you arrive.">
+<meta name="description" content="A free iPhone app for visiting Japan's shrines and temples. 269 places with written guides, the customs explained, walking directions, and a digital keepsake stamp you press when you arrive.">
 <meta property="og:title" content="GosyuinMap: a guide to Japan's shrines and temples">
 <meta property="og:description" content="Know the customs, walk there, and keep each visit as a digital stamp. Free, no account, no ads.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://bjprodby-svg.github.io/gosyuin/images/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<!-- Smart App Banner (Safari on iPhone). Once the app has its App Store ID,
+     uncomment this line and put the ID (digits only) in place of APP_ID.
+     The banner carries no campaign, so installs through it show as web referrals.
+<meta name="apple-itunes-app" content="app-id=APP_ID">
+-->
 <link rel="icon" href="images/app-icon.png">
 <link rel="apple-touch-icon" href="images/app-icon.png">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="has-get-bar">
 
 <header class="site-header">
   <div class="wrap">
@@ -36,7 +41,7 @@
       <h1>A quiet companion for Japan's shrines and temples</h1>
       <p class="lead">GosyuinMap walks you there, shows you what to do when you arrive, and lets you keep each visit as a digital stamp.</p>
       <div class="cta">
-        <a class="store-badge" href="#top" aria-disabled="true" title="Coming soon">
+        <a class="store-badge" data-store href="#top" aria-disabled="true" title="Coming soon">
           <svg width="22" height="26" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-109 62-109 190 0 148 130 200 134 201-1 3-21 71-69 141-43 61-88 123-156 123s-86-40-165-40c-77 0-104 41-167 41s-107-57-157-127C41 786 0 661 0 543c0-190 123-290 245-290 64 0 118 42 159 42 39 0 99-45 172-45 28 0 128 3 212 91zM574 164c32-38 55-91 55-144 0-7-1-15-2-20-52 2-114 35-152 78-29 33-57 86-57 140 0 8 1 16 2 19 3 1 9 2 14 2 47 0 106-31 140-75z"/></svg>
           <span><small>Coming soon to the</small><b>App Store</b></span>
         </a>
@@ -55,7 +60,6 @@
 
     <div class="claim" id="customs">
       <div class="text">
-        <p class="eyebrow">Before you go</p>
         <h2>Know what to do before you step through the gate.</h2>
         <p class="body">Seven illustrated guides explain the customs one step at a time, so a first visit does not feel like guesswork.</p>
         <ul>
@@ -72,8 +76,7 @@
 
     <div class="claim flip" id="walk">
       <div class="text">
-        <p class="eyebrow">On the way</p>
-        <h2>233 well-known shrines and temples, each with a written guide.</h2>
+        <h2>269 well-known shrines and temples, each with a written guide.</h2>
         <p class="body">Every place on the map tells you what makes it special, what not to miss, when to go, how to get there and when it is open. Pick one, tap Set Off, and the app gives you a walking route with your progress on the Lock Screen, so the phone can stay in your pocket.</p>
         <p class="body fine">From Meiji Jingu and Senso-ji in Tokyo to Fushimi Inari Taisha and Kiyomizu-dera in Kyoto, Todai-ji in Nara and Itsukushima Jinja in Hiroshima.</p>
       </div>
@@ -85,13 +88,12 @@
 
     <div class="claim" id="stamps">
       <div class="text">
-        <p class="eyebrow">When you arrive</p>
         <h2>When you are there, press a digital keepsake stamp. You have to be there.</h2>
-        <p class="body">Within about 100 meters of a shrine or temple on the map, the app invites you to press its stamp into your stamp book. Each of the 233 places has its own design. There is no way to press one from your sofa.</p>
-        <p class="body">Your stamp book keeps every visit, shelved by prefecture, with twelve ranks and a set of badges to mark how far you have walked.</p>
+        <p class="body">Within about 100 meters of a shrine or temple on the map, the app invites you to press its stamp into your stamp book. Each of the 269 places has its own design, drawn in the style of a woodblock print. There is no way to press one from your sofa.</p>
+        <p class="body">Your stamp book keeps every visit, shelved by prefecture, with a fox companion from the old tales that gains a tail as your book fills, and badges to mark how far you have walked.</p>
       </div>
       <div class="shots">
-        <figure class="shot"><img src="images/screenshots/06-stamp-book.png" alt="The stamp book, with a rank and shelves of stamps by prefecture" width="1320" height="2868" loading="lazy"></figure>
+        <figure class="shot"><img src="images/screenshots/06-stamp-book.png" alt="The stamp book, with the fox companion and shelves of stamps by prefecture" width="1320" height="2868" loading="lazy"></figure>
       </div>
     </div>
 
@@ -102,7 +104,6 @@
   <div class="wrap">
     <span class="seal" aria-hidden="true">心得</span>
     <div>
-      <p class="eyebrow">A note on goshuin</p>
       <h2>The stamps in this app are not goshuin.</h2>
       <p class="strong">They are original digital mementos, made for the app to mark that you were there. They are not copies of any shrine's or temple's seal.</p>
       <p>A goshuin is a record of worship that you receive in person at the shrine or temple office, usually after paying your respects. Nothing on a phone replaces it. If you would like one, the Learn tab explains how to ask, and we would encourage you to.</p>
@@ -112,7 +113,6 @@
 
 <section class="guides" id="guides">
   <div class="wrap">
-    <p class="eyebrow">The seven guides</p>
     <h2>What the Learn tab covers</h2>
     <p class="lead">Short, illustrated, and written for someone who has never been to a shrine or temple.</p>
     <ul class="guide-list">
@@ -139,12 +139,11 @@
 
 <section class="plain" id="plain">
   <div class="wrap">
-    <p class="eyebrow">Plainly</p>
     <h2>Free, without an account</h2>
     <div class="facts">
       <div class="fact">
         <h3>No sign-up, no ads</h3>
-        <p>Open the app and use it. The app is free. An optional Tip Jar lets you support development, and tips do not unlock any features.</p>
+        <p>Open the app and use it. The app is free, with no ads and nothing locked. It is made independently, and an optional offering in the app helps keep it running.</p>
       </div>
       <div class="fact">
         <h3>Your stamp book stays on your iPhone</h3>
@@ -152,7 +151,7 @@
       </div>
       <div class="fact">
         <h3>Your location is not sent to us</h3>
-        <p>It is used to show nearby places, guide your walk and confirm that you have arrived. Maps and routes come from Apple, and photos come from Wikipedia. The <a href="privacy.html">privacy policy</a> has the details.</p>
+        <p>It is used to show nearby places, guide your walk and confirm that you have arrived. Maps and routes come from Apple. Photos come from Wikimedia Commons, chosen in advance and credited to their photographers. The <a href="privacy.html">privacy policy</a> has the details.</p>
       </div>
     </div>
     <ul class="know">
@@ -168,7 +167,7 @@
     <img class="icon" src="images/app-icon.png" alt="" width="88" height="88">
     <h2>Start with the shrine down the road.</h2>
     <p class="lead">Find it on the map, read up on the customs, and walk there.</p>
-    <a class="store-badge" href="#top" aria-disabled="true" title="Coming soon">
+    <a class="store-badge" data-store href="#top" aria-disabled="true" title="Coming soon">
       <svg width="22" height="26" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-109 62-109 190 0 148 130 200 134 201-1 3-21 71-69 141-43 61-88 123-156 123s-86-40-165-40c-77 0-104 41-167 41s-107-57-157-127C41 786 0 661 0 543c0-190 123-290 245-290 64 0 118 42 159 42 39 0 99-45 172-45 28 0 128 3 212 91zM574 164c32-38 55-91 55-144 0-7-1-15-2-20-52 2-114 35-152 78-29 33-57 86-57 140 0 8 1 16 2 19 3 1 9 2 14 2 47 0 106-31 140-75z"/></svg>
       <span><small>Coming soon to the</small><b>App Store</b></span>
     </a>
@@ -186,5 +185,39 @@
   </div>
 </footer>
 
+<div class="get-bar">
+  <img src="images/app-icon.png" alt="" width="44" height="44">
+  <p class="name">GosyuinMap<small>Free on iPhone</small></p>
+  <a class="store-badge" data-store href="#top" aria-disabled="true" title="Coming soon">
+    <svg width="18" height="22" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-109 62-109 190 0 148 130 200 134 201-1 3-21 71-69 141-43 61-88 123-156 123s-86-40-165-40c-77 0-104 41-167 41s-107-57-157-127C41 786 0 661 0 543c0-190 123-290 245-290 64 0 118 42 159 42 39 0 99-45 172-45 28 0 128 3 212 91zM574 164c32-38 55-91 55-144 0-7-1-15-2-20-52 2-114 35-152 78-29 33-57 86-57 140 0 8 1 16 2 19 3 1 9 2 14 2 47 0 106-31 140-75z"/></svg>
+    <span><small>Coming soon to the</small><b>App Store</b></span>
+  </a>
+</div>
+
+<script>
+// The App Store buttons. While APP_ID is empty they say "Coming soon" and go
+// nowhere. Once the app has its App Store ID, set APP_ID (digits only) and
+// PROVIDER_TOKEN (the "pt" of an App Store Connect campaign link): every
+// button then opens the App Store with the campaign this page was opened
+// with (?ct=share_image from the QR code on a shared picture, ?ct=share_x
+// from a link posted to X, and so on; "site" when there is none), so App
+// Store Connect counts installs by source. Nothing is stored or sent.
+(function () {
+  var APP_ID = "";
+  var PROVIDER_TOKEN = "";
+  if (!APP_ID) return;
+  var match = /[?&]ct=([a-z0-9_]{1,40})(?:&|$)/.exec(location.search);
+  var ct = match ? match[1] : "site";
+  var url = "https://apps.apple.com/app/apple-store/id" + APP_ID +
+    (PROVIDER_TOKEN ? "?pt=" + encodeURIComponent(PROVIDER_TOKEN) + "&ct=" + ct + "&mt=8" : "");
+  document.querySelectorAll("[data-store]").forEach(function (a) {
+    a.href = url;
+    a.removeAttribute("aria-disabled");
+    a.removeAttribute("title");
+    var line = a.querySelector("small");
+    if (line) line.textContent = "Download on the";
+  });
+})();
+</script>
 </body>
 </html>
