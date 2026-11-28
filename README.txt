@@ -7,8 +7,9 @@ GosyuinMap の公開用ページ一式（静的サイト）
   index.html      紹介ページ（App Store Connect の「マーケティング URL」）
   privacy.html    プライバシーポリシー、英語と日本語（「プライバシーポリシー URL」、必須）
   support.html    サポートと FAQ（「サポート URL」、必須）
-  styles.css      3 ページ共通のスタイル（明るい表示と暗い表示は端末の設定に従う）
-  images/         アプリのアイコン、寺社の種類の絵 8 枚、共有用の画像（og.png）、スクリーンショット 6 枚（いまは仮の画像）
+  404.html        見つからない頁（GitHub Pages がどの深さでも自動で使う。リンクは /gosyuin/ からの絶対パス）
+  styles.css      共通のスタイル（明るい表示と暗い表示は端末の設定に従う）
+  images/         アプリのアイコン（app-icon.png、180 px の apple-touch-icon.png）、寺社の種類の絵 8 枚、共有用の画像（og.png）、スクリーンショット 6 枚
 
 ■ 上げる前に埋めるもの（3 つ）
 
@@ -43,10 +44,12 @@ GosyuinMap の公開用ページ一式（静的サイト）
    公開（LIVE_FROM の時刻）や予約注文（PREORDER）の状態では欄は自動で消える。
    privacy.html の 7 項はウェイトリストの説明。公開の 1 通を送ってリストを消したら、7 項も消す。
 
-■ 置き場所が決まった後に 1 行だけ直すもの（任意）
+■ リンクを貼ったときの画像（og.png）とタグ
 
-   index.html の <meta property="og:image" content="images/og.png"> を、https:// から始まる完全なアドレスにする。
-   直さなくてもページは動く。X や Threads に貼ったときの画像が出ないだけ。
+   images/og.png（1200 x 630）の元は appstore/og-source.html。直したら Playwright の Chromium で 1200 x 630、倍率 1 で撮り直す。
+   公開の日に「Coming soon to iPhone.」を「Free on iPhone.」に替えて撮り直す（og:image:alt はそのままでよい）。
+   og と twitter のタグは index、support、privacy の 3 頁にある。アドレスは https://bjprodby-svg.github.io/gosyuin/ で書いてあるので、
+   独自ドメインに移ったら 3 頁の og:url、og:image、twitter:image、canonical と 404.html の /gosyuin/ を直す。
 
 ■ 知っておくこと
 

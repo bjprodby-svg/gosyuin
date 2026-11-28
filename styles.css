@@ -3,13 +3,13 @@
 
 :root {
   color-scheme: light dark;
-  --paper: #f7f2eb;
+  --paper: #f6f5f2;
   --paper-raised: #fffdf9;
   --paper-sunk: #efe8dd;
-  --ink: #241e17;
+  --ink: #1d1a17;
   --ink-soft: #5d544a;
-  --line: rgba(36, 30, 23, 0.12);
-  --shu: #b83a2a;
+  --line: rgba(29, 26, 23, 0.12);
+  --shu: #c23b2b;
   --shu-ink: #ffffff;
   --link: #a23324;
   --shadow: 0 14px 34px rgba(50, 32, 10, 0.14);
@@ -101,11 +101,9 @@ p { margin: 0; }
   margin: 0; padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px;
   background: var(--paper-raised); color: var(--ink); font-weight: 700; font-size: 17px; line-height: 1.2;
 }
-.soon-title::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--shu); flex: none; }
 .soon-sub { margin: 0; font-size: 14px; color: var(--ink-soft); }
 .soon-sub a { color: var(--link); }
-.closing .soon { align-items: center; margin-top: 28px; }
-.closing .soon-title { align-self: center; }
+.closing .soon { align-items: flex-start; margin-top: 28px; }
 .soon-chip { display: none; }
 
 /* The waitlist inside the Coming soon label: one email field, one button. */
@@ -123,6 +121,8 @@ p { margin: 0; }
   flex: none; height: 48px; padding: 0 18px; border: 0; border-radius: 12px;
   background: var(--shu); color: var(--shu-ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
 }
+/* Leaving the list (#remove): a quiet ink outline, not the sign-up button. */
+.waitlist.is-remove button { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
 .waitlist button:disabled { opacity: 0.6; cursor: default; }
 .waitlist-promise, .waitlist-done { margin: 0; font-size: 14px; color: var(--ink-soft); }
 .waitlist-done { color: var(--ink); font-weight: 600; }
@@ -159,6 +159,11 @@ p { margin: 0; }
     background: var(--paper-raised); color: var(--ink); font-size: 13px; font-weight: 700; white-space: nowrap;
   }
   .get-bar .soon-chip[hidden] { display: none; }
+  .get-bar { transition: transform 0.25s ease, visibility 0.25s; }
+  @media (prefers-reduced-motion: reduce) { .get-bar { transition: none; } }
+  /* Hidden while the hero's own label is on screen, and on #remove. */
+  body.cta-in-view .get-bar, body.removing .get-bar { transform: translateY(110%); visibility: hidden; }
+  body.removing.has-get-bar { padding-bottom: 0; }
   .get-bar a.soon-chip { color: var(--shu-ink); background: var(--shu); border-color: transparent; text-decoration: none; }
 }
 
@@ -223,7 +228,7 @@ p { margin: 0; }
 .guide-list span { font-size: 15px; color: var(--ink-soft); }
 .types { margin-top: 40px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
 .types figure { margin: 0; background: #fffdf9; border: 1px solid var(--line); border-radius: 14px; padding: 8px 8px 10px; text-align: center; }
-.types figcaption { font-size: 12.5px; font-weight: 700; color: #241e17; margin-top: 4px; }
+.types figcaption { font-size: 12.5px; font-weight: 700; color: #1d1a17; margin-top: 4px; }
 @media (max-width: 860px) {
   .guide-list { grid-template-columns: 1fr; }
   .types { grid-template-columns: repeat(4, 1fr); }
@@ -241,9 +246,9 @@ p { margin: 0; }
 .know b { color: var(--ink); }
 
 /* ---------- closing ---------- */
-.closing { text-align: center; padding: 72px 0 88px; border-top: 1px solid var(--line); }
-.closing img.icon { width: 88px; height: 88px; border-radius: 20px; margin: 0 auto 24px; box-shadow: var(--shadow); }
-.closing .lead { margin: 14px auto 0; max-width: 30em; }
+.closing { padding: 72px 0 88px; border-top: 1px solid var(--line); }
+.closing img.icon { width: 88px; height: 88px; border-radius: 20px; margin: 0 0 24px; box-shadow: var(--shadow); }
+.closing .lead { margin: 14px 0 0; max-width: 30em; }
 .closing .store-badge { margin-top: 28px; }
 
 /* ---------- footer ---------- */
@@ -269,3 +274,6 @@ p { margin: 0; }
 .toc { margin: 24px 0 0; padding: 0; list-style: none; columns: 2; column-gap: 32px; font-size: 15.5px; }
 .toc li { margin: 0 0 8px; break-inside: avoid; }
 @media (max-width: 560px) { .toc { columns: 1; } }
+
+/* #remove: the label reads as a heading for the form, not as a button. */
+.soon-title.is-remove { border: 0; background: none; padding: 0; font-size: 22px; }
