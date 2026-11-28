@@ -10,8 +10,8 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://bjprodby-svg.github.io/gosyuin/images/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<!-- Smart App Banner (Safari on iPhone). Once the app has its App Store ID,
-     uncomment this line and put the ID (digits only) in place of APP_ID.
+<!-- Smart App Banner (Safari on iPhone). Uncomment it in the same publish that
+     sets LIVE_FROM (or PREORDER) below, with the ID (digits only) in place of APP_ID.
      The banner carries no campaign, so installs through it show as web referrals.
 <meta name="apple-itunes-app" content="app-id=APP_ID">
 -->
@@ -41,16 +41,34 @@
       <h1>A quiet companion for Japan's shrines and temples</h1>
       <p class="lead">GosyuinMap walks you there, shows you what to do when you arrive, and lets you keep each visit as a digital stamp.</p>
       <div class="cta">
-        <a class="store-badge" data-store href="#top" aria-disabled="true" title="Coming soon">
+        <a class="store-badge" data-store href="#top" hidden>
           <svg width="22" height="26" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-109 62-109 190 0 148 130 200 134 201-1 3-21 71-69 141-43 61-88 123-156 123s-86-40-165-40c-77 0-104 41-167 41s-107-57-157-127C41 786 0 661 0 543c0-190 123-290 245-290 64 0 118 42 159 42 39 0 99-45 172-45 28 0 128 3 212 91zM574 164c32-38 55-91 55-144 0-7-1-15-2-20-52 2-114 35-152 78-29 33-57 86-57 140 0 8 1 16 2 19 3 1 9 2 14 2 47 0 106-31 140-75z"/></svg>
-          <span><small>Coming soon to the</small><b>App Store</b></span>
+          <span><small>Download on the</small><b>App Store</b></span>
         </a>
+        <div class="soon" data-soon>
+          <p class="soon-title">Coming soon to the App Store</p>
+          <!-- The waitlist. Hidden until WAITLIST_FORM is set in the script at
+               the bottom, so the page never shows a form that goes nowhere. -->
+          <form class="waitlist" id="waitlist" data-waitlist method="post" target="waitlist-sink" hidden>
+            <label class="vh" for="wl-email">Your email</label>
+            <div class="waitlist-row">
+              <input id="wl-email" data-wl="email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" required>
+              <button type="submit" data-wl-button>Tell me at launch</button>
+            </div>
+            <input type="hidden" data-wl="source" value="site">
+            <input type="hidden" data-wl="request" value="join">
+            <p class="waitlist-promise" data-wl-promise>One email when it's on the App Store. Nothing else. <a href="privacy.html#waitlist">How we handle it</a></p>
+            <p class="waitlist-done" data-wl-done role="status" hidden></p>
+          </form>
+          <iframe class="vh" name="waitlist-sink" title="Waitlist" tabindex="-1" aria-hidden="true"></iframe>
+          <p class="soon-sub">Launch news on <a href="https://x.com/Gosyuin_map">X</a> and <a href="https://www.youtube.com/@gosyuinmap">YouTube</a>.</p>
+        </div>
         <p class="fine">Free. No account. No ads.<br>iPhone, iOS 26 or later.</p>
       </div>
     </div>
     <div class="hero-shots">
-      <figure class="shot"><img src="images/screenshots/02-map.png" alt="The map, with shrine and temple pins around Higashiyama in Kyoto" width="1320" height="2868"></figure>
-      <figure class="shot"><img src="images/screenshots/01-press-stamp.png" alt="A stamp just pressed at a shrine, with the words Pressed into your collection" width="1320" height="2868"></figure>
+      <figure class="shot"><img src="images/screenshots/02-map.png" alt="The map of central Tokyo with shrine and temple pins and a place summary" width="1320" height="2868"></figure>
+      <figure class="shot"><img src="images/screenshots/01-press-stamp.png" alt="The lacquer seal lifting off as a woodblock stamp of Senso-ji prints into the book" width="1320" height="2868"></figure>
     </div>
   </div>
 </section>
@@ -90,10 +108,10 @@
       <div class="text">
         <h2>When you are there, press a digital keepsake stamp. You have to be there.</h2>
         <p class="body">Within about 100 meters of a shrine or temple on the map, the app invites you to press its stamp into your stamp book. Each of the 269 places has its own design, drawn in the style of a woodblock print. There is no way to press one from your sofa.</p>
-        <p class="body">Your stamp book keeps every visit, shelved by prefecture, with a fox companion from the old tales that gains a tail as your book fills, and badges to mark how far you have walked.</p>
+        <p class="body">Your stamp book keeps every visit, shelved by prefecture, and characters from Japanese folk tales join you as it fills, from a paper lantern at your first place to the nine-tailed fox at the very end.</p>
       </div>
       <div class="shots">
-        <figure class="shot"><img src="images/screenshots/06-stamp-book.png" alt="The stamp book, with the fox companion and shelves of stamps by prefecture" width="1320" height="2868" loading="lazy"></figure>
+        <figure class="shot"><img src="images/screenshots/06-stamp-book.png" alt="The stamp book, with a companion from Japanese folk tales and shelves of stamps by prefecture" width="1320" height="2868" loading="lazy"></figure>
       </div>
     </div>
 
@@ -167,10 +185,15 @@
     <img class="icon" src="images/app-icon.png" alt="" width="88" height="88">
     <h2>Start with the shrine down the road.</h2>
     <p class="lead">Find it on the map, read up on the customs, and walk there.</p>
-    <a class="store-badge" data-store href="#top" aria-disabled="true" title="Coming soon">
+    <a class="store-badge" data-store href="#top" hidden>
       <svg width="22" height="26" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-109 62-109 190 0 148 130 200 134 201-1 3-21 71-69 141-43 61-88 123-156 123s-86-40-165-40c-77 0-104 41-167 41s-107-57-157-127C41 786 0 661 0 543c0-190 123-290 245-290 64 0 118 42 159 42 39 0 99-45 172-45 28 0 128 3 212 91zM574 164c32-38 55-91 55-144 0-7-1-15-2-20-52 2-114 35-152 78-29 33-57 86-57 140 0 8 1 16 2 19 3 1 9 2 14 2 47 0 106-31 140-75z"/></svg>
-      <span><small>Coming soon to the</small><b>App Store</b></span>
+      <span><small>Download on the</small><b>App Store</b></span>
     </a>
+    <div class="soon" data-soon>
+      <p class="soon-title">Coming soon to the App Store</p>
+      <a class="waitlist-jump" data-wl-link href="#waitlist" hidden>Get one email at launch</a>
+      <p class="soon-sub">Launch news on <a href="https://x.com/Gosyuin_map">X</a> and <a href="https://www.youtube.com/@gosyuinmap">YouTube</a>.</p>
+    </div>
   </div>
 </section>
 
@@ -188,34 +211,113 @@
 <div class="get-bar">
   <img src="images/app-icon.png" alt="" width="44" height="44">
   <p class="name">GosyuinMap<small>Free on iPhone</small></p>
-  <a class="store-badge" data-store href="#top" aria-disabled="true" title="Coming soon">
+  <a class="store-badge" data-store href="#top" hidden>
     <svg width="18" height="22" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-109 62-109 190 0 148 130 200 134 201-1 3-21 71-69 141-43 61-88 123-156 123s-86-40-165-40c-77 0-104 41-167 41s-107-57-157-127C41 786 0 661 0 543c0-190 123-290 245-290 64 0 118 42 159 42 39 0 99-45 172-45 28 0 128 3 212 91zM574 164c32-38 55-91 55-144 0-7-1-15-2-20-52 2-114 35-152 78-29 33-57 86-57 140 0 8 1 16 2 19 3 1 9 2 14 2 47 0 106-31 140-75z"/></svg>
-    <span><small>Coming soon to the</small><b>App Store</b></span>
+    <span><small>Download on the</small><b>App Store</b></span>
   </a>
+  <p class="soon-chip" data-soon data-wl-chip>Coming soon</p>
+  <a class="soon-chip" data-wl-link href="#waitlist" hidden>Get notified</a>
 </div>
 
 <script>
-// The App Store buttons. While APP_ID is empty they say "Coming soon" and go
-// nowhere. Once the app has its App Store ID, set APP_ID (digits only) and
-// PROVIDER_TOKEN (the "pt" of an App Store Connect campaign link): every
-// button then opens the App Store with the campaign this page was opened
-// with (?ct=share_image from the QR code on a shared picture, ?ct=share_x
-// from a link posted to X, and so on; "site" when there is none), so App
-// Store Connect counts installs by source. Nothing is stored or sent.
+// The App Store buttons. Three states, one switch each:
+//   Coming soon (the default, and what shows without JavaScript): a plain
+//   label and two follow links; no button that goes nowhere. When
+//   WAITLIST_FORM is set (below), the label also carries the waitlist form.
+//   Pre-order: set APP_ID, PROVIDER_TOKEN and PREORDER = true only while an
+//   App Store pre-order is live. The buttons say "Pre-order on the".
+//   Live: set LIVE_FROM to the release moment in Japan time, for example
+//   "2026-12-15T09:00:00+09:00". From that moment the buttons say
+//   "Download on the" by themselves, so the page can be published once,
+//   after approval, before release day. The waitlist form goes away then.
+// Every button opens the App Store with the campaign this page was opened
+// with (?ct=x from a post on X, ?ct=share_image_desk from the QR code on a
+// shared picture, and so on; "site" when there is none), so App Store
+// Connect counts installs by source. The page itself stores nothing and
+// loads nothing from anywhere else. docs/marketing/funnel.md.
 (function () {
   var APP_ID = "";
   var PROVIDER_TOKEN = "";
-  if (!APP_ID) return;
+  var PREORDER = false;
+  var LIVE_FROM = "";
+
+  // ===== WAITLIST: OWNER'S GOOGLE FORM (fill these, then publish) =====
+  // WAITLIST_FORM: the form's response address, which is its viewform link
+  // with "viewform" replaced by "formResponse":
+  //   "https://docs.google.com/forms/d/e/<long id>/formResponse"
+  // WAITLIST_FIELDS: the entry number of each question ("entry.123456789"),
+  // read from the form's "Get pre-filled link". Steps: docs/marketing/funnel.md 6.
+  // Empty = no form on the page, exactly as before.
+  var WAITLIST_FORM = "https://docs.google.com/forms/d/e/1FAIpQLScGfTJwNQd_-ijOAdNFAcG_4pHyqFJiqCaOGlqIpYflH_4Okg/formResponse";
+  // A script on the form (gosyuin-sns/gas.js, in the owner's Apps Script)
+  // emails each sign-up one confirmation as "GosyuinMap".
+  var WAITLIST_FIELDS = { email: "entry.1170736164", source: "entry.695726896", request: "entry.1290305968" };
+  // ====================================================================
+
   var match = /[?&]ct=([a-z0-9_]{1,40})(?:&|$)/.exec(location.search);
   var ct = match ? match[1] : "site";
-  var url = "https://apps.apple.com/app/apple-store/id" + APP_ID +
-    (PROVIDER_TOKEN ? "?pt=" + encodeURIComponent(PROVIDER_TOKEN) + "&ct=" + ct + "&mt=8" : "");
-  document.querySelectorAll("[data-store]").forEach(function (a) {
-    a.href = url;
-    a.removeAttribute("aria-disabled");
-    a.removeAttribute("title");
-    var line = a.querySelector("small");
-    if (line) line.textContent = "Download on the";
+  var live = APP_ID !== "" && LIVE_FROM !== "" && Date.now() >= Date.parse(LIVE_FROM);
+
+  if (APP_ID !== "" && (live || PREORDER)) {
+    var url = "https://apps.apple.com/app/apple-store/id" + APP_ID +
+      (PROVIDER_TOKEN ? "?pt=" + encodeURIComponent(PROVIDER_TOKEN) + "&ct=" + ct + "&mt=8" : "");
+    document.querySelectorAll("[data-store]").forEach(function (a) {
+      a.href = url;
+      a.hidden = false;
+      var line = a.querySelector("small");
+      if (line) line.textContent = live ? "Download on the" : "Pre-order on the";
+    });
+    document.querySelectorAll("[data-soon]").forEach(function (el) { el.hidden = true; });
+    return;
+  }
+
+  // The waitlist: sends the email, where the visitor came from (ct) and
+  // "join" or "remove" to the owner's Google Form, only when the button is
+  // pressed. The answer from Google lands in a hidden frame, so the visitor
+  // stays on this page. privacy.html#waitlist.
+  if (!WAITLIST_FORM || !WAITLIST_FIELDS.email) return;
+  var form = document.querySelector("[data-waitlist]");
+  if (!form) return;
+  var removing = location.hash === "#remove";
+  form.action = WAITLIST_FORM;
+  form.querySelectorAll("[data-wl]").forEach(function (input) {
+    var name = WAITLIST_FIELDS[input.getAttribute("data-wl")];
+    if (name) input.name = name; else input.disabled = true;
+  });
+  form.querySelector('[data-wl="source"]').value = ct;
+  form.querySelector('[data-wl="request"]').value = removing ? "remove" : "join";
+  var button = form.querySelector("[data-wl-button]");
+  var done = form.querySelector("[data-wl-done]");
+  if (removing) {
+    button.textContent = "Remove my email";
+    form.querySelector("[data-wl-promise]").textContent =
+      "Type the address you signed up with. We delete it from the waitlist within 7 days.";
+  }
+  form.hidden = false;
+  document.querySelectorAll("[data-wl-link]").forEach(function (a) { a.hidden = false; });
+  document.querySelectorAll("[data-wl-chip]").forEach(function (el) { el.hidden = true; });
+  if (removing) form.scrollIntoView({ block: "center" });
+
+  var sent = false;
+  form.addEventListener("submit", function (event) {
+    if (!navigator.onLine) {
+      event.preventDefault();
+      done.textContent = "You seem to be offline. Try again when you're connected.";
+      done.hidden = false;
+      return;
+    }
+    sent = true;
+    button.disabled = true;
+    button.textContent = "Sending...";
+  });
+  document.querySelector('iframe[name="waitlist-sink"]').addEventListener("load", function () {
+    if (!sent) return;
+    form.querySelector(".waitlist-row").hidden = true;
+    form.querySelector("[data-wl-promise]").hidden = true;
+    done.textContent = removing
+      ? "Got it. We'll delete that address within 7 days."
+      : "You're on the list! Check your inbox for a confirmation. One email when it's out, then we delete your address.";
+    done.hidden = false;
   });
 })();
 </script>

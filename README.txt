@@ -35,6 +35,14 @@ GosyuinMap の公開用ページ一式（静的サイト）
      01-press-stamp.png  02-map.png  03-customs.png  04-lock-screen.png  05-shrine-guide.png  06-stamp-book.png
    撮り方は docs/marketing/screenshot-shotlist.md。
 
+■ ウェイトリスト（2026-11-28、公開前だけ）
+
+   index.html の末尾の <script> の WAITLIST_FORM（オーナーの Google フォームの formResponse の URL）と
+   WAITLIST_FIELDS（3 つの質問の entry.<数字>）を入れると、「Coming soon」の札の中にメール欄が出る。
+   空のままなら欄は出ない。フォームの作り方とオーナーの手順は docs/marketing/funnel.md 6 章。
+   公開（LIVE_FROM の時刻）や予約注文（PREORDER）の状態では欄は自動で消える。
+   privacy.html の 7 項はウェイトリストの説明。公開の 1 通を送ってリストを消したら、7 項も消す。
+
 ■ 置き場所が決まった後に 1 行だけ直すもの（任意）
 
    index.html の <meta property="og:image" content="images/og.png"> を、https:// から始まる完全なアドレスにする。

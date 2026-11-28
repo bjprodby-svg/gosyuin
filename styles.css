@@ -91,6 +91,49 @@ p { margin: 0; }
 .store-badge b { display: block; font-size: 24px; line-height: 1.05; font-weight: 600; letter-spacing: -0.02em; }
 .store-badge:hover { opacity: 0.88; }
 .store-badge[aria-disabled="true"] { cursor: default; }
+.store-badge[hidden], .soon[hidden], .soon-chip[hidden] { display: none; }
+
+/* Before release: a plain label, not a button. Nothing to tap but the
+   two follow links. The script in index.html swaps it for the badge. */
+.soon { display: flex; flex-direction: column; gap: 6px; }
+.soon-title {
+  display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+  margin: 0; padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--paper-raised); color: var(--ink); font-weight: 700; font-size: 17px; line-height: 1.2;
+}
+.soon-title::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--shu); flex: none; }
+.soon-sub { margin: 0; font-size: 14px; color: var(--ink-soft); }
+.soon-sub a { color: var(--link); }
+.closing .soon { align-items: center; margin-top: 28px; }
+.closing .soon-title { align-self: center; }
+.soon-chip { display: none; }
+
+/* The waitlist inside the Coming soon label: one email field, one button. */
+.vh { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.waitlist { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; max-width: 460px; }
+.waitlist[hidden], .waitlist-row[hidden], .waitlist-done[hidden], .waitlist-promise[hidden], .waitlist-jump[hidden] { display: none; }
+.waitlist-row { display: flex; gap: 8px; }
+.waitlist input[type="email"] {
+  flex: 1 1 auto; min-width: 0; height: 48px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); color: var(--ink);
+  font: inherit; font-size: 16px;
+}
+.waitlist input[type="email"]:focus { outline: 2px solid var(--shu); outline-offset: 1px; border-color: transparent; }
+.waitlist button {
+  flex: none; height: 48px; padding: 0 18px; border: 0; border-radius: 12px;
+  background: var(--shu); color: var(--shu-ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
+}
+.waitlist button:disabled { opacity: 0.6; cursor: default; }
+.waitlist-promise, .waitlist-done { margin: 0; font-size: 14px; color: var(--ink-soft); }
+.waitlist-done { color: var(--ink); font-weight: 600; }
+.waitlist-jump {
+  display: inline-block; padding: 12px 20px; border-radius: 12px; background: var(--shu); color: var(--shu-ink);
+  font-weight: 700; text-decoration: none;
+}
+@media (max-width: 420px) {
+  .waitlist-row { flex-direction: column; }
+  .waitlist button { width: 100%; }
+}
 
 /* On phones the button stays in reach at the bottom of the screen. */
 .get-bar { display: none; }
@@ -111,6 +154,12 @@ p { margin: 0; }
   .get-bar .store-badge svg { width: 18px; height: 22px; }
   .get-bar .store-badge small { font-size: 10px; }
   .get-bar .store-badge b { font-size: 19px; }
+  .get-bar .soon-chip {
+    display: block; margin: 0 0 0 auto; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--paper-raised); color: var(--ink); font-size: 13px; font-weight: 700; white-space: nowrap;
+  }
+  .get-bar .soon-chip[hidden] { display: none; }
+  .get-bar a.soon-chip { color: var(--shu-ink); background: var(--shu); border-color: transparent; text-decoration: none; }
 }
 
 /* A phone-shaped frame around a screenshot (1320 x 2868). */
