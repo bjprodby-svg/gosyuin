@@ -9,7 +9,7 @@ GosyuinMap の公開用ページ一式（静的サイト）
   support.html    サポートと FAQ（「サポート URL」、必須）
   404.html        見つからない頁（GitHub Pages がどの深さでも自動で使う。リンクは /gosyuin/ からの絶対パス）
   styles.css      共通のスタイル（明るい表示と暗い表示は端末の設定に従う）
-  images/         アプリのアイコン（app-icon.png、180 px の apple-touch-icon.png）、寺社の種類の絵 8 枚、共有用の画像（og.png）、スクリーンショット 6 枚
+  images/         アプリのアイコン（app-icon.png、180 px の apple-touch-icon.png）、寺社の種類の絵 8 枚、共有用の画像（og.png）、スクリーンショット 6 枚（WebP）
 
 ■ 上げる前に埋めるもの（3 つ）
 
@@ -30,11 +30,13 @@ GosyuinMap の公開用ページ一式（静的サイト）
    アプリ側は GosyuinMap/Models/AppLinks.swift の appStoreID と providerToken に同じ値を入れる。
    ID がない間、ボタンは「Coming soon to the App Store」で押しても何も出ない。仕組みは docs/specs/share-link.md。
 
-3. スクリーンショット（iOS エンジニアが撮影した後）
-   images/screenshots/ の 6 枚は「Screenshot placeholder」と書いた仮の画像。
-   同じファイル名で、見出しを載せる前の素の画面（1320 x 2868）に上書きする。HTML は触らなくてよい。
-     01-press-stamp.png  02-map.png  03-customs.png  04-lock-screen.png  05-shrine-guide.png  06-stamp-book.png
-   撮り方は docs/marketing/screenshot-shotlist.md。
+3. スクリーンショット（2026-11-28 差し替え済み）
+   images/screenshots/ の 6 枚は素の画面を 750 x 1630 の WebP（品質 84）に縮めたもの。PNG だと 1 枚 1 MB を超え、
+   スマホの回線では上から少しずつしか描かれず、下半分が空いて見えたため。
+     01-press-stamp.webp  伏見稲荷大社の刷り上がり（appstore/screenshots/v1/raw/01 と同じ画面）
+     02-map.webp          京都の地図と伏見稲荷大社の概要シート（紹介ページのヒーロー用。ストアの 02 は東京の地図のまま）
+     03-customs.webp  04-lock-screen.webp  05-shrine-guide.webp  06-stamp-book.webp  （v1/raw と同じ画面）
+   撮り直したら、1320 x 2868 の素の画面から同じ大きさの WebP を作って上書きする。撮り方は docs/marketing/screenshot-shotlist.md。
 
 ■ ウェイトリスト（2026-11-28、公開前だけ）
 

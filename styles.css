@@ -173,7 +173,7 @@ p { margin: 0; }
   border-radius: 34px; border: 7px solid #17130f; background: var(--paper-sunk);
   overflow: hidden; box-shadow: var(--shadow);
 }
-.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---------- hero ---------- */
 .hero { padding: 72px 0 80px; overflow: hidden; }
@@ -182,14 +182,16 @@ p { margin: 0; }
 .hero .lead { margin-top: 22px; max-width: 30em; }
 .hero .cta { margin-top: 32px; display: flex; align-items: center; gap: 18px 22px; flex-wrap: wrap; }
 .hero .cta .fine { font-weight: 600; }
-.hero-shots { position: relative; display: flex; justify-content: center; gap: 0; min-height: 520px; }
-.hero-shots .shot { max-width: 250px; }
-.hero-shots .shot:first-child { transform: rotate(-4deg) translate(18px, 34px); }
-.hero-shots .shot:last-child { transform: rotate(3deg) translate(-18px, 0); position: relative; z-index: 1; }
+/* Two phones side by side, slightly turned, never overlapping, so each
+   screen shows whole (the map's place card, the printed stamp). */
+.hero-shots { position: relative; display: flex; justify-content: center; align-items: flex-start; gap: 22px; padding-bottom: 30px; }
+.hero-shots .shot { max-width: 230px; flex: 1 1 0; }
+.hero-shots .shot:first-child { transform: rotate(-3deg); }
+.hero-shots .shot:last-child { transform: translateY(30px) rotate(3deg); }
 @media (max-width: 860px) {
   .hero { padding: 48px 0 56px; }
   .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
-  .hero-shots { min-height: 0; }
+  .hero-shots { gap: 5%; }
   .hero-shots .shot { max-width: 44%; }
 }
 
@@ -277,3 +279,11 @@ p { margin: 0; }
 
 /* #remove: the label reads as a heading for the form, not as a button. */
 .soon-title.is-remove { border: 0; background: none; padding: 0; font-size: 22px; }
+@media (max-width: 860px) {
+  /* Thinner bezel on the smaller phones, so every frame keeps the same proportions. */
+  .shot { border-width: 5px; border-radius: 26px; }
+}
+@media (prefers-color-scheme: dark) {
+  /* The black bezel would melt into the dark page; a hairline edge keeps the phone's outline. */
+  .shot { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16), var(--shadow); }
+}
